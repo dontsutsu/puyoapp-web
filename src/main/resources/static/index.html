@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<link href="css/reset.css" rel="stylesheet" type="text/css">
+<link href="css/base.css" rel="stylesheet" type="text/css">
+<link href="css/style.css" rel="stylesheet" type="text/css">
+<title>Puyo</title>
+</head>
+<body>
+	<!-- left area -->
+	<div id="left">
+		<div id="tsumoAndField">
+			<canvas id="tsumo" width="251" height="106"></canvas>
+			<canvas id="field" width="251" height="540"></canvas>
+		</div>
+		<canvas id="next" width="101" height="185"></canvas>
+	</div>
+
+	<!-- right area -->
+	<div id="right">
+		<!-- mode switch -->
+		<div id="mode">
+			<input type="radio" name="mode" id="editor" value="editor" /><label for="editor">エディタ</label>
+			<input type="radio" name="mode" id="tokopuyo" value="tokopuyo" /><label for="tokopuyo">とこぷよ</label>
+			<input type="radio" name="mode" id="nazotoki" value="nazotoki" /><label for="nazotoki">なぞとき</label>
+		</div>
+
+		<div id="option">
+			<input type="range" id="speed" value="5" min="1" max="9" step="1">
+			<span id="speedVal">5</span>
+		</div>
+
+		<div id="tsumoListDiv">
+			<span class="subject">NEXTをきめてね</span><br>
+			<canvas id="tsumoList" width="191" height="181"></canvas>
+		</div>
+		<div id="boxDiv">
+			<span class="subject">PUYOをおいてね</span><br>
+			<canvas id="box" width="176" height="71"></canvas>
+			<div id="clear" class="button">クリア</div>
+			<div id="undo" class="button">元に戻す</div>
+			<div id="redo" class="button">やり直し</div>
+		</div>
+
+		<div id="nazoDiv">
+			<span class="subject">おだいをきめてね</span><br>
+			<div id="nazo">
+				<select id="nazoType">
+					<option value="1">XX連鎖するべし</option>
+					<option value="2">ぷよすべて消すべし</option>
+					<option value="3">XXぷよすべて消すべし</option>
+					<option value="4">XX色同時に消すべし</option>
+					<option value="5">XX匹同時に消すべし</option>
+				</select>
+				<br>
+				<select id="nazoRequire">
+				</select>
+			</div>
+		</div>
+
+		<div id="nazotokiButtonDiv" class="buttonDiv">
+			<div id="search" class="button">こたえ検索</div>
+			<div id="play" class="button disabled">こたえ再生</div>
+		</div>
+
+		<div id="editorButtonDiv" class="buttonDiv">
+			<div id="drop" class="button">スタート</div>
+		</div>
+
+		<!-- answer list -->
+		<div id="anslistDiv">
+			<table>
+				<tr>
+					<td><input type="radio" name="ansradio" id="ans1" value="1" disabled="disabled" /><label for="ans1">1</label></td>
+					<td><input type="radio" name="ansradio" id="ans2" value="2" disabled="disabled" /><label for="ans2">2</label></td>
+					<td><input type="radio" name="ansradio" id="ans3" value="3" disabled="disabled" /><label for="ans3">3</label></td>
+					<td><input type="radio" name="ansradio" id="ans4" value="4" disabled="disabled" /><label for="ans4">4</label></td>
+					<td><input type="radio" name="ansradio" id="ans5" value="5" disabled="disabled" /><label for="ans5">5</label></td>
+				</tr>
+				<tr>
+					<td><input type="radio" name="ansradio" id="ans6" value="6" disabled="disabled" /><label for="ans6">6</label></td>
+					<td><input type="radio" name="ansradio" id="ans7" value="7" disabled="disabled" /><label for="ans7">7</label></td>
+					<td><input type="radio" name="ansradio" id="ans8" value="8" disabled="disabled" /><label for="ans8">8</label></td>
+					<td><input type="radio" name="ansradio" id="ans9" value="9" disabled="disabled" /><label for="ans9">9</label></td>
+					<td><input type="radio" name="ansradio" id="ans10" value="10" disabled="disabled" /><label for="ans10">10</label></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<!-- load screen -->
+	<div id="load" style="display: none;">
+		<div id="loadMsg"></div>
+	</div>
+
+	<script src="js/bundle.js"></script>
+</body>
+</html>

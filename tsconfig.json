@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ESNEXT",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "baseUrl": "src/main/ts/types",
+    "paths": {
+      "@createjs/easeljs": ["my-createjs.d.ts"],
+      "@createjs/tweenjs": ["my-createjs.d.ts"]
+    }
+  }
+}
