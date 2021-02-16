@@ -2,10 +2,14 @@ const path = require("path");
 
 module.exports = {
     mode: "development",
-    entry: path.resolve(__dirname, "src", "main", "ts", "main.ts"),
+    entry: {
+        editor: path.resolve(__dirname, "src", "main", "ts", "editor.ts"),
+        tokopuyo: path.resolve(__dirname, "src", "main", "ts", "tokopuyo.ts"),
+        nazotoki: path.resolve(__dirname, "src", "main", "ts", "nazotoki.ts")
+    },
     output: {
         path: path.resolve(__dirname, "src", "main", "resources", "static", "js"),
-        filename: "bundle.js"
+        filename: "[name]_bundle.js"
     },
     module: {
         rules: [

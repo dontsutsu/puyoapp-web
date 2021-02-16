@@ -40,4 +40,4 @@ out/
 node_modules/
 
 ### bundle.js ###
-/src/main/resources/static/js/bundle.js
+/src/main/resources/static/js/*.js

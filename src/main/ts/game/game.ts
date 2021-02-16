@@ -1,10 +1,9 @@
+import $ from "jquery";
 import { Field } from "./ui/canvas/field";
 import { Box } from "./ui/canvas/box";
 import { Tsumo } from "./ui/canvas/tsumo";
-import { TsumoList } from "./ui/canvas/tsumo_list";
 import { Next } from "./ui/canvas/next";
 import { PuyoTimelineList } from "./ui/timeline/puyo_timeline_list";
-import { CorrectList } from "../main";
 
 import { Ticker } from "@createjs/tweenjs";
 
@@ -14,27 +13,21 @@ import { Ticker } from "@createjs/tweenjs";
 export class Game {
 	public static readonly UNDO_MAX = 100;
 
-	private _gameMode: GameMode;
+	protected _field: Field;
+	protected _box: Box;
+	protected _tsumo: Tsumo;
+	protected _next: Next;
 
-	private _field: Field;
-	private _box: Box;
-	private _tsumo: Tsumo;
-	private _tsumoList: TsumoList;
-	private _next: Next;
+	protected _isAnimation: boolean;
 
-	private _isAnimation: boolean;
+	protected _undoStack: string[];
+	protected _redoStack: string[];
 
-	private _undoStack: string[];
-	private _redoStack: string[];
-
-	constructor(gameMode: GameMode) {
-		this._gameMode = gameMode;
-
+	constructor() {
 		// canvas
 		this._field = new Field(this);
 		this._box = new Box(this);
 		this._tsumo = new Tsumo(this);
-		this._tsumoList = new TsumoList(this);
 		this._next = new Next(this);
 
 		this._undoStack = [];
@@ -44,8 +37,20 @@ export class Game {
 
 		// フレームレート
 		Ticker.timingMode = Ticker.RAF;
-	}
 
+		$("#undo").on("click", () => {
+			this.undo();
+		});
+
+		$("#redo").on("click", () => {
+			this.redo();
+		});
+
+		$("#speed").on("input", (e) => {
+			const val = (e.currentTarget as HTMLInputElement).value;
+			$("#speedVal").text(val);
+		});
+	}
 
 	/**
 	 * ツモを右へ移動します。
@@ -110,67 +115,6 @@ export class Game {
 	}
 
 	/**
-	 * なぞぷよの正答アニメーションを再生します。
-	 */
-	public play(correct: CorrectList[]): void {
-
-		const puyoTlList = new PuyoTimelineList();
-
-		const ac1 = correct[0].ac;
-		const cc1 = correct[0].cc;
-
-		const ac2 = (correct.length >= 2) ? correct[1].ac : "0";
-		const cc2 = (correct.length >= 2) ? correct[1].cc : "0";
-
-		this._next.setInitialNext(ac1, cc1, ac2, cc2)
-
-		for (let i = 0; i < correct.length; i++) {
-			const correctTsumo = correct[i];
-			const dnac = (correct.length > (i + 2)) ? correct[i+2].ac : "0";
-			const dncc = (correct.length > (i + 2)) ? correct[i+2].cc : "0";
-			this._next.pushAndPop(dnac, dncc, puyoTlList);
-			this._tsumo.setTsumo(correctTsumo.ac, correctTsumo.cc, puyoTlList);
-
-			// 回転
-			if (correctTsumo.ax > correctTsumo.cx) {
-				// 親ぷよの方が右の場合、右回転
-				this._tsumo.rotateLeft(puyoTlList);
-			} else if (correctTsumo.cx > correctTsumo.ax) {
-				// 子ぷよの方が右の場合、左回転
-				this._tsumo.rotateRight(puyoTlList);
-			}
-
-			if (correctTsumo.cy < correctTsumo.ay) {
-				// 子ぷよの方が下の場合、右回転右回転
-				// ※Java側は下がindex小、上がindex大
-				this._tsumo.rotateRight(puyoTlList);
-				this._tsumo.rotateRight(puyoTlList);
-			}
-
-			// 移動
-			const mv = Number(correctTsumo.ax) - Tsumo.INI_X;
-			this._tsumo.move(mv, puyoTlList);
-
-			// 落下
-			this._tsumo.drop(puyoTlList);
-			this._field.dropTsumo(this._tsumo, puyoTlList);
-		}
-
-		puyoTlList.play(this);
-	}
-
-	/**
-	 * ツモリストが想定通りの入力となっているかをチェックします。
-	 * ① 1ツモ目は必ず入力されていること
-	 * ② 各ツモはペアで入力されていること（どちらかのみの入力はエラー）
-	 * ③ 間に未入力のツモを挟まないこと（例：1,2ツモ目入力、3ツモ目未入力、4ツモ目入力はエラー）
-	 * @return true：チェックOK / false：チェックNG
-	 */
-	public tsumoListCheck(): boolean {
-		return this._tsumoList.check();
-	}
-
-	/**
 	 * フィールド情報を文字列で取得します。
 	 * @return フィールド文字列 [1段目1列目、1段目2列目、・・・、1段目6列目、2段目1列目、・・・、13段目6列目]
 	 */
@@ -178,22 +122,14 @@ export class Game {
 		return this._field.toString();
 	}
 
-	/**
-	 * ツモリストの文字列を取得します。
-	 * @return 1手目軸ぷよ色、2手目子ぷよ色、2手目軸ぷよ色、・・・
-	 */
-	public getTsumoListString(): string {
-		return this._tsumoList.toString();
-	}
 
 	/**
-	 * フィールドとツモリストをクリアします。
+	 * フィールドをクリアします。
 	 */
-	public clear(): void {
+	public clearField(): void {
 		const beforeField = this._field.toString();
 
 		this._field.clear();
-		this._tsumoList.clear();
 
 		const afterField = this._field.toString();
 
@@ -246,36 +182,6 @@ export class Game {
 		}
 	}
 
-	/**
-	 * 
-	 * @param gameMode 
-	 */
-	public switchMode(gameMode: GameMode) {
-		this._gameMode = gameMode;
-
-	}
-
-	/**
-	 * @return エディターモードであるかどうか
-	 */
-	public isEditorMode(): boolean {
-		return this._gameMode == GameMode.EDITOR;
-	}
-
-	/**
-	 * @return とこぷよモードであるかどうか
-	 */
-	public isTokopuyoMode(): boolean {
-		return this._gameMode == GameMode.TOKOPUYO;
-	}
-
-	/**
-	 * @return なぞときモードであるかどうか
-	 */
-	public isNazotokiMode(): boolean {
-		return this._gameMode == GameMode.NAZOTOKI;
-	}
-
 	////////////////////////////////
 	// getter / setter
 	////////////////////////////////
@@ -292,20 +198,4 @@ export class Game {
 		this._isAnimation = isAnimation;
 	}
 
-	get gameMode(): GameMode {
-		return this._gameMode;
-	}
-
 }
-
-////////////////////////////////
-// ENUM
-////////////////////////////////
-const GameMode = {
-	EDITOR: "editor",
-	TOKOPUYO: "tokopuyo",
-	NAZOTOKI: "nazotoki"
-} as const;
-type GameMode = typeof GameMode[keyof typeof GameMode];
-
-export { GameMode };

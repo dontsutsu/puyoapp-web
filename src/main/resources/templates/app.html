@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8" />
-<link href="css/reset.css" rel="stylesheet" type="text/css">
-<link href="css/base.css" rel="stylesheet" type="text/css">
-<link href="css/style.css" rel="stylesheet" type="text/css">
+<link th:href="@{/css/reset.css}" rel="stylesheet" type="text/css">
+<link th:href="@{/css/base.css}" rel="stylesheet" type="text/css">
+<link th:href="@{/css/style.css}" rel="stylesheet" type="text/css">
 <title>Puyo</title>
 </head>
 <body>
+	<h1 th:text="${mode}"></h1>
 	<!-- left area -->
 	<div id="left">
 		<div id="tsumoAndField">
@@ -21,9 +22,9 @@
 	<div id="right">
 		<!-- mode switch -->
 		<div id="mode">
-			<input type="radio" name="mode" id="editor" value="editor" /><label for="editor">エディタ</label>
-			<input type="radio" name="mode" id="tokopuyo" value="tokopuyo" /><label for="tokopuyo">とこぷよ</label>
-			<input type="radio" name="mode" id="nazotoki" value="nazotoki" /><label for="nazotoki">なぞとき</label>
+			<a href="editor">editor</a>
+			<a href="tokopuyo">tokopuyo</a>
+			<a href="nazotoki">nazotoki</a>
 		</div>
 
 		<div id="option">
@@ -31,11 +32,12 @@
 			<span id="speedVal">5</span>
 		</div>
 
-		<div id="tsumoListDiv">
+		<div id="tsumoListDiv" th:if="${mode=='nazotoki'}">
 			<span class="subject">NEXTをきめてね</span><br>
 			<canvas id="tsumoList" width="191" height="181"></canvas>
 		</div>
-		<div id="boxDiv">
+
+		<div id="boxDiv" th:if="${mode=='editor' || mode=='nazotoki'}">
 			<span class="subject">PUYOをおいてね</span><br>
 			<canvas id="box" width="176" height="71"></canvas>
 			<div id="clear" class="button">クリア</div>
@@ -43,7 +45,7 @@
 			<div id="redo" class="button">やり直し</div>
 		</div>
 
-		<div id="nazoDiv">
+		<div id="nazoDiv" th:if="${mode=='nazotoki'}">
 			<span class="subject">おだいをきめてね</span><br>
 			<div id="nazo">
 				<select id="nazoType">
@@ -59,17 +61,17 @@
 			</div>
 		</div>
 
-		<div id="nazotokiButtonDiv" class="buttonDiv">
+		<div id="nazotokiButtonDiv" class="buttonDiv" th:if="${mode=='nazotoki'}">
 			<div id="search" class="button">こたえ検索</div>
 			<div id="play" class="button disabled">こたえ再生</div>
 		</div>
 
-		<div id="editorButtonDiv" class="buttonDiv">
+		<div id="editorButtonDiv" class="buttonDiv" th:if="${mode=='editor'}">
 			<div id="drop" class="button">スタート</div>
 		</div>
 
 		<!-- answer list -->
-		<div id="anslistDiv">
+		<div id="anslistDiv" th:if="${mode=='nazotoki'}">
 			<table>
 				<tr>
 					<td><input type="radio" name="ansradio" id="ans1" value="1" disabled="disabled" /><label for="ans1">1</label></td>
@@ -94,6 +96,6 @@
 		<div id="loadMsg"></div>
 	</div>
 
-	<script src="js/bundle.js"></script>
+	<script th:src="@{/js/{mode}_bundle.js (mode=${mode})}"></script>
 </body>
 </html>

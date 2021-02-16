@@ -6,9 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class IndexController {
 
-	@RequestMapping(value="/index")
+	@RequestMapping(value="/")
 	private String index(){
-
-		return "/index.html";
+		return "redirect:/editor";
 	}
 }
