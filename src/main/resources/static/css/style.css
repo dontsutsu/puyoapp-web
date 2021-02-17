@@ -100,10 +100,6 @@ div.button.disabled {
 	opacity: .5;
 }
 
-#editorButtonDiv {
-	display: none;
-}
-
 /********************
  * anslistDiv       *
  ********************/

@@ -6,6 +6,7 @@ $(function() {
 });
 
 export class Editor extends Game {
+
     constructor() {
         super();
 

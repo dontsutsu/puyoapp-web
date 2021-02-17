@@ -7,7 +7,6 @@ import { FieldCellShape } from "../shape/cell_shape";
 import { Stage, Container, Ticker, Shape } from "@createjs/easeljs";
 import { Timeline, Tween } from "@createjs/tweenjs";
 
-
 /**
  * Fieldクラス
  */
@@ -68,6 +67,7 @@ export class Field {
 			for (let x = 0; x < Field.X_SIZE; x++) {
 				const cellShape = new FieldCellShape(x, y);
 				this._container.addChild(cellShape);
+
 				cellShape.addEventListener("mousedown", () => {
 					const beforeField = this.toString();
 
@@ -75,24 +75,27 @@ export class Field {
 					const y = cellShape.posy;
 
 					const puyoShape = this._fieldArray[y][x];
-
 					const selectColor = this._game.getSelectColor();
+
 					puyoShape.color = selectColor;
 					puyoShape.changeColor(selectColor);
 
 					const afterField = this.toString();
-
+					
 					// UNDOの履歴を残す
 					if (beforeField != afterField) this._game.pushUndoStack(beforeField);
 				});
+
 				cellShape.addEventListener("mouseover", () => {
 					cellShape.mouseover();
 				});
+
 				cellShape.addEventListener("mouseout", () => {
 					cellShape.mouseout();
 				});
 			}
 		}
+
 
 		// PuyoShape
 		for (let y = 0; y < Field.Y_SIZE; y++) {

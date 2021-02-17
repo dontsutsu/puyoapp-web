@@ -10,7 +10,7 @@ import { Ticker } from "@createjs/tweenjs";
 /**
  * Gameクラス
  */
-export class Game {
+export abstract class Game {
 	public static readonly UNDO_MAX = 100;
 
 	protected _field: Field;
@@ -121,7 +121,6 @@ export class Game {
 	public getFieldString(): string {
 		return this._field.toString();
 	}
-
 
 	/**
 	 * フィールドをクリアします。

@@ -7,7 +7,7 @@ import { PuyoTimelineList } from "./game/ui/timeline/puyo_timeline_list";
 import { Util } from "./util/util";
 
 $(function() {
-    new Nazotoki();
+	new Nazotoki();
 });
 
 export class Nazotoki extends Game {
@@ -15,34 +15,34 @@ export class Nazotoki extends Game {
     private _correctList: CorrectList[][]
 
     constructor() {
-        super();
+		super();
 
-        // init
-        this._correctList = [];
-        this._tsumoList = new TsumoList(this);
+		// init
+		this._correctList = [];
+		this._tsumoList = new TsumoList(this);
 
 		$("#nazoType").val("1");
 		this.nazoSwitch("1");
 
-        // event
-        $("#nazoType").on("change", (e) => {
+		// event
+		$("#nazoType").on("change", (e) => {
 			this.nazoSwitch((e.currentTarget as HTMLInputElement).value);
 		});
 
-        $("#search").on("click", () => {
+		$("#search").on("click", () => {
 			this.search();
 		});
 
-        $("#play").on("click", () => {
+		$("#play").on("click", () => {
 			this.playCorrect();
 		});
 
-        $("#clear").on("click", () => {
+		$("#clear").on("click", () => {
 			this.clear();
 		});
     }
 
-    /**
+	/**
 	 * ツモリストが想定通りの入力となっているかをチェックします。
 	 * ① 1ツモ目は必ず入力されていること
 	 * ② 各ツモはペアで入力されていること（どちらかのみの入力はエラー）
