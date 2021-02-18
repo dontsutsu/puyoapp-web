@@ -1,6 +1,7 @@
 import $ from "jquery";
 import { Ajax } from "./ajax/ajax";
 import { Game } from "./game/game";
+import { Box } from "./game/ui/canvas/box";
 import { Tsumo } from "./game/ui/canvas/tsumo";
 import { TsumoList } from "./game/ui/canvas/tsumo_list";
 import { PuyoTimelineList } from "./game/ui/timeline/puyo_timeline_list";
@@ -11,15 +12,21 @@ $(function() {
 });
 
 export class Nazotoki extends Game {
+	public static readonly IS_CLICKABLE_FIELD = true;
+
     private _tsumoList: TsumoList;
     private _correctList: CorrectList[][]
 
+	protected _box: Box;
+
     constructor() {
-		super();
+		super(Nazotoki.IS_CLICKABLE_FIELD);
 
 		// init
 		this._correctList = [];
 		this._tsumoList = new TsumoList(this);
+
+		this._box = new Box(this);
 
 		$("#nazoType").val("1");
 		this.nazoSwitch("1");
@@ -40,6 +47,13 @@ export class Nazotoki extends Game {
 		$("#clear").on("click", () => {
 			this.clear();
 		});
+    }
+
+	/**
+	 * @inheritdoc
+	 */
+	public getSelectColor(): string {
+        return this._box.selectColor;
     }
 
 	/**
@@ -128,6 +142,7 @@ export class Nazotoki extends Game {
 
     /**
 	 * なぞぷよの正答アニメーションを再生します。
+	 * @param correct
 	 */
 	public play(correct: CorrectList[]): void {
 

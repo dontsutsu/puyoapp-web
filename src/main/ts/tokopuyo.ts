@@ -6,8 +6,10 @@ $(function() {
 });
 
 export class Tokopuyo extends Game {
+	public static readonly IS_CLICKABLE_FIELD = false;
+
     constructor() {
-        super();
+        super(Tokopuyo.IS_CLICKABLE_FIELD);
 
         // event
         $("html").on("keydown", (e) => {
@@ -34,4 +36,11 @@ export class Tokopuyo extends Game {
 			}
 		});
     }
+
+	/**
+	 * @inheritdoc
+	 */
+	public getSelectColor(): string {
+		throw new Error("Method not implemented.");
+	}
 }

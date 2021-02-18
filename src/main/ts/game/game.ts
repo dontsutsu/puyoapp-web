@@ -1,6 +1,5 @@
 import $ from "jquery";
 import { Field } from "./ui/canvas/field";
-import { Box } from "./ui/canvas/box";
 import { Tsumo } from "./ui/canvas/tsumo";
 import { Next } from "./ui/canvas/next";
 import { PuyoTimelineList } from "./ui/timeline/puyo_timeline_list";
@@ -14,7 +13,6 @@ export abstract class Game {
 	public static readonly UNDO_MAX = 100;
 
 	protected _field: Field;
-	protected _box: Box;
 	protected _tsumo: Tsumo;
 	protected _next: Next;
 
@@ -23,10 +21,9 @@ export abstract class Game {
 	protected _undoStack: string[];
 	protected _redoStack: string[];
 
-	constructor() {
+	constructor(isClickableField: boolean) {
 		// canvas
-		this._field = new Field(this);
-		this._box = new Box(this);
+		this._field = new Field(this, isClickableField);
 		this._tsumo = new Tsumo(this);
 		this._next = new Next(this);
 
@@ -140,9 +137,7 @@ export abstract class Game {
 	 * 選択中の色を取得します。
 	 * @return 選択中の色
 	 */
-	public getSelectColor() :string {
-		return this._box.selectColor;
-	}
+	public abstract getSelectColor() :string;
 
 	/**
 	 * 元に戻します（UNDO機能）。

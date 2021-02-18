@@ -27,7 +27,7 @@ export class Field {
 	 * コンストラクタ
 	 * @param game ゲーム
 	 */
-	constructor(game: Game) {
+	constructor(game: Game, isClickable: boolean) {
 		this._game = game;
 		this._fieldArray = [];
 
@@ -68,31 +68,33 @@ export class Field {
 				const cellShape = new FieldCellShape(x, y);
 				this._container.addChild(cellShape);
 
-				cellShape.addEventListener("mousedown", () => {
-					const beforeField = this.toString();
+				if (isClickable) {
+					cellShape.addEventListener("mousedown", () => {
+						const beforeField = this.toString();
 
-					const x = cellShape.posx;
-					const y = cellShape.posy;
+						const x = cellShape.posx;
+						const y = cellShape.posy;
 
-					const puyoShape = this._fieldArray[y][x];
-					const selectColor = this._game.getSelectColor();
+						const puyoShape = this._fieldArray[y][x];
+						const selectColor = this._game.getSelectColor();
 
-					puyoShape.color = selectColor;
-					puyoShape.changeColor(selectColor);
+						puyoShape.color = selectColor;
+						puyoShape.changeColor(selectColor);
 
-					const afterField = this.toString();
-					
-					// UNDOの履歴を残す
-					if (beforeField != afterField) this._game.pushUndoStack(beforeField);
-				});
+						const afterField = this.toString();
+						
+						// UNDOの履歴を残す
+						if (beforeField != afterField) this._game.pushUndoStack(beforeField);
+					});
 
-				cellShape.addEventListener("mouseover", () => {
-					cellShape.mouseover();
-				});
+					cellShape.addEventListener("mouseover", () => {
+						cellShape.mouseover();
+					});
 
-				cellShape.addEventListener("mouseout", () => {
-					cellShape.mouseout();
-				});
+					cellShape.addEventListener("mouseout", () => {
+						cellShape.mouseout();
+					});
+				}
 			}
 		}
 
