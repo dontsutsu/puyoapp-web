@@ -1,7 +1,7 @@
 import $ from "jquery";
 import { Box } from "../common/createjs/canvas/box";
 import { TsumoList } from "../common/createjs/canvas/tsumo_list";
-import { Ajax, CorrectList } from "../util/ajax";
+import { TsumoInterface } from "../interface/tsumo_Interface";
 import { Util } from "../util/util";
 import { EditableMode } from "./editable_mode";
 
@@ -13,7 +13,7 @@ export class Nazotoki extends EditableMode {
 
 	protected _box: Box;
     private _tsumoList: TsumoList;
-    private _correctList: CorrectList[][]
+    private _correctList: TsumoInterface[][]
 
 	/**
 	 * コンストラクタ
@@ -166,15 +166,10 @@ export class Nazotoki extends EditableMode {
 			alert("ツモの設定が不正です。");
 			return;
 		}
-		const fieldStr = this._game.getFieldString();
-		const tsumoListStr = this.getTsumoListString();
-
-		const nazoType = $("#nazoType").val() as string;
-		const nazoRequire = $("#nazoRequire").val() as string;
 
 		Util.dispLoading("検索中です...");
 
-		Ajax.searchCorrect(fieldStr, tsumoListStr, nazoType, nazoRequire)
+		this.searchCorrect()
 			.done((result) => {
 				this._correctList = result.correctList;
 				const len = result.correctList.length;
@@ -212,5 +207,26 @@ export class Nazotoki extends EditableMode {
 				Util.removeLoading();
 			});
 	}
-}
 
+	private searchCorrect(): JQuery.jqXHR<any> {
+		const fieldStr = this._game.getFieldString();
+		const tsumoListStr = this.getTsumoListString();
+		const nazoType = $("#nazoType").val() as string;
+		const nazoRequire = $("#nazoRequire").val() as string;
+
+		const data = {
+			field: fieldStr,
+			tsumoList: tsumoListStr,
+			nazoType: nazoType,
+			nazoRequire: nazoRequire
+		};
+
+		return $.ajax({
+			type: "POST",
+			url: "/search",
+			data: JSON.stringify(data),
+			contentType: "application/json",
+			dataType: "json"
+		});
+	}
+}

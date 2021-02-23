@@ -1,10 +1,9 @@
-import $ from "jquery";
 import { Ticker } from "@createjs/tweenjs";
 import { Field } from "./createjs/canvas/field";
 import { Tsumo } from "./createjs/canvas/tsumo";
 import { Next } from "./createjs/canvas/next";
 import { PuyoTimelineList } from "./createjs/timeline/puyo_timeline_list";
-import { CorrectList } from "../util/ajax";
+import { TsumoInterface } from "../interface/tsumo_Interface";
 
 /**
  * Gameクラス
@@ -38,19 +37,6 @@ export class Game {
 
 		// フレームレート
 		Ticker.timingMode = Ticker.RAF;
-
-		$("#undo").on("click", () => {
-			this.undo();
-		});
-
-		$("#redo").on("click", () => {
-			this.redo();
-		});
-
-		$("#speed").on("input", (e) => {
-			const val = (e.currentTarget as HTMLInputElement).value;
-			$("#speedVal").text(val);
-		});
 	}
 
 	/**
@@ -172,37 +158,37 @@ export class Game {
 
 	/**
 	 * なぞぷよの正答アニメーションを再生します。
-	 * @param correct 
+	 * @param tsumoList 
 	 */
-	public play(correct: CorrectList[]): void {
+	public play(tsumoList: TsumoInterface[]): void {
 
 		const puyoTlList = new PuyoTimelineList();
 
-		const ac1 = correct[0].ac;
-		const cc1 = correct[0].cc;
+		const ac1 = tsumoList[0].ac;
+		const cc1 = tsumoList[0].cc;
 
-		const ac2 = (correct.length >= 2) ? correct[1].ac : "0";
-		const cc2 = (correct.length >= 2) ? correct[1].cc : "0";
+		const ac2 = (tsumoList.length >= 2) ? tsumoList[1].ac : "0";
+		const cc2 = (tsumoList.length >= 2) ? tsumoList[1].cc : "0";
 
 		this._next.setInitialNext(ac1, cc1, ac2, cc2)
 
-		for (let i = 0; i < correct.length; i++) {
-			const correctTsumo = correct[i];
-			const dnac = (correct.length > (i + 2)) ? correct[i+2].ac : "0";
-			const dncc = (correct.length > (i + 2)) ? correct[i+2].cc : "0";
+		for (let i = 0; i < tsumoList.length; i++) {
+			const tsumo = tsumoList[i];
+			const dnac = (tsumoList.length > (i + 2)) ? tsumoList[i+2].ac : "0";
+			const dncc = (tsumoList.length > (i + 2)) ? tsumoList[i+2].cc : "0";
 			this._next.pushAndPop(dnac, dncc, puyoTlList);
-			this._tsumo.setTsumo(correctTsumo.ac, correctTsumo.cc, puyoTlList);
+			this._tsumo.setTsumo(tsumo.ac, tsumo.cc, puyoTlList);
 
 			// 回転
-			if (correctTsumo.ax > correctTsumo.cx) {
+			if (tsumo.ax > tsumo.cx) {
 				// 親ぷよの方が右の場合、右回転
 				this._tsumo.rotateLeft(puyoTlList);
-			} else if (correctTsumo.cx > correctTsumo.ax) {
+			} else if (tsumo.cx > tsumo.ax) {
 				// 子ぷよの方が右の場合、左回転
 				this._tsumo.rotateRight(puyoTlList);
 			}
 
-			if (correctTsumo.cy < correctTsumo.ay) {
+			if (tsumo.cy < tsumo.ay) {
 				// 子ぷよの方が下の場合、右回転右回転
 				// ※Java側は下がindex小、上がindex大
 				this._tsumo.rotateRight(puyoTlList);
@@ -210,7 +196,7 @@ export class Game {
 			}
 
 			// 移動
-			const mv = Number(correctTsumo.ax) - Tsumo.INI_X;
+			const mv = Number(tsumo.ax) - Tsumo.INI_X;
 			this._tsumo.move(mv, puyoTlList);
 
 			// 落下

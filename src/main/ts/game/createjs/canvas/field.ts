@@ -1,3 +1,4 @@
+import { EditableMode } from "../../../mode/editable_mode";
 import { FieldCellShape } from "../shape/field_cell_shape";
 import { Connect, FieldPuyoShape } from "../shape/field_puyo_shape";
 import { Tsumo } from "./tsumo";
@@ -5,7 +6,7 @@ import { PuyoTimelineList } from "../timeline/puyo_timeline_list";
 
 import { Stage, Container, Ticker, Shape } from "@createjs/easeljs";
 import { Timeline, Tween } from "@createjs/tweenjs";
-import { EditableMode } from "../../../mode/editable_mode";
+
 
 /**
  * Fieldクラス
@@ -24,7 +25,6 @@ export class Field {
 
 	/**
 	 * コンストラクタ
-	 * @param game ゲーム
 	 */
 	constructor() {
 		this._fieldArray = [];
@@ -41,19 +41,21 @@ export class Field {
 		const yy = 250 * sin;
 
 		// frame
-		const frame1 = new Shape();
-		frame1.graphics
+		const outsideFrame = new Shape();
+		outsideFrame.graphics
 			.f("#E0E0E0")
 			.rr(0.5, 0.5, 250 / cos, 495 + 250 * sin, 12.5);
-		frame1.y = yy;
-		frame1.skewY = deg * (-1);
-		const frame2 = new Shape();
-		frame2.graphics
+		outsideFrame.y = yy;
+		outsideFrame.skewY = deg * (-1);
+
+		const insideFrame = new Shape();
+		insideFrame.graphics
 			.f("#EE808D")
 			.rr(5.5, 5.5, 240 / cos, 485 + 240 * sin, 10);
-		frame2.y = yy;
-		frame2.skewY = deg * (-1);
-		this._stage.addChild(frame1, frame2);
+		insideFrame.y = yy;
+		insideFrame.skewY = deg * (-1);
+
+		this._stage.addChild(outsideFrame, insideFrame);
 
 		// container
 		this._container = new Container();
