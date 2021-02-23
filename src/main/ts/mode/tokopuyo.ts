@@ -1,46 +1,40 @@
 import $ from "jquery";
-import { Game } from "./game/game";
+import { Mode } from "./mode";
 
 $(function() {
     new Tokopuyo();
 });
 
-export class Tokopuyo extends Game {
-	public static readonly IS_CLICKABLE_FIELD = false;
-
+export class Tokopuyo extends Mode {
+	/**
+	 * コンストラクタ
+	 */
     constructor() {
-        super(Tokopuyo.IS_CLICKABLE_FIELD);
+        super();
 
         // event
         $("html").on("keydown", (e) => {
 			switch(e.key) {
 				case "ArrowRight" : // Key[→]
-					this.right();
+					this._game.right();
 				break;
 
 				case "ArrowLeft" : // Key[←]
-					this.left();
+					this._game.left();
 				break;
 
 				case "ArrowDown" : // Key[↓]
-					this.tsumoDrop();
+					this._game.tsumoDrop();
 				break;
 
 				case "z" : // Key[z]
-					this.rotateLeft();
+					this._game.rotateLeft();
 				break;
 
 				case "x" : // Key[x]
-					this.rotateRight();
+					this._game.rotateRight();
 				break;
 			}
 		});
     }
-
-	/**
-	 * @inheritdoc
-	 */
-	public getSelectColor(): string {
-		throw new Error("Method not implemented.");
-	}
 }

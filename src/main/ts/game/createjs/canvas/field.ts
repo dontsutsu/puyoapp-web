@@ -1,11 +1,11 @@
-import { Game } from "../../game";
+import { FieldCellShape } from "../shape/field_cell_shape";
+import { Connect, FieldPuyoShape } from "../shape/field_puyo_shape";
 import { Tsumo } from "./tsumo";
 import { PuyoTimelineList } from "../timeline/puyo_timeline_list";
-import { FieldPuyoShape, Connect } from "../shape/puyo_shape";
-import { FieldCellShape } from "../shape/cell_shape";
 
 import { Stage, Container, Ticker, Shape } from "@createjs/easeljs";
 import { Timeline, Tween } from "@createjs/tweenjs";
+import { EditableMode } from "../../../mode/editable_mode";
 
 /**
  * Fieldクラス
@@ -18,7 +18,6 @@ export class Field {
 	private static readonly CANVAS_ID = "field";
 
 	// インスタンス変数
-	private _game: Game;
 	private _fieldArray: FieldPuyoShape[][];
 	private _stage: Stage;
 	private _container: Container;
@@ -27,8 +26,7 @@ export class Field {
 	 * コンストラクタ
 	 * @param game ゲーム
 	 */
-	constructor(game: Game, isClickable: boolean) {
-		this._game = game;
+	constructor() {
 		this._fieldArray = [];
 
 		// stage
@@ -67,37 +65,8 @@ export class Field {
 			for (let x = 0; x < Field.X_SIZE; x++) {
 				const cellShape = new FieldCellShape(x, y);
 				this._container.addChild(cellShape);
-
-				if (isClickable) {
-					cellShape.addEventListener("mousedown", () => {
-						const beforeField = this.toString();
-
-						const x = cellShape.posx;
-						const y = cellShape.posy;
-
-						const puyoShape = this._fieldArray[y][x];
-						const selectColor = this._game.getSelectColor();
-
-						puyoShape.color = selectColor;
-						puyoShape.changeColor(selectColor);
-
-						const afterField = this.toString();
-						
-						// UNDOの履歴を残す
-						if (beforeField != afterField) this._game.pushUndoStack(beforeField);
-					});
-
-					cellShape.addEventListener("mouseover", () => {
-						cellShape.mouseover();
-					});
-
-					cellShape.addEventListener("mouseout", () => {
-						cellShape.mouseout();
-					});
-				}
 			}
 		}
-
 
 		// PuyoShape
 		for (let y = 0; y < Field.Y_SIZE; y++) {
@@ -111,6 +80,40 @@ export class Field {
 		}
 
 		this._stage.addChild(this._container);
+	}
+
+	public setEventFieldCellShape(mode: EditableMode): void {
+		for (let child of this._container.children) {
+			if (child instanceof FieldCellShape) {
+				let cellShape = child as FieldCellShape;
+
+				cellShape.addEventListener("mousedown", () => {
+					const beforeField = this.toString();
+
+					const x = cellShape.posx;
+					const y = cellShape.posy;
+
+					const puyoShape = this._fieldArray[y][x];
+					const selectColor = mode.getSelectColor();
+
+					puyoShape.color = selectColor;
+					puyoShape.changeColor(selectColor);
+
+					const afterField = this.toString();
+					
+					// UNDOの履歴を残す
+					// if (beforeField != afterField) this._game.pushUndoStack(beforeField);
+				});
+
+				cellShape.addEventListener("mouseover", () => {
+					cellShape.mouseover();
+				});
+
+				cellShape.addEventListener("mouseout", () => {
+					cellShape.mouseout();
+				});
+			}
+		}
 	}
 
 	/**

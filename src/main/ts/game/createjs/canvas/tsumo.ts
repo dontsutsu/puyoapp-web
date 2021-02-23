@@ -1,11 +1,9 @@
-import { TsumoPuyoShape } from "../shape/puyo_shape";
-import { TsumoCellShape } from "../shape/cell_shape";
-import { Field } from "./field";
-import { Game } from "../../game";
 import { PuyoTimelineList } from "../timeline/puyo_timeline_list";
 
 import { Stage, Container, Ticker } from "@createjs/easeljs";
 import { Ease, Timeline } from "@createjs/tweenjs";
+import { TsumoPuyoShape } from "../shape/tsumo_puyo_shape";
+import { TsumoCellShape } from "../shape/tsumo_cell_shape";
 
 
 /**
@@ -22,7 +20,6 @@ export class Tsumo {
 	private static readonly CANVAS_ID = "tsumo";
 
 	// インスタンス変数
-	private _game: Game;
 	private _stage: Stage;
 	private _aPuyoShape: TsumoPuyoShape;
 	private _cPuyoShape: TsumoPuyoShape;
@@ -33,8 +30,7 @@ export class Tsumo {
 	 * コンストラクタ
 	 * @param game ゲーム
 	 */
-	constructor(game: Game) {
-		this._game = game;
+	constructor() {
 		this._container = new Container();
 
 		// stage
@@ -287,11 +283,6 @@ export class Tsumo {
 	 * @param puyoTlList
 	 */
 	public drop(puyoTlList: PuyoTimelineList): void {
-		// 置けるかチェック
-		if(!this.dropCheck()) {
-			return;
-		}
-
 		const timeline = new Timeline({paused:true});
 		const pTween = this._aPuyoShape.getDropTween(this._container);
 		const cTween = this._cPuyoShape.getDropTween(this._container);
@@ -299,36 +290,6 @@ export class Tsumo {
 		timeline.addTween(cTween);
 
 		puyoTlList.push(timeline);
-	}
-
-	/**
-	 * 現在のツモがフィールドに落とせる位置にあるかチェックします。
-	 * @return true：落とせる / false：落とせない
-	 */
-	private dropCheck(): boolean {
-		const field = this._game.field;
-		const heights = field.getHeights();
-
-		const ax = this._aPuyoShape.tsumo_x;
-		const cx = this._cPuyoShape.tsumo_x;
-
-		for (let x = 0; x < heights.length; x++) {
-			let h = heights[x];
-
-			if (x == ax) {
-				h++;
-			}
-
-			if (ax != cx && x == cx) {
-				h++;
-			}
-
-			if (h > Field.Y_SIZE) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	////////////////////////////////

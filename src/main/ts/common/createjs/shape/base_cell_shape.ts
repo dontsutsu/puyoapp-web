@@ -4,7 +4,7 @@ import { Shape } from "@createjs/easeljs";
  * セル用 createjs.Shape 基底クラス
  */
 export class BaseCellShape extends Shape {
-	static readonly BORDER_COLOR = "#F0F0F0";
+	public static readonly BORDER_COLOR = "#F0F0F0";
 
 	private _posx: number;
 	private _posy: number;
@@ -62,5 +62,4 @@ export class BaseCellShape extends Shape {
 	get posy(): number {
 		return this._posy;
 	}
-
 }

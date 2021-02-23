@@ -4,7 +4,7 @@ import { Shape } from "@createjs/easeljs";
  * ぷよ用 createjs.Shape 基底クラス
  */
 export class BasePuyoShape extends Shape {
-	static PUYO_DICT: { [key: string]: [string, number, string] } = {
+	public static readonly PUYO_DICT: { [key: string]: [string, number, string] } = {
 		"1" : ["#68EE26", 1, "#236F1A"],
 		"2" : ["#F34A49", 1, "#852D20"],
 		"3" : ["#0C8EF9", 1, "#254AB2"],
@@ -45,8 +45,7 @@ export class BasePuyoShape extends Shape {
 	 * @param color 色
 	 */
 	public changeColor(color: string) {
-		//this.color = color;
-		let cellsize = this._cellsize;
+		const cellsize = this._cellsize;
 		this.graphics
 			.c();
 		this.setGraphics(color, cellsize);

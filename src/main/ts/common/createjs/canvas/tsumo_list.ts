@@ -1,6 +1,6 @@
-import { TsumoListPuyoShape } from "../shape/puyo_shape";
-import { TsumoListCellShape } from "../shape/cell_shape";
-import { Game } from "../../game";
+import { TsumoListCellShape } from "../shape/tsumo_list_cell_shape";
+import { TsumoListPuyoShape } from "../shape/tsumo_list_puyo_shape";
+import { EditableMode } from "../../../mode/editable_mode";
 
 import { Stage, Text } from "@createjs/easeljs";
 
@@ -15,15 +15,13 @@ export class TsumoList {
 	private static readonly CANVAS_ID = "tsumoList";
 
 	// インスタンス変数
-	private _game: Game;
 	private _stage: Stage;
 	private _tsumoListArray: TsumoListPuyoShape[][];
 
 	/**
 	 * @param game ゲーム
 	 */
-	constructor(game: Game) {
-		this._game = game;
+	constructor() {
 		this._tsumoListArray = [];
 
 		// stage
@@ -49,31 +47,6 @@ export class TsumoList {
 				for (let t = 0; t < 2; t++) {	// child: t=0, axis: t=1
 					const cellShape = new TsumoListCellShape(x, y, t);
 					this._stage.addChild(cellShape);
-					cellShape.addEventListener("mousedown", () => {
-						const selectColor = this._game.getSelectColor();
-						if (selectColor == "9") {
-							return;
-						}
-						const x = cellShape.posx;
-						const y = cellShape.posy;
-						const index = x + TsumoList.X_SIZE * y;
-						const type = cellShape.type;
-				
-						const puyoShape = this._tsumoListArray[index][type];
-				
-						puyoShape.color = selectColor;
-						puyoShape.changeColor(selectColor);
-				
-						this._stage.update();
-					});
-					cellShape.addEventListener("mouseover", (e) => {
-						cellShape.mouseover();
-						this._stage.update();
-					});
-					cellShape.addEventListener("mouseout", (e) => {
-						cellShape.mouseout();
-						this._stage.update();
-					});
 				}
 			}
 		}
@@ -97,6 +70,42 @@ export class TsumoList {
 		}
 
 		this._stage.update();
+	}
+
+	public setEventTsumoListCellShape(mode: EditableMode): void {
+		for (let child of this._stage.children) {
+			if (child instanceof TsumoListCellShape) {
+				let cellShape = child as TsumoListCellShape;
+
+				cellShape.addEventListener("mousedown", () => {
+					const selectColor = mode.getSelectColor();
+					if (selectColor == "9") {
+						return;
+					}
+					const x = cellShape.posx;
+					const y = cellShape.posy;
+					const index = x + TsumoList.X_SIZE * y;
+					const type = cellShape.type;
+			
+					const puyoShape = this._tsumoListArray[index][type];
+			
+					puyoShape.color = selectColor;
+					puyoShape.changeColor(selectColor);
+			
+					this._stage.update();
+				});
+
+				cellShape.addEventListener("mouseover", (e) => {
+					cellShape.mouseover();
+					this._stage.update();
+				});
+
+				cellShape.addEventListener("mouseout", (e) => {
+					cellShape.mouseout();
+					this._stage.update();
+				});
+			}
+		}
 	}
 
 	/**

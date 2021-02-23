@@ -28,3 +28,15 @@ export class Ajax {
 		});
 	}
 }
+
+/**
+ * 
+ */
+export interface CorrectList {
+	ax: string;
+	ay: string;
+	ac: string;
+	cx: string;
+	cy: string;
+	cc: string;
+}

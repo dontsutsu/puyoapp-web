@@ -1,15 +1,15 @@
 import $ from "jquery";
-import { Field } from "./ui/canvas/field";
-import { Tsumo } from "./ui/canvas/tsumo";
-import { Next } from "./ui/canvas/next";
-import { PuyoTimelineList } from "./ui/timeline/puyo_timeline_list";
-
 import { Ticker } from "@createjs/tweenjs";
+import { Field } from "./createjs/canvas/field";
+import { Tsumo } from "./createjs/canvas/tsumo";
+import { Next } from "./createjs/canvas/next";
+import { PuyoTimelineList } from "./createjs/timeline/puyo_timeline_list";
+import { CorrectList } from "../util/ajax";
 
 /**
  * Gameクラス
  */
-export abstract class Game {
+export class Game {
 	public static readonly UNDO_MAX = 100;
 
 	protected _field: Field;
@@ -21,11 +21,15 @@ export abstract class Game {
 	protected _undoStack: string[];
 	protected _redoStack: string[];
 
-	constructor(isClickableField: boolean) {
+	/**
+	 * コンストラクタ
+	 * @param mode モード
+	 */
+	constructor() {
 		// canvas
-		this._field = new Field(this, isClickableField);
-		this._tsumo = new Tsumo(this);
-		this._next = new Next(this);
+		this._field = new Field();
+		this._tsumo = new Tsumo();
+		this._next = new Next();
 
 		this._undoStack = [];
 		this._redoStack = [];
@@ -105,6 +109,10 @@ export abstract class Game {
 	 * ツモを落とします。
 	 */
 	public tsumoDrop(): void {
+		if (!this.dropCheck()) {
+			return;
+		}
+
 		const puyoTlList = new PuyoTimelineList();
 		this._tsumo.drop(puyoTlList);
 		this._field.dropTsumo(this._tsumo, puyoTlList);
@@ -134,10 +142,84 @@ export abstract class Game {
 	}
 
 	/**
-	 * 選択中の色を取得します。
-	 * @return 選択中の色
+	 * 現在のツモがフィールドに落とせる位置にあるかチェックします。
+	 * @return true：落とせる / false：落とせない
 	 */
-	public abstract getSelectColor() :string;
+	private dropCheck(): boolean {
+		const heights = this._field.getHeights();
+
+		const ax = this._tsumo.aPuyoShape.tsumo_x;
+		const cx = this._tsumo.cPuyoShape.tsumo_x;
+
+		for (let x = 0; x < heights.length; x++) {
+			let h = heights[x];
+
+			if (x == ax) {
+				h++;
+			}
+
+			if (ax != cx && x == cx) {
+				h++;
+			}
+
+			if (h > Field.Y_SIZE) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * なぞぷよの正答アニメーションを再生します。
+	 * @param correct 
+	 */
+	public play(correct: CorrectList[]): void {
+
+		const puyoTlList = new PuyoTimelineList();
+
+		const ac1 = correct[0].ac;
+		const cc1 = correct[0].cc;
+
+		const ac2 = (correct.length >= 2) ? correct[1].ac : "0";
+		const cc2 = (correct.length >= 2) ? correct[1].cc : "0";
+
+		this._next.setInitialNext(ac1, cc1, ac2, cc2)
+
+		for (let i = 0; i < correct.length; i++) {
+			const correctTsumo = correct[i];
+			const dnac = (correct.length > (i + 2)) ? correct[i+2].ac : "0";
+			const dncc = (correct.length > (i + 2)) ? correct[i+2].cc : "0";
+			this._next.pushAndPop(dnac, dncc, puyoTlList);
+			this._tsumo.setTsumo(correctTsumo.ac, correctTsumo.cc, puyoTlList);
+
+			// 回転
+			if (correctTsumo.ax > correctTsumo.cx) {
+				// 親ぷよの方が右の場合、右回転
+				this._tsumo.rotateLeft(puyoTlList);
+			} else if (correctTsumo.cx > correctTsumo.ax) {
+				// 子ぷよの方が右の場合、左回転
+				this._tsumo.rotateRight(puyoTlList);
+			}
+
+			if (correctTsumo.cy < correctTsumo.ay) {
+				// 子ぷよの方が下の場合、右回転右回転
+				// ※Java側は下がindex小、上がindex大
+				this._tsumo.rotateRight(puyoTlList);
+				this._tsumo.rotateRight(puyoTlList);
+			}
+
+			// 移動
+			const mv = Number(correctTsumo.ax) - Tsumo.INI_X;
+			this._tsumo.move(mv, puyoTlList);
+
+			// 落下
+			this._tsumo.drop(puyoTlList);
+			this._field.dropTsumo(this._tsumo, puyoTlList);
+		}
+
+		puyoTlList.play(this);
+	}
 
 	/**
 	 * 元に戻します（UNDO機能）。

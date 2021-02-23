@@ -1,7 +1,5 @@
-import { BoxPuyoShape } from "../shape/puyo_shape";
-import { BoxCellShape } from "../shape/cell_shape";
-import { Game } from "../../game";
-
+import { BoxCellShape } from "../shape/box_cell_shape";
+import { BoxPuyoShape } from "../shape/box_puyo_shape";
 import { Stage, Shape, Text } from "@createjs/easeljs";
 
 /**
@@ -15,7 +13,6 @@ export class Box {
 	private static readonly KESU_PADDING = 2;
 
 	// インスタンス変数
-	private _game: Game;
 	private _stage: Stage;
 	private _selectShape: Shape;
 	private _selectColor!: string;	// constructorでsetSelectShapeを呼んでいるので初期化チェックしない
@@ -24,8 +21,7 @@ export class Box {
 	 * コンストラクタ
 	 * @param game
 	 */
-	constructor(game: Game) {
-		this._game = game;
+	constructor() {
 
 		// size
 		const boxX = 5;

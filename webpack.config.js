@@ -3,9 +3,9 @@ const path = require("path");
 module.exports = {
     mode: "development",
     entry: {
-        editor: path.resolve(__dirname, "src", "main", "ts", "editor.ts"),
-        tokopuyo: path.resolve(__dirname, "src", "main", "ts", "tokopuyo.ts"),
-        nazotoki: path.resolve(__dirname, "src", "main", "ts", "nazotoki.ts")
+        editor: path.resolve(__dirname, "src", "main", "ts", "mode", "editor.ts"),
+        tokopuyo: path.resolve(__dirname, "src", "main", "ts", "mode", "tokopuyo.ts"),
+        nazotoki: path.resolve(__dirname, "src", "main", "ts", "mode", "nazotoki.ts")
     },
     output: {
         path: path.resolve(__dirname, "src", "main", "resources", "static", "js"),

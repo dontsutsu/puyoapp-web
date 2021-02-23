@@ -1,32 +1,32 @@
 import $ from "jquery";
-import { Ajax } from "./ajax/ajax";
-import { Game } from "./game/game";
-import { Box } from "./game/ui/canvas/box";
-import { Tsumo } from "./game/ui/canvas/tsumo";
-import { TsumoList } from "./game/ui/canvas/tsumo_list";
-import { PuyoTimelineList } from "./game/ui/timeline/puyo_timeline_list";
-import { Util } from "./util/util";
+import { Box } from "../common/createjs/canvas/box";
+import { TsumoList } from "../common/createjs/canvas/tsumo_list";
+import { Ajax, CorrectList } from "../util/ajax";
+import { Util } from "../util/util";
+import { EditableMode } from "./editable_mode";
 
 $(function() {
 	new Nazotoki();
 });
 
-export class Nazotoki extends Game {
-	public static readonly IS_CLICKABLE_FIELD = true;
+export class Nazotoki extends EditableMode {
 
+	protected _box: Box;
     private _tsumoList: TsumoList;
     private _correctList: CorrectList[][]
 
-	protected _box: Box;
-
+	/**
+	 * コンストラクタ
+	 */
     constructor() {
-		super(Nazotoki.IS_CLICKABLE_FIELD);
+		super();
 
 		// init
 		this._correctList = [];
-		this._tsumoList = new TsumoList(this);
+		this._tsumoList = new TsumoList();
+		this._tsumoList.setEventTsumoListCellShape(this);
 
-		this._box = new Box(this);
+		this._box = new Box();
 
 		$("#nazoType").val("1");
 		this.nazoSwitch("1");
@@ -137,58 +137,7 @@ export class Nazotoki extends Game {
 		const index = this.getAnsListIndex();
 		const correct = this._correctList[index];
 
-		this.play(correct);
-	}
-
-    /**
-	 * なぞぷよの正答アニメーションを再生します。
-	 * @param correct
-	 */
-	public play(correct: CorrectList[]): void {
-
-		const puyoTlList = new PuyoTimelineList();
-
-		const ac1 = correct[0].ac;
-		const cc1 = correct[0].cc;
-
-		const ac2 = (correct.length >= 2) ? correct[1].ac : "0";
-		const cc2 = (correct.length >= 2) ? correct[1].cc : "0";
-
-		this._next.setInitialNext(ac1, cc1, ac2, cc2)
-
-		for (let i = 0; i < correct.length; i++) {
-			const correctTsumo = correct[i];
-			const dnac = (correct.length > (i + 2)) ? correct[i+2].ac : "0";
-			const dncc = (correct.length > (i + 2)) ? correct[i+2].cc : "0";
-			this._next.pushAndPop(dnac, dncc, puyoTlList);
-			this._tsumo.setTsumo(correctTsumo.ac, correctTsumo.cc, puyoTlList);
-
-			// 回転
-			if (correctTsumo.ax > correctTsumo.cx) {
-				// 親ぷよの方が右の場合、右回転
-				this._tsumo.rotateLeft(puyoTlList);
-			} else if (correctTsumo.cx > correctTsumo.ax) {
-				// 子ぷよの方が右の場合、左回転
-				this._tsumo.rotateRight(puyoTlList);
-			}
-
-			if (correctTsumo.cy < correctTsumo.ay) {
-				// 子ぷよの方が下の場合、右回転右回転
-				// ※Java側は下がindex小、上がindex大
-				this._tsumo.rotateRight(puyoTlList);
-				this._tsumo.rotateRight(puyoTlList);
-			}
-
-			// 移動
-			const mv = Number(correctTsumo.ax) - Tsumo.INI_X;
-			this._tsumo.move(mv, puyoTlList);
-
-			// 落下
-			this._tsumo.drop(puyoTlList);
-			this._field.dropTsumo(this._tsumo, puyoTlList);
-		}
-
-		puyoTlList.play(this);
+		this._game.play(correct);
 	}
 
     /**
@@ -205,7 +154,8 @@ export class Nazotoki extends Game {
 		const confirm = window.confirm("クリアしますか？");
 		if (!confirm) return;
 
-		this.clearField();
+		this._game.clearField();
+		this._tsumoList.clear();
 	}
 
     /**
@@ -216,7 +166,7 @@ export class Nazotoki extends Game {
 			alert("ツモの設定が不正です。");
 			return;
 		}
-		const fieldStr = this.getFieldString();
+		const fieldStr = this._game.getFieldString();
 		const tsumoListStr = this.getTsumoListString();
 
 		const nazoType = $("#nazoType").val() as string;
@@ -264,14 +214,3 @@ export class Nazotoki extends Game {
 	}
 }
 
-/**
- * 
- */
-export interface CorrectList {
-	ax: string;
-	ay: string;
-	ac: string;
-	cx: string;
-	cy: string;
-	cc: string;
-}

@@ -1,10 +1,10 @@
-import { NextPuyoShape } from "../shape/puyo_shape";
-import { NextCellShape } from "../shape/cell_shape";
-import { Game } from "../../game";
+import { NextCellShape } from "../shape/next_cell_shape";
+import { NextPuyoShape } from "../shape/next_puyo_shape";
 import { PuyoTimelineList } from "../timeline/puyo_timeline_list";
 
 import { Container, Stage, Shape, Ticker } from "@createjs/easeljs";
 import { Timeline } from "@createjs/tweenjs";
+
 
 /**
  * Nextクラス
@@ -14,7 +14,6 @@ export class Next {
 	private static readonly CANVAS_ID = "next";
 
 	// インスタンス変数
-	private _game: Game;
 	private _stage: Stage;
 	private _container: Container;
 
@@ -27,9 +26,7 @@ export class Next {
 	 * コンストラクタ
 	 * @param game ゲーム
 	 */
-	constructor(game: Game) {
-		this._game = game;
-
+	constructor() {
 		// stage
 		this._stage = new Stage(Next.CANVAS_ID);
 		Ticker.addEventListener("tick", this._stage);
