@@ -19,7 +19,7 @@ export class TsumoList {
 	private _tsumoListArray: TsumoListPuyoShape[][];
 
 	/**
-	 * @param game ゲーム
+	 * コンストラクタ
 	 */
 	constructor() {
 		this._tsumoListArray = [];
@@ -72,6 +72,10 @@ export class TsumoList {
 		this._stage.update();
 	}
 
+	/**
+	 * 
+	 * @param mode 
+	 */
 	public setEventTsumoListCellShape(mode: EditableMode): void {
 		for (let child of this._stage.children) {
 			if (child instanceof TsumoListCellShape) {
@@ -162,12 +166,12 @@ export class TsumoList {
 	/**
 	 * 指定したインデックスのツモを取得します。
 	 * @param index ツモリストインデックス
-	 * @return [0]：軸ぷよ色、[1]：子ぷよ色
+	 * @return aColor：軸ぷよ色、cColor：子ぷよ色
 	 */
-	public getColor(index: number): { aColor: string; cColor: string; } {
+	public getColor(index: number): { aColor: string, cColor: string } {
 		const aColor = this._tsumoListArray[index][1].color;
 		const cColor = this._tsumoListArray[index][0].color;
-		return {aColor, cColor};
+		return { aColor, cColor };
 	}
 
 	/**

@@ -1,5 +1,6 @@
 import { BoxCellShape } from "../shape/box_cell_shape";
 import { BoxPuyoShape } from "../shape/box_puyo_shape";
+
 import { Stage, Shape, Text } from "@createjs/easeljs";
 
 /**
@@ -19,10 +20,8 @@ export class Box {
 
 	/**
 	 * コンストラクタ
-	 * @param game
 	 */
 	constructor() {
-
 		// size
 		const boxX = 5;
 		const boxY = 2;
@@ -33,8 +32,8 @@ export class Box {
 		// CellShape
 		for (let y = 0; y < boxY; y++) {
 			for (let x = 0; x < boxX; x++) {
-				const index = x + boxX * y;
-				const cellShape = new BoxCellShape(x, y, index);
+				const i = x + boxX * y;
+				const cellShape = new BoxCellShape(x, y, i);
 				this._stage.addChild(cellShape);
 				cellShape.addEventListener("mousedown", () => {
 					const x = cellShape.posx;
@@ -44,7 +43,7 @@ export class Box {
 						return;
 					}
 			
-					this.setSelectShape(x, y)
+					this.setSelectShape(x, y);
 					this._stage.update();
 				});
 			}
@@ -113,6 +112,7 @@ export class Box {
 	////////////////////////////////
 	// setter / getter
 	////////////////////////////////
+
 	get selectColor(): string {
 		return this._selectColor;
 	}

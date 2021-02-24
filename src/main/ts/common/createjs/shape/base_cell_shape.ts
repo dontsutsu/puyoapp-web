@@ -14,10 +14,11 @@ export class BaseCellShape extends Shape {
 
 	/**
 	 * コンストラクタ
-	 * @param x
-	 * @param y
-	 * @param bgColor
-	 * @param cellsize
+	 * @param x x座標
+	 * @param y y座標
+	 * @param cellsize セルのサイズ
+	 * @param bgColor 背景色
+	 * @param borderColor 枠の色
 	 */
 	constructor(x: number, y: number, cellsize: number, bgColor: string, borderColor: string = BaseCellShape.BORDER_COLOR) {
 		super();
@@ -32,18 +33,19 @@ export class BaseCellShape extends Shape {
 	}
 
 	/**
+	 * 背景色を変更します。
 	 * @param bgColor
 	 */
-	public changeColor(bgColor: string) {
+	public changeColor(bgColor: string): void {
 		this._bgColor = bgColor;
 		this.graphics.c();
 		this.setGraphics();
 	}
 
 	/**
-	 *
+	 * 描画します。
 	 */
-	private setGraphics() {
+	private setGraphics(): void {
 		this.graphics
 			.s(this._borderColor)
 			.f(this._bgColor)

@@ -1,21 +1,17 @@
-import $ from "jquery";
-import { Box } from "../common/createjs/canvas/box";
 import { EditableMode } from "./editable_mode";
+
+import $ from "jquery";
 
 $(function() {
     new Editor();
 });
 
 export class Editor extends EditableMode {
-    protected _box: Box;
-
     /**
      * コンストラクタ
      */
     constructor() {
         super();
-
-        this._box = new Box();
 
 		$("#drop").on("click", () => {
 			this._game.drop();
@@ -24,14 +20,6 @@ export class Editor extends EditableMode {
         $("#clear").on("click", () => {
             this.clear();
         });
-    }
-    
-
-    /**
-     * @inheritdoc
-     */
-    public getSelectColor(): string {
-        return this._box.selectColor;
     }
 
     /**

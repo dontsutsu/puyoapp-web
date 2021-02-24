@@ -34,7 +34,7 @@ export class TsumoListCellShape extends BaseCellShape {
 	 * @param type 0：子ぷよ、1：軸ぷよ
 	 * @return x：Shape.xに設定する値、y：Shape.yに設定する値
 	 */
-	static getXandY(x: number, y: number, type: number): { x: number; y: number; } {
+	static getXandY(x: number, y: number, type: number): { x: number, y: number } {
 		const rtn_x = (TsumoListCellShape.CELLSIZE + TsumoListCellShape.PADDING) * x;
 		const rtn_y = TsumoListCellShape.CELLSIZE * (type + 1) + TsumoListCellShape.CELLSIZE * 3 * y + TsumoListCellShape.Y_ADJUST;
 		return {x: rtn_x, y: rtn_y};

@@ -1,5 +1,7 @@
 import { Game } from "../game/game";
 
+import $ from "jquery";
+
 export abstract class Mode {
     protected _game: Game;
 

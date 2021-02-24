@@ -29,10 +29,11 @@ export class BasePuyoShape extends Shape {
 	}
 
 	/**
+	 * 描画します。
 	 * @param color 色
 	 * @param cellsize セルサイズ
 	 */
-	private setGraphics(color: string, cellsize: number) {
+	private setGraphics(color: string, cellsize: number): void {
 		this.graphics
 			.s(BasePuyoShape.PUYO_DICT[color][2])
 			.ss(cellsize / 20)
@@ -42,9 +43,10 @@ export class BasePuyoShape extends Shape {
 	}
 
 	/**
+	 * ぷよの色を変更します。
 	 * @param color 色
 	 */
-	public changeColor(color: string) {
+	public changeColor(color: string): void{
 		const cellsize = this._cellsize;
 		this.graphics
 			.c();

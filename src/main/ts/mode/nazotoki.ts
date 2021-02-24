@@ -1,5 +1,4 @@
 import $ from "jquery";
-import { Box } from "../common/createjs/canvas/box";
 import { TsumoList } from "../common/createjs/canvas/tsumo_list";
 import { TsumoInterface } from "../interface/tsumo_Interface";
 import { Util } from "../util/util";
@@ -10,8 +9,6 @@ $(function() {
 });
 
 export class Nazotoki extends EditableMode {
-
-	protected _box: Box;
     private _tsumoList: TsumoList;
     private _correctList: TsumoInterface[][]
 
@@ -25,8 +22,6 @@ export class Nazotoki extends EditableMode {
 		this._correctList = [];
 		this._tsumoList = new TsumoList();
 		this._tsumoList.setEventTsumoListCellShape(this);
-
-		this._box = new Box();
 
 		$("#nazoType").val("1");
 		this.nazoSwitch("1");
@@ -47,13 +42,6 @@ export class Nazotoki extends EditableMode {
 		$("#clear").on("click", () => {
 			this.clear();
 		});
-    }
-
-	/**
-	 * @inheritdoc
-	 */
-	public getSelectColor(): string {
-        return this._box.selectColor;
     }
 
 	/**
