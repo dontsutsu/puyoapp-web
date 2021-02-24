@@ -1,5 +1,6 @@
 import $ from "jquery";
 import { TsumoList } from "../common/createjs/canvas/tsumo_list";
+import { Field } from "../game/createjs/canvas/field";
 import { TsumoInterface } from "../interface/tsumo_Interface";
 import { Util } from "../util/util";
 import { EditableMode } from "./editable_mode";
@@ -40,8 +41,36 @@ export class Nazotoki extends EditableMode {
 		});
 
 		$("#clear").on("click", () => {
-			this.clear();
+			const confirm = window.confirm("クリアしますか？");
+			if (!confirm) return;
+	
+			const before = this.getHistory();
+			this._game.clearField();
+			this._tsumoList.clear();
+			const after = this.getHistory();
+			if (before != after) this.pushUndoStack(before);
 		});
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public getHistory(): string {
+		return this._game.getFieldString() + this._tsumoList.toString();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public setHistory(history: string): void {
+		const lenField = Field.X_SIZE * Field.Y_SIZE;
+		const lenTl = TsumoList.X_SIZE * TsumoList.Y_SIZE * 2;
+
+		const field = history.substring(0, lenField);
+		const tl = history.substring(lenField, history.length);
+
+		this._game.field.setField(field);
+		this._tsumoList.setTsumoList(tl);
 	}
 
 	/**
@@ -133,17 +162,6 @@ export class Nazotoki extends EditableMode {
 	 */
 	private getAnsListIndex(): number {
 		return Number($("#anslistDiv input[type='radio']:checked").val()) - 1;
-	}
-
-	/**
-	 * フィールド、ツモリストをクリアします。
-	 */
-	public clear(): void {
-		const confirm = window.confirm("クリアしますか？");
-		if (!confirm) return;
-
-		this._game.clearField();
-		this._tsumoList.clear();
 	}
 
 	/**

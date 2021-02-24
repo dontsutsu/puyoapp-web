@@ -37,4 +37,18 @@ export class Tokopuyo extends Mode {
 			}
 		});
 	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public getHistory(): string {
+		return "";
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public setHistory(history: string): void {
+		
+	}
 }

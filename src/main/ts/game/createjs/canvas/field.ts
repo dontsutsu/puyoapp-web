@@ -94,7 +94,7 @@ export class Field {
 				let cellShape = child as FieldCellShape;
 
 				cellShape.addEventListener("mousedown", () => {
-					const beforeField = this.toString();
+					const before = mode.getHistory();
 
 					const x = cellShape.posx;
 					const y = cellShape.posy;
@@ -105,10 +105,10 @@ export class Field {
 					puyoShape.color = selectColor;
 					puyoShape.changeColor(selectColor);
 
-					const afterField = this.toString();
+					const after = mode.getHistory();
 
 					// UNDOの履歴を残す
-					// if (beforeField != afterField) this._game.pushUndoStack(beforeField);
+					if (before != after) mode.pushUndoStack(before);
 				});
 
 				cellShape.addEventListener("mouseover", () => {

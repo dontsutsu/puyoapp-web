@@ -14,21 +14,34 @@ export class Editor extends EditableMode {
 		super();
 
 		$("#drop").on("click", () => {
+			const before = this.getHistory();
 			this._game.drop();
+			const after = this.getHistory();
+			if (before != after) this.pushUndoStack(before);
 		});
 
 		$("#clear").on("click", () => {
-			this.clear();
+			const confirm = window.confirm("クリアしますか？");
+			if (!confirm) return;
+
+			const before = this.getHistory();
+			this._game.clearField();
+			const after = this.getHistory();
+			if (before != after) this.pushUndoStack(before);
 		});
 	}
 
 	/**
-	 * フィールドをクリアします。
+	 * @inheritdoc
 	 */
-	public clear(): void {
-		const confirm = window.confirm("クリアしますか？");
-		if (!confirm) return;
+	public getHistory(): string {
+		return this._game.field.toString();
+	}
 
-		this._game.clearField();
+	/**
+	 * @inheritdoc
+	 */
+	public setHistory(history: string): void {
+		this._game.field.setField(history);
 	}
 }

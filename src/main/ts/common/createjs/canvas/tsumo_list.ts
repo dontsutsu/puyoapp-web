@@ -82,6 +82,8 @@ export class TsumoList {
 				let cellShape = child as TsumoListCellShape;
 
 				cellShape.addEventListener("mousedown", () => {
+					const before = mode.getHistory();
+
 					const selectColor = mode.getSelectColor();
 					if (selectColor == "9") {
 						return;
@@ -97,6 +99,10 @@ export class TsumoList {
 					puyoShape.changeColor(selectColor);
 
 					this._stage.update();
+
+					const after = mode.getHistory();
+					// UNDOの履歴を残す
+					if (before != after) mode.pushUndoStack(before);
 				});
 
 				cellShape.addEventListener("mouseover", (e) => {
@@ -123,6 +129,28 @@ export class TsumoList {
 			str = str + this._tsumoListArray[i][1].color + this._tsumoListArray[i][0].color;
 		}
 		return str;
+	}
+
+	/**
+	 * ツモリストを設定します。
+	 * @param tlStr ツモリスト（文字列）
+	 */
+	public setTsumoList(tlStr: string): void {
+		for (let i = 0; i < tlStr.length; i += 2) {
+			const index = i / 2;
+			const tsumoStr = tlStr.substring(i, i + 2);
+			const aColor = tsumoStr.substring(0, 1);	// 軸ぷよが先
+			const cColor = tsumoStr.substring(1, 2);	// 子ぷよが後
+
+			const aPuyoShape = this._tsumoListArray[index][1];
+			const cPuyoShape = this._tsumoListArray[index][0];
+
+			aPuyoShape.color = aColor;
+			aPuyoShape.changeColor(aColor);
+			cPuyoShape.color = cColor;
+			cPuyoShape.changeColor(cColor);
+		}
+		this._stage.update();
 	}
 
 	/**

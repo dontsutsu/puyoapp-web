@@ -17,9 +17,6 @@ export class Game {
 
 	protected _isAnimation: boolean;
 
-	protected _undoStack: string[];
-	protected _redoStack: string[];
-
 	/**
 	 * コンストラクタ
 	 * @param mode モード
@@ -29,9 +26,6 @@ export class Game {
 		this._field = new Field();
 		this._tsumo = new Tsumo();
 		this._next = new Next();
-
-		this._undoStack = [];
-		this._redoStack = [];
 
 		this._isAnimation = false;
 
@@ -79,16 +73,9 @@ export class Game {
 	 * フィールドのぷよを落とします。
 	 */
 	public drop(): void {
-		const beforeField = this._field.toString();
-
 		const puyoTlList = new PuyoTimelineList();
 		this._field.drop(puyoTlList);
 		puyoTlList.play(this);
-
-		const afterField = this._field.toString();
-
-		// UNDOの履歴を残す
-		if (beforeField != afterField) this.pushUndoStack(beforeField);
 	}
 
 	/**
@@ -117,14 +104,7 @@ export class Game {
 	 * フィールドをクリアします。
 	 */
 	public clearField(): void {
-		const beforeField = this._field.toString();
-
 		this._field.clear();
-
-		const afterField = this._field.toString();
-
-		// UNDOの履歴を残す
-		if (beforeField != afterField) this.pushUndoStack(beforeField);
 	}
 
 	/**
@@ -205,43 +185,6 @@ export class Game {
 		}
 
 		puyoTlList.play(this);
-	}
-
-	/**
-	 * 元に戻します（UNDO機能）。
-	 */
-	public undo(): void {
-		const undo = this._undoStack.pop();
-		if (undo !== undefined) {
-			this._redoStack.push(this._field.toString());
-			this._field.setField(undo);
-		}
-	}
-
-	/**
-	 * UNDO用の履歴を残します。
-	 */
-	public pushUndoStack(beforeField: string): void {
-		this._undoStack.push(beforeField);
-
-		// 一番古い履歴を消す
-		if (this._undoStack.length > Game.UNDO_MAX) {
-			this._undoStack.shift();
-		}
-		// REDOを消す
-		this._redoStack.length = 0;
-	}
-
-	/**
-	 * やり直します（REDO機能）。
-	 */
-	public redo(): void {
-		const redo = this._redoStack.pop();
-
-		if (redo !== undefined) {
-			this._undoStack.push(this._field.toString());
-			this._field.setField(redo);
-		}
 	}
 
 	////////////////////////////////
