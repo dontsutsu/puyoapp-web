@@ -32,6 +32,6 @@ export class NextCellShape extends BaseCellShape {
 	static getXandY(next: number, type: number): { x: number, y: number } {
 		const x = NextCellShape.CELLSIZE * next;
 		const y = NextCellShape.CELLSIZE * type + (NextCellShape.CELLSIZE * 2 + NextCellShape.NEXT_PADDING) * next;
-		return {x, y};
+		return { x, y };
 	}
 }

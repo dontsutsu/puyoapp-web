@@ -3,15 +3,15 @@ import { Game } from "../game/game";
 import $ from "jquery";
 
 export abstract class Mode {
-    protected _game: Game;
+	protected _game: Game;
 
-    /**
-     * コンストラクタ
-     */
-    constructor() {
-        this._game = new Game();
+	/**
+	 * コンストラクタ
+	 */
+	constructor() {
+		this._game = new Game();
 
-        $("#undo").on("click", () => {
+		$("#undo").on("click", () => {
 			this._game.undo();
 		});
 
@@ -23,5 +23,5 @@ export abstract class Mode {
 			const val = (e.currentTarget as HTMLInputElement).value;
 			$("#speedVal").text(val);
 		});
-    }
+	}
 }

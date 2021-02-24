@@ -84,6 +84,10 @@ export class Field {
 		this._stage.addChild(this._container);
 	}
 
+	/**
+	 *
+	 * @param mode
+	 */
 	public setEventFieldCellShape(mode: EditableMode): void {
 		for (let child of this._container.children) {
 			if (child instanceof FieldCellShape) {
@@ -102,7 +106,7 @@ export class Field {
 					puyoShape.changeColor(selectColor);
 
 					const afterField = this.toString();
-					
+
 					// UNDOの履歴を残す
 					// if (beforeField != afterField) this._game.pushUndoStack(beforeField);
 				});
@@ -368,7 +372,7 @@ export class Field {
 	 * @param tsumo ツモ
 	 * @param puyoTlList
 	 */
-	public dropTsumo(tsumo: Tsumo, puyoTlList: PuyoTimelineList) {
+	public dropTsumo(tsumo: Tsumo, puyoTlList: PuyoTimelineList): void {
 		let pFieldPuyoShape = new FieldPuyoShape(tsumo.aPuyoShape.tsumo_x, -5 + tsumo.aPuyoShape.tsumo_y, tsumo.aPuyoShape.color);
 		let cFieldPuyoShape = new FieldPuyoShape(tsumo.cPuyoShape.tsumo_x, -5 + tsumo.cPuyoShape.tsumo_y, tsumo.cPuyoShape.color);
 		this._container.addChild(pFieldPuyoShape, cFieldPuyoShape);
@@ -392,6 +396,7 @@ export class Field {
 
 	/**
 	 * @param fieldPuyoShape
+	 * @return createjs.Tween
 	 */
 	private setPuyoAndGetTween(fieldPuyoShape: FieldPuyoShape): Tween {
 		const x = fieldPuyoShape.posx;
@@ -408,5 +413,4 @@ export class Field {
 		const tween = fieldPuyoShape.getDropTween(y2, fieldPuyoShape.posy);
 		return tween;
 	}
-
 }

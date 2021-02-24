@@ -17,6 +17,7 @@ export class TsumoPuyoShape extends BasePuyoShape {
 	private _tsumo_y: number;
 
 	/**
+	 * コンストラクタ
 	 * @param x x座標
 	 * @param y y座標
 	 * @param color 色

@@ -12,6 +12,7 @@ export class BoxCellShape extends BaseCellShape {
 	public static readonly CELLSIZE = 35;
 
 	/**
+	 * コンストラクタ
 	 * @param x
 	 * @param y
 	 * @param index

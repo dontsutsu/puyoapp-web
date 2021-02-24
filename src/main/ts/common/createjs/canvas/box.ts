@@ -38,11 +38,11 @@ export class Box {
 				cellShape.addEventListener("mousedown", () => {
 					const x = cellShape.posx;
 					const y = cellShape.posy;
-			
+
 					if ((x + y * 5) > Box.KEY_ORDER.length - 1) {
 						return;
 					}
-			
+
 					this.setSelectShape(x, y);
 					this._stage.update();
 				});

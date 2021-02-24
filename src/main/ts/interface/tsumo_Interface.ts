@@ -1,5 +1,5 @@
 export interface TsumoInterface {
-    ax: string;
+	ax: string;
 	ay: string;
 	ac: string;
 	cx: string;

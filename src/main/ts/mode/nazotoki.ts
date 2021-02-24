@@ -9,13 +9,13 @@ $(function() {
 });
 
 export class Nazotoki extends EditableMode {
-    private _tsumoList: TsumoList;
-    private _correctList: TsumoInterface[][]
+	private _tsumoList: TsumoList;
+	private _correctList: TsumoInterface[][]
 
 	/**
 	 * コンストラクタ
 	 */
-    constructor() {
+	constructor() {
 		super();
 
 		// init
@@ -42,7 +42,7 @@ export class Nazotoki extends EditableMode {
 		$("#clear").on("click", () => {
 			this.clear();
 		});
-    }
+	}
 
 	/**
 	 * ツモリストが想定通りの入力となっているかをチェックします。
@@ -63,7 +63,7 @@ export class Nazotoki extends EditableMode {
 		return this._tsumoList.toString();
 	}
 
-    /**
+	/**
 	 * なぞぷよ正答リストをクリアします。
 	 */
 	private clearCorrectList(): void {
@@ -72,7 +72,7 @@ export class Nazotoki extends EditableMode {
 		$("#play").addClass("disabled");
 	}
 
-    /**
+	/**
 	 * なぞぷよのお題を指定のものに変更します。
 	 * その際、お題に必要な値を指定するコンボボックスの値を変更します。
 	 * @param nazoType
@@ -128,14 +128,14 @@ export class Nazotoki extends EditableMode {
 		this._game.play(correct);
 	}
 
-    /**
+	/**
 	 * 選択されている解答のインデックスを取得します。
 	 */
 	private getAnsListIndex(): number {
 		return Number($("#anslistDiv input[type='radio']:checked").val()) - 1;
 	}
 
-    /**
+	/**
 	 * フィールド、ツモリストをクリアします。
 	 */
 	public clear(): void {
@@ -146,7 +146,7 @@ export class Nazotoki extends EditableMode {
 		this._tsumoList.clear();
 	}
 
-    /**
+	/**
 	 * なぞぷよの解答を検索します。
 	 */
 	public search(): void {

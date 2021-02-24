@@ -28,7 +28,6 @@ export class Tsumo {
 
 	/**
 	 * コンストラクタ
-	 * @param game ゲーム
 	 */
 	constructor() {
 		this._container = new Container();
@@ -60,7 +59,7 @@ export class Tsumo {
 	 * @param cColor 子ぷよの色
 	 * @param puyoTlList PuyoTimeLineのリスト
 	 */
-	public setTsumo(aColor: string, cColor: string, puyoTlList: PuyoTimelineList) {
+	public setTsumo(aColor: string, cColor: string, puyoTlList: PuyoTimelineList): void {
 		const timeline = new Timeline({paused:true});
 
 		this._aPuyoShape = new TsumoPuyoShape(Tsumo.INI_X, Tsumo.INI_Y_A, aColor);
@@ -308,6 +307,7 @@ export class Tsumo {
 ////////////////////////////////
 // ENUM
 ////////////////////////////////
+
 const TsumoPosition = {
 	UP: "u",
 	DOWN: "d",

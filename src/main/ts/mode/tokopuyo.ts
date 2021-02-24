@@ -2,18 +2,18 @@ import $ from "jquery";
 import { Mode } from "./mode";
 
 $(function() {
-    new Tokopuyo();
+	new Tokopuyo();
 });
 
 export class Tokopuyo extends Mode {
 	/**
 	 * コンストラクタ
 	 */
-    constructor() {
-        super();
+	constructor() {
+		super();
 
-        // event
-        $("html").on("keydown", (e) => {
+		// event
+		$("html").on("keydown", (e) => {
 			switch(e.key) {
 				case "ArrowRight" : // Key[→]
 					this._game.right();
@@ -36,5 +36,5 @@ export class Tokopuyo extends Mode {
 				break;
 			}
 		});
-    }
+	}
 }

@@ -24,7 +24,6 @@ export class Next {
 
 	/**
 	 * コンストラクタ
-	 * @param game ゲーム
 	 */
 	constructor() {
 		// stage
@@ -111,7 +110,7 @@ export class Next {
 	 * @param cColor 新しくセットする子ぷよ
 	 * @param puyoTlList PuyoTimeLineのリスト
 	 */
-	public pushAndPop (aColor: string, cColor: string, puyoTlList: PuyoTimelineList): { aColor: string; cColor: string; } {
+	public pushAndPop (aColor: string, cColor: string, puyoTlList: PuyoTimelineList): { aColor: string, cColor: string } {
 		const timeline = new Timeline({paused:true});
 
 		const newDnaPuyoShape = new NextPuyoShape(aColor, 1, 1);
@@ -143,7 +142,6 @@ export class Next {
 
 		puyoTlList.push(timeline);
 
-		return {aColor: naColor, cColor: ncColor};
+		return { aColor: naColor, cColor: ncColor };
 	}
-
 }

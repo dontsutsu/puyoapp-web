@@ -32,7 +32,7 @@ export class NextPuyoShape extends BasePuyoShape {
 	/**
 	 * 欄外からダブネクへツモを移動するTweenを取得します。
 	 * また、指定のContainerへこのオブジェクトを追加します。
-	 * @param container createjs.Container 
+	 * @param container createjs.Container
 	 * @return createjs.Tween
 	 */
 	public getMoveToDoubleNextTween(container: Container): Tween {

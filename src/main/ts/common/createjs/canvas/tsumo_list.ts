@@ -73,8 +73,8 @@ export class TsumoList {
 	}
 
 	/**
-	 * 
-	 * @param mode 
+	 *
+	 * @param mode
 	 */
 	public setEventTsumoListCellShape(mode: EditableMode): void {
 		for (let child of this._stage.children) {
@@ -90,12 +90,12 @@ export class TsumoList {
 					const y = cellShape.posy;
 					const index = x + TsumoList.X_SIZE * y;
 					const type = cellShape.type;
-			
+
 					const puyoShape = this._tsumoListArray[index][type];
-			
+
 					puyoShape.color = selectColor;
 					puyoShape.changeColor(selectColor);
-			
+
 					this._stage.update();
 				});
 

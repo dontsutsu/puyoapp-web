@@ -86,7 +86,7 @@ export class Game {
 		puyoTlList.play(this);
 
 		const afterField = this._field.toString();
-				
+
 		// UNDOの履歴を残す
 		if (beforeField != afterField) this.pushUndoStack(beforeField);
 	}
@@ -158,7 +158,7 @@ export class Game {
 
 	/**
 	 * なぞぷよの正答アニメーションを再生します。
-	 * @param tsumoList 
+	 * @param tsumoList
 	 */
 	public play(tsumoList: TsumoInterface[]): void {
 

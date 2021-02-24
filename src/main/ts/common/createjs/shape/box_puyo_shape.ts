@@ -9,7 +9,7 @@ export class BoxPuyoShape extends BasePuyoShape {
 	 * コンストラクタ
 	 * @param x x座標
 	 * @param y y座標
-	 * @param color
+	 * @param color 色
 	 */
 	constructor(x: number, y: number, color: string) {
 		super(color, BoxCellShape.CELLSIZE);
