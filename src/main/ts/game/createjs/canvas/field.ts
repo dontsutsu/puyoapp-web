@@ -94,21 +94,16 @@ export class Field {
 				let cellShape = child as FieldCellShape;
 
 				cellShape.addEventListener("mousedown", () => {
-					const before = mode.getHistory();
-
-					const x = cellShape.posx;
-					const y = cellShape.posy;
-
-					const puyoShape = this._fieldArray[y][x];
-					const selectColor = mode.getSelectColor();
-
-					puyoShape.color = selectColor;
-					puyoShape.changeColor(selectColor);
-
-					const after = mode.getHistory();
-
-					// UNDOの履歴を残す
-					if (before != after) mode.pushUndoStack(before);
+					mode.doWithRecordHistory(() => {
+						const x = cellShape.posx;
+						const y = cellShape.posy;
+	
+						const puyoShape = this._fieldArray[y][x];
+						const selectColor = mode.getSelectColor();
+	
+						puyoShape.color = selectColor;
+						puyoShape.changeColor(selectColor);
+					});
 				});
 
 				cellShape.addEventListener("mouseover", () => {

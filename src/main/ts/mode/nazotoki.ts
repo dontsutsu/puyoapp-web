@@ -43,31 +43,29 @@ export class Nazotoki extends EditableMode {
 		$("#clear").on("click", () => {
 			const confirm = window.confirm("クリアしますか？");
 			if (!confirm) return;
-	
-			const before = this.getHistory();
-			this._game.clearField();
-			this._tsumoList.clear();
-			const after = this.getHistory();
-			if (before != after) this.pushUndoStack(before);
+
+			this.doWithRecordHistory(() => {
+				this._game.clearField();
+				this._tsumoList.clear();
+			});
 		});
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public getHistory(): string {
+	protected getState(): string {
 		return this._game.getFieldString() + this._tsumoList.toString();
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public setHistory(history: string): void {
+	protected setState(state: string): void {
 		const lenField = Field.X_SIZE * Field.Y_SIZE;
-		const lenTl = TsumoList.X_SIZE * TsumoList.Y_SIZE * 2;
 
-		const field = history.substring(0, lenField);
-		const tl = history.substring(lenField, history.length);
+		const field = state.substring(0, lenField);
+		const tl = state.substring(lenField, state.length);
 
 		this._game.field.setField(field);
 		this._tsumoList.setTsumoList(tl);
@@ -214,6 +212,9 @@ export class Nazotoki extends EditableMode {
 			});
 	}
 
+	/**
+	 * 
+	 */
 	private searchCorrect(): JQuery.jqXHR<any> {
 		const fieldStr = this._game.getFieldString();
 		const tsumoListStr = this.getTsumoListString();

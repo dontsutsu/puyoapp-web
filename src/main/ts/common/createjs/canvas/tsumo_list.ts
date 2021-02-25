@@ -82,27 +82,24 @@ export class TsumoList {
 				let cellShape = child as TsumoListCellShape;
 
 				cellShape.addEventListener("mousedown", () => {
-					const before = mode.getHistory();
-
 					const selectColor = mode.getSelectColor();
 					if (selectColor == "9") {
 						return;
 					}
-					const x = cellShape.posx;
-					const y = cellShape.posy;
-					const index = x + TsumoList.X_SIZE * y;
-					const type = cellShape.type;
 
-					const puyoShape = this._tsumoListArray[index][type];
-
-					puyoShape.color = selectColor;
-					puyoShape.changeColor(selectColor);
-
-					this._stage.update();
-
-					const after = mode.getHistory();
-					// UNDOの履歴を残す
-					if (before != after) mode.pushUndoStack(before);
+					mode.doWithRecordHistory(() => {
+						const x = cellShape.posx;
+						const y = cellShape.posy;
+						const index = x + TsumoList.X_SIZE * y;
+						const type = cellShape.type;
+	
+						const puyoShape = this._tsumoListArray[index][type];
+	
+						puyoShape.color = selectColor;
+						puyoShape.changeColor(selectColor);
+	
+						this._stage.update();
+					});
 				});
 
 				cellShape.addEventListener("mouseover", (e) => {

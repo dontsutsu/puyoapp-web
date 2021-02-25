@@ -9,8 +9,6 @@ import { TsumoInterface } from "../interface/tsumo_Interface";
  * Gameクラス
  */
 export class Game {
-	public static readonly UNDO_MAX = 100;
-
 	protected _field: Field;
 	protected _tsumo: Tsumo;
 	protected _next: Next;

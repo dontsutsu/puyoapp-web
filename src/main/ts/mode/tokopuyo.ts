@@ -41,14 +41,14 @@ export class Tokopuyo extends Mode {
 	/**
 	 * @inheritdoc
 	 */
-	public getHistory(): string {
+	protected getState(): string {
 		return "";
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public setHistory(history: string): void {
+	protected setState(state: string): void {
 		
 	}
 }

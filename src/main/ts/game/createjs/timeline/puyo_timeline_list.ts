@@ -40,7 +40,7 @@ export class PuyoTimelineList {
 
 		// timeScaleの設定、5が等速
 		const speed = Number($("#speed").val());
-		let timeScale;
+		let timeScale: number;
 		if (speed >= 5) {
 			timeScale = (speed - 3) / 2;
 		} else {

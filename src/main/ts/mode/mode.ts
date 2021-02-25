@@ -3,6 +3,8 @@ import { Game } from "../game/game";
 import $ from "jquery";
 
 export abstract class Mode {
+	public static readonly UNDO_MAX = 100;
+
 	protected _game: Game;
 
 	protected _undoStack: string[];
@@ -37,19 +39,19 @@ export abstract class Mode {
 	public undo(): void {
 		const undo = this._undoStack.pop();
 		if (undo !== undefined) {
-			this._redoStack.push(this.getHistory());
-			this.setHistory(undo);
+			this._redoStack.push(this.getState());
+			this.setState(undo);
 		}
 	}
 
 	/**
 	 * UNDO用の履歴を残します。
 	 */
-	public pushUndoStack(beforeField: string): void {
+	private pushUndoStack(beforeField: string): void {
 		this._undoStack.push(beforeField);
 
 		// 一番古い履歴を消す
-		if (this._undoStack.length > Game.UNDO_MAX) {
+		if (this._undoStack.length > Mode.UNDO_MAX) {
 			this._undoStack.shift();
 		}
 		// REDOを消す
@@ -63,12 +65,31 @@ export abstract class Mode {
 		const redo = this._redoStack.pop();
 
 		if (redo !== undefined) {
-			this._undoStack.push(this.getHistory());
-			this.setHistory(redo);
+			this._undoStack.push(this.getState());
+			this.setState(redo);
 		}
 	}
 
-	public abstract getHistory(): string;
+	/**
+	 * 指定の関数を実行時に履歴登録の処理を行います。
+	 * @param doing callback関数
+	 */
+	public doWithRecordHistory(doing: () => void) {
+		const before = this.getState();
+		doing();
+		const after = this.getState();
+		if (before != after) this.pushUndoStack(before);
+	}
 
-	public abstract setHistory(history: string): void;
+	/**
+	 * 履歴に保存する状態を取得します。
+	 * @return 状態
+	 */
+	protected abstract getState(): string;
+
+	/**
+	 * 履歴から取得した状態を反映します。
+	 * @param state 状態
+	 */
+	protected abstract setState(state: string): void;
 }
