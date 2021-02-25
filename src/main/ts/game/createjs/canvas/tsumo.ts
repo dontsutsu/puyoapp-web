@@ -21,10 +21,11 @@ export class Tsumo {
 
 	// インスタンス変数
 	private _stage: Stage;
-	private _aPuyoShape: TsumoPuyoShape;
-	private _cPuyoShape: TsumoPuyoShape;
-	private _cPos: TsumoPosition;
 	private _container: Container;
+	// 以下インスタンス変数はコンストラクタ外で初期化
+	private _aPuyoShape!: TsumoPuyoShape;
+	private _cPuyoShape!: TsumoPuyoShape;
+	private _cPos!: TsumoPosition;
 
 	/**
 	 * コンストラクタ
@@ -44,10 +45,7 @@ export class Tsumo {
 			}
 		}
 
-		this._aPuyoShape = new TsumoPuyoShape(Tsumo.INI_X, Tsumo.INI_Y_A, "0");
-		this._cPuyoShape = new TsumoPuyoShape(Tsumo.INI_X, Tsumo.INI_Y_C, "0");
-		this._cPos = TsumoPosition.UP;
-		this._container.addChild(this._aPuyoShape, this._cPuyoShape);
+		// PuyoShapeの初期化はconstructor外の責任で行う
 
 		this._container.x = 20;
 		this._stage.addChild(this._container);
@@ -62,16 +60,16 @@ export class Tsumo {
 	public setTsumo(aColor: string, cColor: string, puyoTlList: PuyoTimelineList): void {
 		const timeline = new Timeline({paused:true});
 
-		this._aPuyoShape = new TsumoPuyoShape(Tsumo.INI_X, Tsumo.INI_Y_A, aColor);
-		this._cPuyoShape = new TsumoPuyoShape(Tsumo.INI_X, Tsumo.INI_Y_C, cColor);
+		const tsumoInsTwn = TsumoPuyoShape.createInstancesAndGetSetTweens(aColor, cColor);
+
+		this._aPuyoShape = tsumoInsTwn.aInstance;
+		this._cPuyoShape = tsumoInsTwn.cInstance;
 		this._cPos = TsumoPosition.UP;
 
 		this._container.addChild(this._aPuyoShape, this._cPuyoShape);
 
-		const ptween = this._aPuyoShape.getSetTween();
-		const ctween = this._cPuyoShape.getSetTween();
-		timeline.addTween(ptween);
-		timeline.addTween(ctween);
+		timeline.addTween(tsumoInsTwn.aTween);
+		timeline.addTween(tsumoInsTwn.cTween);
 
 		puyoTlList.push(timeline);
 	}

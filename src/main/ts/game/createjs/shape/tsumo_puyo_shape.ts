@@ -5,6 +5,7 @@ import { TsumoCellShape } from "./tsumo_cell_shape";
 
 import { Container } from "@createjs/easeljs";
 import { Tween } from "@createjs/tweenjs";
+import { Tsumo } from "../canvas/tsumo";
 
 /**
  * Tsumoぷよ
@@ -25,28 +26,34 @@ export class TsumoPuyoShape extends BasePuyoShape {
 	constructor(x: number, y: number, color: string) {
 		super(color, TsumoCellShape.CELLSIZE);
 		this.x = TsumoCellShape.CELLSIZE * x;
-		this.y = TsumoCellShape.CELLSIZE * y;
+		this.y = TsumoCellShape.CELLSIZE * y - NextPuyoShape.MOVE_DIST;
 
 		this._tsumo_x = x;
 		this._tsumo_y = y;
 	}
 
 	/**
-	 * ツモにぷよをセットするTweenを取得します。
-	 * @return createjs.Tween
+	 * 軸ぷよ・子ぷよのインスタンス生成、ツモに設定するアニメーションを同時に取得します。
+	 * @param x 
+	 * @param y 
+	 * @param color 
 	 */
-	public getSetTween(): Tween {
-		const x = this.x;
-		const y = this.y;
-		const y0 = this.y - NextPuyoShape.MOVE_DIST;
+	public static createInstancesAndGetSetTweens(aColor: string, cColor: string): { aInstance: TsumoPuyoShape, aTween: Tween, cInstance: TsumoPuyoShape, cTween: Tween } {
+		// axisPuyo 軸ぷよ
+		const aInstance = new TsumoPuyoShape(Tsumo.INI_X, Tsumo.INI_Y_A, aColor);
+		const aToX = aInstance.x;
+		const aToY = aInstance.y + NextPuyoShape.MOVE_DIST;
+		const aTween = Tween.get(aInstance)
+			.to({x: aToX, y: aToY}, NextPuyoShape.MOVE_TIME);
+		
+		// childPuyo 子ぷよ
+		const cInstance = new TsumoPuyoShape(Tsumo.INI_X, Tsumo.INI_Y_C, cColor);
+		const cToX = cInstance.x;
+		const cToY = cInstance.y + NextPuyoShape.MOVE_DIST;
+		const cTween = Tween.get(cInstance)
+			.to({x: cToX, y: cToY}, NextPuyoShape.MOVE_TIME);
 
-		const tween = Tween.get(this)
-			.call(() => {
-				this.visible = true;
-			})
-			.to({x: x, y: y0})
-			.to({x: x, y: y}, NextPuyoShape.MOVE_TIME);
-		return tween;
+		return { aInstance, aTween, cInstance, cTween };
 	}
 
 	/**

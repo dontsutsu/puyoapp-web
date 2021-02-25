@@ -173,7 +173,7 @@ export class Nazotoki extends EditableMode {
 
 		Util.dispLoading("検索中です...");
 
-		this.searchCorrect()
+		this.searchAjax()
 			.done((result) => {
 				this._correctList = result.correctList;
 				const len = result.correctList.length;
@@ -215,7 +215,7 @@ export class Nazotoki extends EditableMode {
 	/**
 	 * 
 	 */
-	private searchCorrect(): JQuery.jqXHR<any> {
+	private searchAjax(): JQuery.jqXHR<any> {
 		const fieldStr = this._game.getFieldString();
 		const tsumoListStr = this.getTsumoListString();
 		const nazoType = $("#nazoType").val() as string;
