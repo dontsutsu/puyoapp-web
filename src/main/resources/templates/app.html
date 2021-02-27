@@ -30,6 +30,9 @@
 		<div id="option">
 			<input type="range" id="speed" value="5" min="1" max="9" step="1">
 			<span id="speedVal">5</span>
+			<br>
+			<input type="radio" name="animation" id="animation" value="1"><label for="animation">animation</label>
+			<input type="radio" name="animation" id="step" value="0" checked><label for="step">step</label>
 		</div>
 
 		<div id="tsumoListDiv" th:if="${mode=='nazotoki'}">

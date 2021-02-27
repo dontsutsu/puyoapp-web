@@ -11,29 +11,32 @@ export class Tokopuyo extends Mode {
 	 */
 	constructor() {
 		super();
+		this._game.initTokopuyo();
 
 		// event
 		$("html").on("keydown", (e) => {
-			switch(e.key) {
-				case "ArrowRight" : // Key[→]
-					this._game.right();
-				break;
+			if (!this._game.isAnimation) {
+				switch(e.key) {
+					case "ArrowRight" : // Key[→]
+						this._game.right();
+					break;
 
-				case "ArrowLeft" : // Key[←]
-					this._game.left();
-				break;
+					case "ArrowLeft" : // Key[←]
+						this._game.left();
+					break;
 
-				case "ArrowDown" : // Key[↓]
-					this._game.tsumoDrop();
-				break;
+					case "ArrowDown" : // Key[↓]
+						this._game.dropTsumo();
+					break;
 
-				case "z" : // Key[z]
-					this._game.rotateLeft();
-				break;
+					case "z" : // Key[z]
+						this._game.rotateLeft();
+					break;
 
-				case "x" : // Key[x]
-					this._game.rotateRight();
-				break;
+					case "x" : // Key[x]
+						this._game.rotateRight();
+					break;
+				}
 			}
 		});
 	}

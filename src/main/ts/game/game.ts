@@ -77,9 +77,22 @@ export class Game {
 	}
 
 	/**
+	 * 
+	 */
+	public initTokopuyo(): void {
+		const puyoTlList = new PuyoTimelineList();
+
+		this._next.setInitialNext("1", "2", "3", "3");
+		const tsumoColor = this._next.pushAndPop("4", "4", puyoTlList);
+		this._tsumo.setTsumo(tsumoColor.aColor, tsumoColor.cColor, puyoTlList);
+
+		puyoTlList.play(this);
+	}
+
+	/**
 	 * ツモを落とします。
 	 */
-	public tsumoDrop(): void {
+	public dropTsumo(): void {
 		if (!this.dropCheck()) {
 			return;
 		}
@@ -87,6 +100,9 @@ export class Game {
 		const puyoTlList = new PuyoTimelineList();
 		this._tsumo.drop(puyoTlList);
 		this._field.dropTsumo(this._tsumo, puyoTlList);
+		const tsumoColor = this._next.pushAndPop("1", "2", puyoTlList);
+		this._tsumo.setTsumo(tsumoColor.aColor, tsumoColor.cColor, puyoTlList);
+
 		puyoTlList.play(this);
 	}
 

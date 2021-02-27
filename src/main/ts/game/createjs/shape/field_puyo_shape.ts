@@ -1,5 +1,6 @@
 import { Tween } from "@createjs/tweenjs";
 import { BasePuyoShape } from "../../../common/createjs/shape/base_puyo_shape";
+import { Util } from "../../../util/util";
 import { FieldCellShape } from "./field_cell_shape";
 
 /**
@@ -8,6 +9,7 @@ import { FieldCellShape } from "./field_cell_shape";
 export class FieldPuyoShape extends BasePuyoShape {
 	public static readonly DROP_VEL = 60;
 	public static readonly ERASE_VEL = 500;
+	public static readonly STEP_ERASE_TIME = 300;
 
 	private _posx: number;
 	private _posy: number;
@@ -36,10 +38,11 @@ export class FieldPuyoShape extends BasePuyoShape {
 	 * @return createjs.Tween
 	 */
 	public getDropTween(nextY: number, preY: number): Tween {
+		const twnVal = Util.getAnimateMode();	// アニメーション実行なら1、ステップ実行なら0
+
 		const tween = Tween.get(this)
 			.to({y: FieldCellShape.CELLSIZE * preY})
-			.to({y: FieldCellShape.CELLSIZE * nextY}, FieldPuyoShape.DROP_VEL * (nextY - preY))
-			.wait(100);
+			.to({y: FieldCellShape.CELLSIZE * nextY}, FieldPuyoShape.DROP_VEL * (nextY - preY) * twnVal);
 		return tween;
 	}
 
@@ -48,14 +51,32 @@ export class FieldPuyoShape extends BasePuyoShape {
 	 * @return createjs.Tween
 	 */
 	public getEraseTween(): Tween {
-		const tween = Tween.get(this)
-			.to({alpha: 0}, FieldPuyoShape.ERASE_VEL)
-			.wait(100)
-			.call(() => {
-				this.changeColor("0");
-			});
+		const twnVal = Util.getAnimateMode();	// アニメーション実行なら1、ステップ実行なら0
+
+		let tween = Tween.get(this);
+		if (twnVal == 1) {
+			tween = tween.to({alpha: 0}, FieldPuyoShape.ERASE_VEL)
+				.call(() => { this.changeColor("0"); });
+		} else {
+			tween = tween.wait(FieldPuyoShape.STEP_ERASE_TIME)
+				.call(() => { this.setStepEraseGraphics(); })
+				.wait(FieldPuyoShape.STEP_ERASE_TIME)
+				.call(() => { this.changeColor("0"); });
+		}
 		this.color = "0";
 		return tween;
+	}
+
+	/**
+	 * STEP実行時の、ぷよ消去時のgraphicsを描画します。
+	 */
+	private setStepEraseGraphics(): void {
+		const cellsize = this.cellsize;
+
+		this.graphics
+			.ss(cellsize / 20)
+			.f("#FFFFFF")
+			.dc(cellsize / 2 + 0.5, cellsize / 2 + 0.5, (cellsize - 2) / 2);
 	}
 
 	////////////////////////////////

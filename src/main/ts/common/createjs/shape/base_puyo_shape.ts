@@ -64,4 +64,8 @@ export class BasePuyoShape extends Shape {
 	set color(color: string) {
 		this._color = color;
 	}
+
+	get cellsize(): number {
+		return this._cellsize;
+	}
 }

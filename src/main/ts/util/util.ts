@@ -5,7 +5,7 @@ export class Util {
 	 * ローディング画面を表示します。
 	 * @param msg メッセージ
 	 */
-	static dispLoading(msg: string): void {
+	public static dispLoading(msg: string): void {
 		$("#loadMsg").text(msg);
 		$("#load").fadeIn(300);
 	}
@@ -13,7 +13,7 @@ export class Util {
 	/**
 	 * ローディング画面を非表示にします。
 	 */
-	static removeLoading(): void {
+	public static removeLoading(): void {
 		$("#load").fadeOut(300);
 	}
 
@@ -22,7 +22,7 @@ export class Util {
 	 * @param msg メッセージ
 	 * @param level エラーレベル "0":info、"1":warning、"2":error （デフォルトは"1"）
 	 */
-	static dispMsg(msg: string, level: string): void {
+	public static dispMsg(msg: string, level: string): void {
 		const dispTime = 3000;
 
 		if (msg == undefined) {
@@ -67,5 +67,12 @@ export class Util {
 				$upperMsg.remove();
 			});
 		});
+	}
+
+	/**
+	 * @return "1"：アニメーション、"0"：ステップ
+	 */
+	public static getAnimateMode(): number {
+		return $("input:radio[name='animation']:checked").val() as number;
 	}
 }

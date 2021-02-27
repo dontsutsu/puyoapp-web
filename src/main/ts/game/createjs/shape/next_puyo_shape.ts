@@ -1,6 +1,7 @@
 import { Container } from "@createjs/easeljs";
 import { Tween } from "@createjs/tweenjs";
 import { BasePuyoShape } from "../../../common/createjs/shape/base_puyo_shape";
+import { Util } from "../../../util/util";
 import { NextCellShape } from "./next_cell_shape";
 
 /**
@@ -36,6 +37,8 @@ export class NextPuyoShape extends BasePuyoShape {
 	 * @return createjs.Tween
 	 */
 	public getMoveToDoubleNextTween(container: Container): Tween {
+		const twnVal = Util.getAnimateMode();	// アニメーション実行なら1、ステップ実行なら0
+
 		const xy = NextCellShape.getXandY(1, this._type);
 		const y0 = xy.y + NextPuyoShape.MOVE_DIST;
 
@@ -44,7 +47,7 @@ export class NextPuyoShape extends BasePuyoShape {
 				container.addChild(this);
 			})
 			.to({x: xy.x, y: y0})
-			.to({x: xy.x, y: xy.y}, NextPuyoShape.MOVE_TIME);
+			.to({x: xy.x, y: xy.y}, NextPuyoShape.MOVE_TIME * twnVal);
 		return tween;
 	}
 
@@ -53,12 +56,14 @@ export class NextPuyoShape extends BasePuyoShape {
 	 * @return createjs.Tween
 	 */
 	public getMoveFromDNextToNextTween(): Tween {
+		const twnVal = Util.getAnimateMode();	// アニメーション実行なら1、ステップ実行なら0
+
 		const xy1 = NextCellShape.getXandY(1, this._type);
 		const xy2 = NextCellShape.getXandY(0, this._type);
 
 		const tween = Tween.get(this)
 			.to({x: xy1.x, y: xy1.y})
-			.to({x: xy2.x, y: xy2.y}, NextPuyoShape.MOVE_TIME);
+			.to({x: xy2.x, y: xy2.y}, NextPuyoShape.MOVE_TIME * twnVal);
 		return tween;
 	}
 
@@ -69,12 +74,14 @@ export class NextPuyoShape extends BasePuyoShape {
 	 * @return createjs.Tween
 	 */
 	public getMoveFromNextToTsumoTween(container: Container): Tween {
+		const twnVal = Util.getAnimateMode();	// アニメーション実行なら1、ステップ実行なら0
+
 		const xy = NextCellShape.getXandY(0, this._type);
 		const y2 = xy.y - NextPuyoShape.MOVE_DIST;
 
 		const tween = Tween.get(this)
 			.to({x: xy.x, y: xy.y})
-			.to({y: y2}, NextPuyoShape.MOVE_TIME)
+			.to({y: y2}, NextPuyoShape.MOVE_TIME * twnVal)
 			.call(() => {
 				container.removeChild(this);
 			});
