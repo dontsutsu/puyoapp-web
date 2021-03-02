@@ -1,4 +1,4 @@
-import { Tween } from "@createjs/tweenjs";
+import { Container, Tween } from "@createjs/tweenjs";
 import { BasePuyoShape } from "../../../common/createjs/shape/base_puyo_shape";
 import { Util } from "../../../util/util";
 import { FieldCellShape } from "./field_cell_shape";
@@ -37,12 +37,13 @@ export class FieldPuyoShape extends BasePuyoShape {
 	 * @param preY 落下前のy座標
 	 * @return createjs.Tween
 	 */
-	public getDropTween(nextY: number, preY: number): Tween {
+	public getDropTween(nextY: number, preY: number, container: Container, oldPuyoShape: FieldPuyoShape): Tween {
 		const twnVal = Util.getAnimateMode();	// アニメーション実行なら1、ステップ実行なら0
 
 		const tween = Tween.get(this)
 			.to({y: FieldCellShape.CELLSIZE * preY})
-			.to({y: FieldCellShape.CELLSIZE * nextY}, FieldPuyoShape.DROP_VEL * (nextY - preY) * twnVal);
+			.to({y: FieldCellShape.CELLSIZE * nextY}, FieldPuyoShape.DROP_VEL * (nextY - preY) * twnVal)
+			.call(() => { container.removeChild(oldPuyoShape); });
 		return tween;
 	}
 
@@ -63,7 +64,6 @@ export class FieldPuyoShape extends BasePuyoShape {
 				.wait(FieldPuyoShape.STEP_ERASE_TIME)
 				.call(() => { this.changeColor("0"); });
 		}
-		this.color = "0";
 		return tween;
 	}
 
@@ -77,6 +77,7 @@ export class FieldPuyoShape extends BasePuyoShape {
 			.ss(cellsize / 20)
 			.f("#FFFFFF")
 			.dc(cellsize / 2 + 0.5, cellsize / 2 + 0.5, (cellsize - 2) / 2);
+		this.alpha = 0.4;
 	}
 
 	////////////////////////////////

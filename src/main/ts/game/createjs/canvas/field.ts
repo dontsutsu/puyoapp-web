@@ -189,13 +189,18 @@ export class Field {
 					continue;
 				}
 
-				this._fieldArray[y][x] = this._fieldArray[y2][x];
+				const oldPuyo = this._fieldArray[y][x];	// 落ちる先のぷよ
+				const dropPuyo = this._fieldArray[y2][x];	// 落ちるぷよ
+				const newNullPuyo = new FieldPuyoShape(x, y2, "0"); // 落ちるぷよが落ちたあとの空白
+				this._container.addChild(newNullPuyo);
 
-				const puyoShape = new FieldPuyoShape(x, y2, "0");
-				this._container.addChild(puyoShape);
-				this._fieldArray[y2][x] = puyoShape;
+				// 落ちる先の配列にぷよを格納
+				this._fieldArray[y][x] = dropPuyo;
+				
+				// 落ちたあとの配列に空白を格納
+				this._fieldArray[y2][x] = newNullPuyo;
 
-				const tween = this._fieldArray[y][x].getDropTween(y, y2);
+				const tween = dropPuyo.getDropTween(y, y2, this._container, oldPuyo);
 				timeline.addTween(tween);
 			}
 		}
@@ -231,31 +236,46 @@ export class Field {
 				if (puyoShape.connect != null && puyoShape.connect.isErasable()) {
 					// 自分消去
 					erased = true;
+					puyoShape.color = "0";
+
+					// アニメーション
 					const tween = puyoShape.getEraseTween();
 					timeline.addTween(tween);
 
 					// おじゃま消去
 					// down
 					if ((y + 1 <= Field.Y_SIZE - 1) && this._fieldArray[y + 1][x].color == "9") {
-						const tween = this._fieldArray[y + 1][x].getEraseTween();
+						const ojamaPuyoShape = this._fieldArray[y + 1][x];
+						ojamaPuyoShape.color = "0";
+						
+						const tween = ojamaPuyoShape.getEraseTween();
 						timeline.addTween(tween);
 					}
 
 					// up
 					if ((y - 1 > 0) && this._fieldArray[y - 1][x].color == "9") {
-						const tween = this._fieldArray[y - 1][x].getEraseTween();
+						const ojamaPuyoShape = this._fieldArray[y - 1][x];
+						ojamaPuyoShape.color = "0";
+
+						const tween = ojamaPuyoShape.getEraseTween();
 						timeline.addTween(tween);
 					}
 
 					// right
 					if ((x + 1 < Field.X_SIZE) && this._fieldArray[y][x + 1].color == "9") {
-						const tween = this._fieldArray[y][x + 1].getEraseTween();
+						const ojamaPuyoShape = this._fieldArray[y][x + 1];
+						ojamaPuyoShape.color = "0";
+
+						const tween = ojamaPuyoShape.getEraseTween();
 						timeline.addTween(tween);
 					}
 
 					// left
 					if ((x - 1 >= 0) && this._fieldArray[y][x - 1].color == "9") {
-						const tween = this._fieldArray[y][x - 1].getEraseTween();
+						const ojamaPuyoShape = this._fieldArray[y][x - 1];
+						ojamaPuyoShape.color = "0";
+
+						const tween = ojamaPuyoShape.getEraseTween();
 						timeline.addTween(tween);
 					}
 				}
@@ -404,8 +424,11 @@ export class Field {
 				break;
 			}
 		}
+		
+		const oldShape = this._fieldArray[y2][x];
+
 		this._fieldArray[y2][x] = fieldPuyoShape;
-		const tween = fieldPuyoShape.getDropTween(y2, fieldPuyoShape.posy);
+		const tween = fieldPuyoShape.getDropTween(y2, fieldPuyoShape.posy, this._container, oldShape);
 		return tween;
 	}
 }

@@ -17,10 +17,10 @@ export class Next {
 	private _stage: Stage;
 	private _container: Container;
 
-	private _nextAxisPuyoShape: NextPuyoShape;
-	private _nextChildPuyoShape: NextPuyoShape;
-	private _dNextAxisPuyoShape: NextPuyoShape;
-	private _dNextChildPuyoShape: NextPuyoShape;
+	private _nextAxisPuyoShape!: NextPuyoShape;
+	private _nextChildPuyoShape!: NextPuyoShape;
+	private _dNextAxisPuyoShape!: NextPuyoShape;
+	private _dNextChildPuyoShape!: NextPuyoShape;
 
 	/**
 	 * コンストラクタ
@@ -74,13 +74,6 @@ export class Next {
 				this._container.addChild(cellShape);
 			}
 		}
-
-		// puyoShape
-		this._nextAxisPuyoShape = new NextPuyoShape("0", 0, 1);
-		this._nextChildPuyoShape = new NextPuyoShape("0", 0, 0);
-		this._dNextAxisPuyoShape = new NextPuyoShape("0", 1, 0);
-		this._dNextChildPuyoShape = new NextPuyoShape("0", 1, 1);
-		this._container.addChild(this._nextAxisPuyoShape, this._nextChildPuyoShape, this._dNextAxisPuyoShape, this._dNextChildPuyoShape);
 
 		this._stage.addChild(this._container);
 	}

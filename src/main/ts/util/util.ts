@@ -75,4 +75,16 @@ export class Util {
 	public static getAnimateMode(): number {
 		return $("input:radio[name='animation']:checked").val() as number;
 	}
+
+	/**
+	 * 
+	 * @param param0 
+	 */
+	public static shuffle([...array]) {
+		for (let i = array.length - 1; i >= 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[array[i], array[j]] = [array[j], array[i]];
+		}
+		return array;
+	}
 }

@@ -10,7 +10,7 @@ export class BasePuyoShape extends Shape {
 		"3" : ["#0C8EF9", 1, "#254AB2"],
 		"4" : ["#FDBA2E", 1, "#A44D0F"],
 		"5" : ["#B458EB", 1, "#692797"],
-		"9" : ["#DDDDDD", 1, "#69686E"],
+		"9" : ["#BBBBBB", 1, "#69686E"],
 		"0" : ["#FFFFFF", 0, "#FFFFFF"]
 	};
 

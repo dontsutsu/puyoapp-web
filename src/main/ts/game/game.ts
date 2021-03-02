@@ -20,7 +20,6 @@ export class Game {
 	 * @param mode モード
 	 */
 	constructor() {
-		// canvas
 		this._field = new Field();
 		this._tsumo = new Tsumo();
 		this._next = new Next();
@@ -78,29 +77,32 @@ export class Game {
 
 	/**
 	 * 
+	 * @param current 
+	 * @param next 
+	 * @param dNext 
 	 */
-	public initTokopuyo(): void {
+	public initTokopuyo(current: string[], next: string[], dNext: string[]): void {
 		const puyoTlList = new PuyoTimelineList();
 
-		this._next.setInitialNext("1", "2", "3", "3");
-		const tsumoColor = this._next.pushAndPop("4", "4", puyoTlList);
+		this._next.setInitialNext(current[0], current[1], next[0], next[1]);
+		const tsumoColor = this._next.pushAndPop(dNext[0], dNext[1], puyoTlList);
 		this._tsumo.setTsumo(tsumoColor.aColor, tsumoColor.cColor, puyoTlList);
 
 		puyoTlList.play(this);
 	}
 
+	public backTsumo(current: string[]) {
+		
+	}
+
 	/**
 	 * ツモを落とします。
 	 */
-	public dropTsumo(): void {
-		if (!this.dropCheck()) {
-			return;
-		}
-
+	public dropTsumoAndSetDoubleNext(dNext: string[]): void {
 		const puyoTlList = new PuyoTimelineList();
 		this._tsumo.drop(puyoTlList);
 		this._field.dropTsumo(this._tsumo, puyoTlList);
-		const tsumoColor = this._next.pushAndPop("1", "2", puyoTlList);
+		const tsumoColor = this._next.pushAndPop(dNext[0], dNext[1], puyoTlList);
 		this._tsumo.setTsumo(tsumoColor.aColor, tsumoColor.cColor, puyoTlList);
 
 		puyoTlList.play(this);
@@ -125,7 +127,7 @@ export class Game {
 	 * 現在のツモがフィールドに落とせる位置にあるかチェックします。
 	 * @return true：落とせる / false：落とせない
 	 */
-	private dropCheck(): boolean {
+	public dropCheck(): boolean {
 		const heights = this._field.getHeights();
 
 		const ax = this._tsumo.aPuyoShape.tsumo_x;
