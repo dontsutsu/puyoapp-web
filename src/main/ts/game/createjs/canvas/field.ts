@@ -388,8 +388,8 @@ export class Field {
 	 * @param puyoTlList
 	 */
 	public dropTsumo(tsumo: Tsumo, puyoTlList: PuyoTimelineList): void {
-		let pFieldPuyoShape = new FieldPuyoShape(tsumo.aPuyoShape.tsumo_x, -5 + tsumo.aPuyoShape.tsumo_y, tsumo.aPuyoShape.color);
-		let cFieldPuyoShape = new FieldPuyoShape(tsumo.cPuyoShape.tsumo_x, -5 + tsumo.cPuyoShape.tsumo_y, tsumo.cPuyoShape.color);
+		const pFieldPuyoShape = new FieldPuyoShape(tsumo.aPuyoShape.tsumo_x, -5 + tsumo.aPuyoShape.tsumo_y, tsumo.aPuyoShape.color);
+		const cFieldPuyoShape = new FieldPuyoShape(tsumo.cPuyoShape.tsumo_x, -5 + tsumo.cPuyoShape.tsumo_y, tsumo.cPuyoShape.color);
 		this._container.addChild(pFieldPuyoShape, cFieldPuyoShape);
 
 		let timeline = new Timeline({paused:true});
