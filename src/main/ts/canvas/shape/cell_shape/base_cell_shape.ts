@@ -1,21 +1,18 @@
 import { Shape } from "@createjs/easeljs";
 
-/**
- * セル用 createjs.Shape 基底クラス
- */
 export class BaseCellShape extends Shape {
+	// CONSTANT
 	public static readonly BORDER_COLOR = "#F0F0F0";
 
-	private _posx: number;
-	private _posy: number;
+	// CLASS FIELD
 	private _cellsize: number;
 	private _bgColor: string;
 	private _borderColor: string;
 
 	/**
 	 * コンストラクタ
-	 * @param x x座標
-	 * @param y y座標
+	 * @param x createjs.Shape.x に設定する値
+	 * @param y createjs.Shape.y に設定する値
 	 * @param cellsize セルのサイズ
 	 * @param bgColor 背景色
 	 * @param borderColor 枠の色
@@ -23,8 +20,8 @@ export class BaseCellShape extends Shape {
 	constructor(x: number, y: number, cellsize: number, bgColor: string, borderColor: string = BaseCellShape.BORDER_COLOR) {
 		super();
 
-		this._posx = x;
-		this._posy = y;
+		this.x = x;
+		this.y = y;
 		this._cellsize = cellsize;
 		this._bgColor = bgColor;
 		this._borderColor = borderColor;
@@ -36,7 +33,7 @@ export class BaseCellShape extends Shape {
 	 * 背景色を変更します。
 	 * @param bgColor
 	 */
-	public changeColor(bgColor: string): void {
+	public changeBgColor(bgColor: string): void {
 		this._bgColor = bgColor;
 		this.graphics.c();
 		this.setGraphics();
@@ -51,17 +48,5 @@ export class BaseCellShape extends Shape {
 			.f(this._bgColor)
 			.ss(1)
 			.dr(0.5, 0.5, this._cellsize, this._cellsize);
-	}
-
-	////////////////////////////////
-	// setter / getter
-	////////////////////////////////
-
-	get posx(): number {
-		return this._posx;
-	}
-
-	get posy(): number {
-		return this._posy;
 	}
 }

@@ -1,21 +1,26 @@
-import { BaseCellShape } from "../../../common/createjs/shape/base_cell_shape";
+import { BaseCellShape } from "./base_cell_shape";
 
-/**
- * Tsumoセル
- */
 export class TsumoCellShape extends BaseCellShape {
+	// CONSTANT
 	public static readonly CELLSIZE = 35;
 	public static readonly BG_COLOR = "#FFFFFF";
+
+	// CLASS FIELD
+	private _ax: number;
+	private _ay: number;
 
 	/**
 	 * コンストラクタ
 	 * @param x x座標
 	 * @param y y座標
 	 */
-	constructor(x: number, y: number) {
+	constructor(ax: number, ay: number) {
+		const x = TsumoCellShape.CELLSIZE * ax;
+		const y = TsumoCellShape.CELLSIZE * ay; 
+
 		super(x, y, TsumoCellShape.CELLSIZE, TsumoCellShape.BG_COLOR);
 
-		this.x = TsumoCellShape.CELLSIZE * x;
-		this.y = TsumoCellShape.CELLSIZE * y;
+		this._ax = ax;
+		this._ay = ay;
 	}
 }

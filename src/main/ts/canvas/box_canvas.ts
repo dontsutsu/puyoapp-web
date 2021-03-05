@@ -1,20 +1,25 @@
-import { BoxCellShape } from "../shape/box_cell_shape";
-import { BoxPuyoShape } from "../shape/box_puyo_shape";
+import { Shape, Text } from "@createjs/easeljs";
+import { BasePuyo } from "../game/puyo/base_puyo";
+import { BaseCanvas } from "./base_canvas";
+import { BoxCellShape } from "./shape/cell_shape/box_cell_shape";
+import { BoxPuyoShape } from "./shape/puyo_shape/box_puyo_shape";
 
-import { Stage, Shape, Text } from "@createjs/easeljs";
-
-/**
- * Boxクラス
- */
-export class Box {
-	// クラス定数
-	public static readonly KEY_ORDER = ["1", "2", "3", "4", "5", "9", "0"];
-
-	private static readonly CANVAS_ID = "box";
+export class BoxCanvas extends BaseCanvas {
+	// CONSTANT
+	public static readonly KEY_ORDER = [
+		BasePuyo.GREEN
+		, BasePuyo.RED
+		, BasePuyo.BLUE
+		, BasePuyo.YELLOW
+		, BasePuyo.PURPLE
+		, BasePuyo.OJAMA
+		, BasePuyo.NONE
+	];
 	private static readonly KESU_PADDING = 2;
+	private static readonly X_SIZE = 5;
+	private static readonly Y_SIZE = 2;
 
 	// インスタンス変数
-	private _stage: Stage;
 	private _selectShape: Shape;
 	private _selectColor!: string;	// constructorでsetSelectShapeを呼んでいるので初期化チェックしない
 
@@ -22,24 +27,19 @@ export class Box {
 	 * コンストラクタ
 	 */
 	constructor() {
-		// size
-		const boxX = 5;
-		const boxY = 2;
-
-		// stage
-		this._stage = new Stage(Box.CANVAS_ID);
+		super("box", false);
 
 		// CellShape
-		for (let y = 0; y < boxY; y++) {
-			for (let x = 0; x < boxX; x++) {
-				const i = x + boxX * y;
-				const cellShape = new BoxCellShape(x, y, i);
+		for (let y = 0; y < BoxCanvas.Y_SIZE; y++) {
+			for (let x = 0; x < BoxCanvas.X_SIZE; x++) {
+				const index = x + BoxCanvas.X_SIZE * y;
+				const cellShape = new BoxCellShape(x, y, index);
 				this._stage.addChild(cellShape);
 				cellShape.addEventListener("mousedown", () => {
-					const x = cellShape.posx;
-					const y = cellShape.posy;
+					const x = cellShape.ax;
+					const y = cellShape.ay;
 
-					if ((x + y * 5) > Box.KEY_ORDER.length - 1) {
+					if ((x + y * 5) > BoxCanvas.KEY_ORDER.length - 1) {
 						return;
 					}
 
@@ -50,27 +50,27 @@ export class Box {
 		}
 
 		// PuyoShape
-		for (let y = 0; y < boxY; y++) {
-			for (let x = 0; x < boxX; x++) {
-				const i = x + boxX * y;
+		for (let y = 0; y < BoxCanvas.Y_SIZE; y++) {
+			for (let x = 0; x < BoxCanvas.X_SIZE; x++) {
+				const i = x + BoxCanvas.X_SIZE * y;
 
-				if (i < Box.KEY_ORDER.length) {
-					const color = Box.KEY_ORDER[i];
+				if (i < BoxCanvas.KEY_ORDER.length) {
+					const color = BoxCanvas.KEY_ORDER[i];
 
 					const puyoShape = new BoxPuyoShape(x, y, color);
 					this._stage.addChild(puyoShape);
 
 					// 「けす」の文字
-					if (color == "0") {
+					if (color === BasePuyo.NONE) {
 						const keShape = new Text("け", "bold 16px BIZ UDPGothic", "#4242FF");
-						keShape.x = BoxCellShape.CELLSIZE * x + Box.KESU_PADDING;
-						keShape.y = BoxCellShape.CELLSIZE * y + Box.KESU_PADDING;
+						keShape.x = BoxCellShape.CELLSIZE * x + BoxCanvas.KESU_PADDING;
+						keShape.y = BoxCellShape.CELLSIZE * y + BoxCanvas.KESU_PADDING;
 						keShape.textAlign = "start";
 						keShape.textBaseline = "top";
 
 						const suShape = new Text("す", "bold 16px BIZ UDPGothic", "#4242FF");
-						suShape.x = BoxCellShape.CELLSIZE * (x + 1) - Box.KESU_PADDING;
-						suShape.y = BoxCellShape.CELLSIZE * (y + 1) - Box.KESU_PADDING;
+						suShape.x = BoxCellShape.CELLSIZE * (x + 1) - BoxCanvas.KESU_PADDING;
+						suShape.y = BoxCellShape.CELLSIZE * (y + 1) - BoxCanvas.KESU_PADDING;
 						suShape.textAlign = "end";
 						suShape.textBaseline = "bottom";
 
@@ -106,13 +106,10 @@ export class Box {
 			.ss(w)
 			.dr(x * BoxCellShape.CELLSIZE + w2 + 0.5, y * BoxCellShape.CELLSIZE + w2 + 0.5, BoxCellShape.CELLSIZE - w, BoxCellShape.CELLSIZE - w);
 
-		this._selectColor = Box.KEY_ORDER[i];
+		this._selectColor = BoxCanvas.KEY_ORDER[i];
 	}
 
-	////////////////////////////////
-	// setter / getter
-	////////////////////////////////
-
+	// ACCESSOR
 	get selectColor(): string {
 		return this._selectColor;
 	}

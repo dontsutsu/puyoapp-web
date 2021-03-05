@@ -1,12 +1,10 @@
-import { BaseCellShape } from "../../../common/createjs/shape/base_cell_shape";
+import { BaseCellShape } from "./base_cell_shape";
 
-/**
- * Nextセル
- */
 export class NextCellShape extends BaseCellShape {
+	// CONSTANT
 	public static readonly CELLSIZE = 30;
 	public static readonly NEXT_PADDING = 10;
-	public 	static readonly BG_COLOR = "#FFFFFF";
+	public static readonly BG_COLOR = "#FFFFFF";
 
 	/**
 	 * コンストラクタ
@@ -14,13 +12,8 @@ export class NextCellShape extends BaseCellShape {
 	 * @param type 0：子ぷよ、1：軸ぷよ
 	 */
 	constructor (next: number, type: number) {
-		super(0, 0, NextCellShape.CELLSIZE, NextCellShape.BG_COLOR);
-
-		const xy = NextCellShape.getXandY(next, type);
-
-		this.x = xy.x;
-		this.y = xy.y;	// ダブネクはy座標CELLSIZE+αずらす
-
+		const {x, y} = NextCellShape.getXandY(next, type);
+		super(x, y, NextCellShape.CELLSIZE, NextCellShape.BG_COLOR);
 		this.alpha = 0.01;
 	}
 
@@ -32,6 +25,6 @@ export class NextCellShape extends BaseCellShape {
 	static getXandY(next: number, type: number): { x: number, y: number } {
 		const x = NextCellShape.CELLSIZE * next;
 		const y = NextCellShape.CELLSIZE * type + (NextCellShape.CELLSIZE * 2 + NextCellShape.NEXT_PADDING) * next;
-		return { x, y };
+		return {x, y};
 	}
 }

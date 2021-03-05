@@ -1,5 +1,6 @@
+import { BoxCellShape } from "../cell_shape/box_cell_shape";
 import { BasePuyoShape } from "./base_puyo_shape";
-import { BoxCellShape } from "./box_cell_shape";
+
 
 /**
  * Boxぷよ
