@@ -113,8 +113,8 @@ export class FieldCanvas extends BaseCanvas {
 		this._puyoShapeArray[fromY][x] = newPuyo;
 
 		const tween = Tween.get(dropPuyo)
-			.to({y: FieldCellShape.CELLSIZE * (Field.Y_SIZE - 1 - fromY)})
-			.to({y: FieldCellShape.CELLSIZE * (Field.Y_SIZE - 1 - toY)}, FieldCanvas.DROP_VEL * (fromY - toY) * val)
+			.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(fromY)})
+			.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(toY)}, FieldCanvas.DROP_VEL * (fromY - toY) * val)
 			.call(() => {
 				// remove
 				this._container.removeChild(removePuyo);
@@ -175,5 +175,13 @@ export class FieldCanvas extends BaseCanvas {
 		frameContainer.y = y;
 		
 		return frameContainer;
+	}
+
+	/**
+	 * ロジック上のy方向とcanvas上のy方向が異なるため、yの値を変換します。
+	 * @param y 
+	 */
+	public static convertY(y: number): number {
+		return Field.Y_SIZE - 1 - y;
 	}
 }

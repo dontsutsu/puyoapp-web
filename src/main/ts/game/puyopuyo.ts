@@ -3,19 +3,19 @@ import { NextCanvas } from "../canvas/next_canvas";
 import { TimelineList } from "../canvas/timeline/timeline_list";
 import { TsumoCanvas } from "../canvas/tsumo_canvas";
 import { Field } from "./field";
-import { Tsumo } from "./tsumo";
+import { Tsumos } from "./tsumos";
 
 export class Puyopuyo {
 	// CLASS FIELD
 	private _field: Field;
-	private _tsumos: Tsumo[];	// 0：current、1：next、2：doubleNext
+	private _tsumos: Tsumos;	// 0：current、1：next、2：doubleNext
 
 	/**
 	 * コンストラクタ
 	 */
 	constructor(fieldCanvas: FieldCanvas, tsumoCanvas: TsumoCanvas, nextCanvas: NextCanvas) {
 		this._field = new Field(fieldCanvas);
-		this._tsumos = [];
+		this._tsumos = new Tsumos(tsumoCanvas, nextCanvas);
 	}
 
 	/**
@@ -30,7 +30,7 @@ export class Puyopuyo {
 	 * @param vec 動かす距離と方向（ex　右に1：+1、左に2：-2）
 	 */
 	public moveTsumo(vec: number): void {
-		this._tsumos[0].move(vec);
+		this._tsumos.moveCurrentTsumo(vec);
 	}
 
 	/**
@@ -38,14 +38,14 @@ export class Puyopuyo {
 	 * @param clockwise true：時計周り / false：反時計周り
 	 */
 	public rotateTsumo(clockwise: boolean): void {
-		this._tsumos[0].rotate(clockwise);
+		this._tsumos.rotateCurrentTsumo(clockwise);
 	}
 
 	/**
 	 * ツモをフィールドに落とします。
 	 */
 	public dropTsumoToField(): void {
-		this._field.dropTsumoToField(this._tsumos[0]);
+		this._field.dropTsumoToField(this._tsumos.getCurrentTsumo());
 	}
 
 	/**
@@ -57,4 +57,6 @@ export class Puyopuyo {
 	public changeFieldPuyo(x: number, y: number, color: string): void {
 		this._field.changeFieldPuyo(x, y, color);
 	}
+
+	
 }

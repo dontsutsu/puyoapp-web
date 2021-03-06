@@ -16,6 +16,11 @@ export abstract class EditableMode extends BaseMode {
 		this._fieldCanvas.setMouseEvent(this);
 	}
 
+	/**
+	 * 
+	 * @param x 
+	 * @param y 
+	 */
 	public changeFieldPuyo(x: number, y: number): void {
 		const color = this.getSelectColor();
 		this._puyopuyo.changeFieldPuyo(x, y, color);
