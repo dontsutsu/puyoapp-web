@@ -6,11 +6,11 @@ import { Puyopuyo } from "../game/puyopuyo";
 
 export abstract class BaseMode {
 	// CLASS FIELD
-	private _fieldCanvas: FieldCanvas;
-	private _tsumoCanvas: TsumoCanvas;
-	private _nextCanvas: NextCanvas;
+	protected _fieldCanvas: FieldCanvas;
+	protected _tsumoCanvas: TsumoCanvas;
+	protected _nextCanvas: NextCanvas;
 
-	private _puyopuyo: Puyopuyo;
+	protected _puyopuyo: Puyopuyo;
 
 	constructor() {
 		// createjsで使用するアニメーションのフレームレートを設定しておく
@@ -20,6 +20,6 @@ export abstract class BaseMode {
 		this._tsumoCanvas = new TsumoCanvas();
 		this._nextCanvas = new NextCanvas();
 
-		this._puyopuyo = new Puyopuyo();
+		this._puyopuyo = new Puyopuyo(this._fieldCanvas, this._tsumoCanvas, this._nextCanvas);
 	}
 }

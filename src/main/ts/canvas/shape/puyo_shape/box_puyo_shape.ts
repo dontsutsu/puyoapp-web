@@ -12,9 +12,9 @@ export class BoxPuyoShape extends BasePuyoShape {
 	 * @param y y座標
 	 * @param color 色
 	 */
-	constructor(x: number, y: number, color: string) {
-		super(color, BoxCellShape.CELLSIZE);
-		this.x = BoxCellShape.CELLSIZE * x;
-		this.y = BoxCellShape.CELLSIZE * y;
+	constructor(ax: number, ay: number, color: string) {
+		const x = BoxCellShape.CELLSIZE * ax;
+		const y = BoxCellShape.CELLSIZE * ay;
+		super(x, y, color, BoxCellShape.CELLSIZE);
 	}
 }

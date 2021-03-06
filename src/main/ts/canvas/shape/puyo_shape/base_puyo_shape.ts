@@ -19,13 +19,18 @@ export class BasePuyoShape extends Shape {
 	private _cellsize: number;
 
 	/**
+	 * コンストラクタ
+	 * @param x createjs.Shape.x に設定する値
+	 * @param y createjs.Shape.y に設定する値
 	 * @param color 色
 	 * @param cellsize セルサイズ
 	 */
-	constructor(color: string, cellsize: number) {
+	constructor(x: number, y:number, color: string, cellsize: number) {
 		super();
-		this._cellsize = cellsize;
+		this.x = x;
+		this.y = y;
 		this._color = color;
+		this._cellsize = cellsize;
 		this.setGraphics(color, cellsize);
 	}
 

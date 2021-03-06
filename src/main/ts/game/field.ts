@@ -1,3 +1,4 @@
+import { FieldCanvas } from "../canvas/field_canvas";
 import { EnumTsumoPosition } from "./enum_tsumo_position";
 import { BasePuyo } from "./puyo/base_puyo";
 import { FieldPuyo } from "./puyo/field_puyo";
@@ -11,15 +12,17 @@ export class Field {
 
 	// CLASS FIELD
 	private _fieldArray: FieldPuyo[][];
+	private _canvas: FieldCanvas;
 
 	/**
 	 * コンストラクタ
 	 */
-	constructor() {
-		this._fieldArray = [];
+	constructor(canvas: FieldCanvas) {
+		this._canvas = canvas;
 
+		this._fieldArray = [];
 		for (let y = 0; y < Field.Y_SIZE; y++) {
-			let yarray = [];
+			const yarray = [];
 			for (let x = 0; x < Field.X_SIZE; x++) {
 				yarray.push(new FieldPuyo());
 			}
@@ -50,6 +53,19 @@ export class Field {
 			this.drop();
 			erased = this.erase();
 		} while(erased);
+	}
+
+	/**
+	 * フィールドの指定座標のぷよを変更します。
+	 * @param x 
+	 * @param y 
+	 * @param color 
+	 */
+	public changeFieldPuyo(x: number, y: number, color: string): void {
+		this._fieldArray[y][x].color = color;
+		
+		// canvas
+		this._canvas.changeFieldPuyo(x, y, color);
 	}
 
 	/**

@@ -3,6 +3,8 @@ import { BaseCanvas } from "./base_canvas";
 import { Field } from "../game/field";
 import { FieldCellShape } from "./shape/cell_shape/field_cell_shape";
 import { Util } from "../util/util";
+import { FieldPuyoShape } from "./shape/puyo_shape/field_puyo_shape";
+import { EditableMode } from "../mode/editable_mode";
 
 export class FieldCanvas extends BaseCanvas {
 	// CONSTANT
@@ -10,6 +12,8 @@ export class FieldCanvas extends BaseCanvas {
 
 	// CLASS FIELD
 	private _container: Container;
+	private _cellShapeArray: FieldCellShape[][];
+	private _puyoShapeArray: FieldPuyoShape[][];
 
 	/**
 	 * コンストラクタ
@@ -29,12 +33,62 @@ export class FieldCanvas extends BaseCanvas {
 		this._container.y = 20 + 250 * Util.sin(FieldCanvas.FRAME_SKEW_DEG);
 
 		// CellShape
+		this._cellShapeArray = [];
 		for (let y = 0; y < Field.Y_SIZE; y++) {
+			const yarray = [];
 			for (let x = 0; x < Field.X_SIZE; x++) {
 				const cellShape = new FieldCellShape(x, y);
+				yarray.push(cellShape);
 				this._container.addChild(cellShape);
 			}
+			this._cellShapeArray.push(yarray);
 		}
+
+		// PuyoShape
+		this._puyoShapeArray = [];
+		for (let y = 0; y < Field.Y_SIZE; y++) {
+			const yarray = [];
+			for (let x = 0; x < Field.X_SIZE; x++) {
+				const puyoShape = new FieldPuyoShape(x, y);
+				yarray.push(puyoShape);
+				this._container.addChild(puyoShape);
+			}
+			this._puyoShapeArray.push(yarray);
+		}
+	}
+
+	/**
+	 * 
+	 * @param eMode 
+	 */
+	public setMouseEvent(eMode: EditableMode): void {
+		for (const yarray of this._cellShapeArray) {
+			for (const cellShape of yarray) {
+				cellShape.addEventListener("mousedown", () => {
+					const x = cellShape.ax;
+					const y = cellShape.ay;
+					eMode.changeFieldPuyo(x, y);
+				});
+
+				cellShape.addEventListener("mouseover", () => {
+					cellShape.mouseover();
+				});
+
+				cellShape.addEventListener("mouseout", () => {
+					cellShape.mouseout();
+				})
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param x 
+	 * @param y 
+	 * @param color 
+	 */
+	public changeFieldPuyo(x: number, y: number, color: string): void {
+		this._puyoShapeArray[y][x].changeColor(color);
 	}
 
 	/**

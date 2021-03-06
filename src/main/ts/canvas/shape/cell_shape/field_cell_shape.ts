@@ -17,11 +17,9 @@ export class FieldCellShape extends BaseCellShape {
 	 * @param y y座標
 	 */
 	constructor(ax: number, ay: number) {
-		const xx = FieldCellShape.CELLSIZE * ax;
-		const yy = FieldCellShape.CELLSIZE * (Field.Y_SIZE - 1 - ay);
-
-		super(xx, yy, FieldCellShape.CELLSIZE, FieldCellShape.BG_COLOR);
-
+		const x = FieldCellShape.CELLSIZE * ax;
+		const y = FieldCellShape.CELLSIZE * (Field.Y_SIZE - 1 - ay);
+		super(x, y, FieldCellShape.CELLSIZE, FieldCellShape.BG_COLOR);
 		this._ax = ax;
 		this._ay = ay;
 		this.alpha = this._ay === Field.Y_SIZE - 1 ? 0.01 : 1.0;
@@ -41,5 +39,14 @@ export class FieldCellShape extends BaseCellShape {
 	public mouseout(): void {
 		this.changeBgColor(FieldCellShape.BG_COLOR);
 		this.alpha = this._ay === Field.Y_SIZE - 1 ? 0.01 : 1.0;
+	}
+
+	// ACCESSOR
+	get ax(): number {
+		return this._ax;
+	}
+
+	get ay(): number {
+		return this._ay;
 	}
 }

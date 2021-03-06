@@ -1,3 +1,6 @@
+import { FieldCanvas } from "../canvas/field_canvas";
+import { NextCanvas } from "../canvas/next_canvas";
+import { TsumoCanvas } from "../canvas/tsumo_canvas";
 import { Field } from "./field";
 import { Tsumo } from "./tsumo";
 
@@ -9,8 +12,8 @@ export class Puyopuyo {
 	/**
 	 * コンストラクタ
 	 */
-	constructor() {
-		this._field = new Field();
+	constructor(fieldCanvas: FieldCanvas, tsumoCanvas: TsumoCanvas, nextCanvas: NextCanvas) {
+		this._field = new Field(fieldCanvas);
 		this._tsumos = [];
 	}
 
@@ -42,5 +45,15 @@ export class Puyopuyo {
 	 */
 	public dropTsumoToField(): void {
 		this._field.dropTsumoToField(this._tsumos[0]);
+	}
+
+	/**
+	 * フィールドの指定座標のぷよを変更します。
+	 * @param x 
+	 * @param y 
+	 * @param color 
+	 */
+	public changeFieldPuyo(x: number, y: number, color: string): void {
+		this._field.changeFieldPuyo(x, y, color);
 	}
 }
