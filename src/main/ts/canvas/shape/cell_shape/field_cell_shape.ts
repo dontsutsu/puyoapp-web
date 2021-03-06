@@ -22,7 +22,7 @@ export class FieldCellShape extends BaseCellShape {
 		super(x, y, FieldCellShape.CELLSIZE, FieldCellShape.BG_COLOR);
 		this._ax = ax;
 		this._ay = ay;
-		this.alpha = this._ay === Field.Y_SIZE - 1 ? 0.01 : 1.0;
+		this.alpha = this._ay == Field.Y_SIZE - 1 ? 0.01 : 1.0;
 	}
 
 	/**
@@ -38,7 +38,7 @@ export class FieldCellShape extends BaseCellShape {
 	 */
 	public mouseout(): void {
 		this.changeBgColor(FieldCellShape.BG_COLOR);
-		this.alpha = this._ay === Field.Y_SIZE - 1 ? 0.01 : 1.0;
+		this.alpha = this._ay == Field.Y_SIZE - 1 ? 0.01 : 1.0;
 	}
 
 	// ACCESSOR

@@ -5,7 +5,7 @@ import { BasePuyo } from "../../../game/puyo/base_puyo";
  * ぷよ用 createjs.Shape 基底クラス
  */
 export class BasePuyoShape extends Shape {
-	public static readonly PUYO_DICT = [
+	private static readonly PUYO_DICT = [
 		  { color: BasePuyo.GREEN , bgColor: "#68EE26", alpha: 1, borderColor: "#236F1A" }
 		, { color: BasePuyo.RED   , bgColor: "#F34A49", alpha: 1, borderColor: "#852D20" }
 		, { color: BasePuyo.BLUE  , bgColor: "#0C8EF9", alpha: 1, borderColor: "#254AB2" }
@@ -40,8 +40,7 @@ export class BasePuyoShape extends Shape {
 	 * @param cellsize セルサイズ
 	 */
 	private setGraphics(color: string, cellsize: number): void {
-		const dict = BasePuyoShape.PUYO_DICT.find(dict => dict.color === color);
-		if (dict === undefined) throw Error("illegal argument");
+		const dict = BasePuyoShape.getDictionary(color);
 
 		this.graphics
 			.s(dict.borderColor)
@@ -60,6 +59,16 @@ export class BasePuyoShape extends Shape {
 		this.graphics
 			.c();
 		this.setGraphics(color, cellsize);
+	}
+
+	/**
+	 * 
+	 * @param color
+	 */
+	public static getDictionary(color: string): { color: string , bgColor: string, alpha: number, borderColor: string } {
+		const dict = BasePuyoShape.PUYO_DICT.find(dict => dict.color == color);
+		if (dict == undefined) throw Error("illegal argument");
+		return dict;
 	}
 
 	// ACCESSOR

@@ -36,8 +36,8 @@ export class EnumTsumoPosition {
 	 * @param index index
 	 */
 	private static fromIndex(index: number): EnumTsumoPosition {
-		const rtn = EnumTsumoPosition.VALUES.find(position => position._index === index);
-		if (rtn === undefined) throw Error("illegal argument");
+		const rtn = EnumTsumoPosition.VALUES.find(position => position._index == index);
+		if (rtn == undefined) throw Error("illegal argument");
 		return rtn;
 	}
 

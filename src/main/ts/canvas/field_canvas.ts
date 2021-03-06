@@ -1,14 +1,19 @@
 import { Container, Shape } from "@createjs/easeljs";
+import { Tween } from "@createjs/tweenjs";
 import { BaseCanvas } from "./base_canvas";
 import { Field } from "../game/field";
 import { FieldCellShape } from "./shape/cell_shape/field_cell_shape";
 import { Util } from "../util/util";
 import { FieldPuyoShape } from "./shape/puyo_shape/field_puyo_shape";
 import { EditableMode } from "../mode/editable_mode";
+import { BasePuyo } from "../game/puyo/base_puyo";
 
 export class FieldCanvas extends BaseCanvas {
 	// CONSTANT
 	private static readonly FRAME_SKEW_DEG = 5;
+	private static readonly DROP_VEL = 60;
+	private static readonly ERASE_VEL = 500;
+	private static readonly STEP_ERASE_TIME = 300;
 
 	// CLASS FIELD
 	private _container: Container;
@@ -89,6 +94,57 @@ export class FieldCanvas extends BaseCanvas {
 	 */
 	public changeFieldPuyo(x: number, y: number, color: string): void {
 		this._puyoShapeArray[y][x].changeColor(color);
+	}
+
+	/**
+	 * 
+	 * @param x 
+	 * @param fromY 
+	 * @param toY 
+	 */
+	public getDropTween(x: number, fromY: number, toY: number): Tween {
+		const val = Util.getAnimateMode();
+
+		const dropPuyo = this._puyoShapeArray[fromY][x];
+		const removePuyo = this._puyoShapeArray[toY][x];
+		const newPuyo = new FieldPuyoShape(x, fromY);
+
+		this._puyoShapeArray[toY][x] = dropPuyo;
+		this._puyoShapeArray[fromY][x] = newPuyo;
+
+		const tween = Tween.get(dropPuyo)
+			.to({y: FieldCellShape.CELLSIZE * (Field.Y_SIZE - 1 - fromY)})
+			.to({y: FieldCellShape.CELLSIZE * (Field.Y_SIZE - 1 - toY)}, FieldCanvas.DROP_VEL * (fromY - toY) * val)
+			.call(() => {
+				// remove
+				this._container.removeChild(removePuyo);
+				// add
+				this._container.addChild(newPuyo);
+			});
+		return tween;
+	}
+
+	/**
+	 * 
+	 * @param x 
+	 * @param y 
+	 */
+	public getErasetween(x: number, y: number, eraseColor: string): Tween {
+		const val = Util.getAnimateMode();
+
+		const erasePuyo = this._puyoShapeArray[y][x];
+
+		let tween = Tween.get(erasePuyo);
+		if (val == 1) {
+			tween = tween.to({alpha: 0}, FieldCanvas.ERASE_VEL)
+				.call(() => { erasePuyo.changeColor(BasePuyo.NONE); });
+		} else {
+			tween = tween.wait(FieldCanvas.STEP_ERASE_TIME)
+				.call(() => { erasePuyo.setStepEraseGraphics(eraseColor); })
+				.wait(FieldCanvas.STEP_ERASE_TIME)
+				.call(() => { erasePuyo.changeColor(BasePuyo.NONE); });
+		}
+		return tween;
 	}
 
 	/**

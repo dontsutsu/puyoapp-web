@@ -1,5 +1,6 @@
 import { FieldCanvas } from "../canvas/field_canvas";
 import { NextCanvas } from "../canvas/next_canvas";
+import { TimelineList } from "../canvas/timeline/timeline_list";
 import { TsumoCanvas } from "../canvas/tsumo_canvas";
 import { Field } from "./field";
 import { Tsumo } from "./tsumo";
@@ -20,8 +21,8 @@ export class Puyopuyo {
 	/**
 	 * フィールドのぷよを落とし、連鎖処理を実行します。
 	 */
-	public dropFieldPuyo(): void {
-		this._field.dropFieldPuyo();
+	public dropFieldPuyo(): TimelineList {
+		return this._field.dropFieldPuyo();
 	}
 
 	/**

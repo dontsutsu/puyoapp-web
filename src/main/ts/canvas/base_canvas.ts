@@ -14,4 +14,5 @@ export abstract class BaseCanvas {
 		this._stage = new Stage(canvasId);
 		if (isTick) Ticker.addEventListener("tick", this._stage);
 	}
+
 }

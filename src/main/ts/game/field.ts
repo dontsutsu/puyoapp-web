@@ -1,4 +1,6 @@
+import { Timeline } from "@createjs/tweenjs";
 import { FieldCanvas } from "../canvas/field_canvas";
+import { TimelineList } from "../canvas/timeline/timeline_list";
 import { EnumTsumoPosition } from "./enum_tsumo_position";
 import { BasePuyo } from "./puyo/base_puyo";
 import { FieldPuyo } from "./puyo/field_puyo";
@@ -35,7 +37,7 @@ export class Field {
 	 * @param tsumo 
 	 */
 	public dropTsumoToField(tsumo: Tsumo): void {
-		if (tsumo.tsumoPosition === EnumTsumoPosition.BOTTOM) {
+		if (tsumo.tsumoPosition == EnumTsumoPosition.BOTTOM) {
 			this.dropTsumoPuyo(tsumo.childPuyo.color, tsumo.childX);
 			this.dropTsumoPuyo(tsumo.axisPuyo.color, tsumo.axisX);
 		} else {
@@ -47,12 +49,22 @@ export class Field {
 	/**
 	 * フィールドのぷよを落とし、連鎖処理を実行します。
 	 */
-	public dropFieldPuyo(): void {
+	public dropFieldPuyo(): TimelineList {
+		const timelineList = new TimelineList();
+
 		let erased: boolean;
 		do {
-			this.drop();
-			erased = this.erase();
+			// 落とす処理
+			const dropTimeline = this.drop();
+			timelineList.push(dropTimeline);
+
+			// 消す処理
+			const erase = this.erase();
+			erased = erase.erased;
+			timelineList.push(erase.timeline);
 		} while(erased);
+
+		return timelineList;
 	}
 
 	/**
@@ -71,7 +83,9 @@ export class Field {
 	/**
 	 * フィールドで浮いているぷよを落とします。
 	 */
-	private drop(): void {
+	private drop(): Timeline {
+		const timeline = new Timeline({paused: true});
+
 		for (let y = 0; y < Field.Y_SIZE - 1; y++) {
 			for (let x = 0; x < Field.X_SIZE; x++) {
 				// 対象のぷよが "なし" 以外なら処理しない
@@ -79,26 +93,33 @@ export class Field {
 					continue;
 				}
 
+				const toY = y;	// 落ちる前のy座標
+				let fromY = y;		// 落ちた先のy座標
 				// 対象のぷよが "なし" の場合、上部の "なし" 以外のぷよを探す
-				let y2 = y;
 				let dropPuyo: FieldPuyo;
 				do {
-					y2++;
-					dropPuyo = this._fieldArray[y2][x];
-				} while (y2 < Field.Y_SIZE - 1 && dropPuyo.color === BasePuyo.NONE);
+					fromY++;
+					dropPuyo = this._fieldArray[fromY][x];
+				} while (fromY < Field.Y_SIZE - 1 && dropPuyo.color == BasePuyo.NONE);
 
 				// 落下するぷよがなかった場合、処理しない
-				if (dropPuyo.color === BasePuyo.NONE) {
+				if (dropPuyo.color == BasePuyo.NONE) {
 					continue;
 				}
 
 				// 落ちる先の配列にぷよを格納
-				this._fieldArray[y][x] = dropPuyo;
+				this._fieldArray[toY][x] = dropPuyo;
 				
 				// 落ちたあとの配列に空白を格納
-				this._fieldArray[y2][x] = new FieldPuyo();
+				this._fieldArray[fromY][x] = new FieldPuyo();
+
+				// アニメーション
+				const tween = this._canvas.getDropTween(x, fromY, toY);
+				timeline.addTween(tween);
 			}
 		}
+
+		return timeline;
 	}
 
 	/**
@@ -106,8 +127,9 @@ export class Field {
 	 * ぷよを消去したかどうかを返します。
 	 * @return true：消去した / false：消去していない
 	 */
-	private erase(): boolean {
+	private erase(): {erased: boolean, timeline: Timeline} {
 		let erased = false;
+		const timeline = new Timeline({paused: true});
 
 		for (let x = 0; x < Field.X_SIZE; x++) {
 			for (let y = 0; y < Field.Y_SIZE - 1; y++) {
@@ -127,37 +149,58 @@ export class Field {
 				if (puyo.connect != null && puyo.connect.isErasable()) {
 					// 自分消去
 					erased = true;
+					const eraseColor = puyo.color;
 					puyo.color = BasePuyo.NONE;
+
+					// アニメーション
+					const tween = this._canvas.getErasetween(x, y, eraseColor);
+					timeline.addTween(tween);
 
 					// おじゃま消去
 					// up（13段目y=12のおじゃまぷよは消去しない）
-					if ((y + 1 < Field.Y_SIZE - 1) && this._fieldArray[y + 1][x].color === BasePuyo.OJAMA) {
+					if ((y + 1 < Field.Y_SIZE - 1) && this._fieldArray[y + 1][x].color == BasePuyo.OJAMA) {
 						const ojamaPuyoShape = this._fieldArray[y + 1][x];
 						ojamaPuyoShape.color = BasePuyo.NONE;
+
+						// アニメーション
+						const tween = this._canvas.getErasetween(x, y + 1, BasePuyo.OJAMA);
+						timeline.addTween(tween);
 					}
 
 					// down
-					if ((y - 1 >= 0) && this._fieldArray[y - 1][x].color === BasePuyo.OJAMA) {
+					if ((y - 1 >= 0) && this._fieldArray[y - 1][x].color == BasePuyo.OJAMA) {
 						const ojamaPuyoShape = this._fieldArray[y - 1][x];
 						ojamaPuyoShape.color = BasePuyo.NONE;
+
+						// アニメーション
+						const tween = this._canvas.getErasetween(x, y - 1, BasePuyo.OJAMA);
+						timeline.addTween(tween);
 					}
 
 					// right
-					if ((x + 1 < Field.X_SIZE) && this._fieldArray[y][x + 1].color === BasePuyo.OJAMA) {
+					if ((x + 1 < Field.X_SIZE) && this._fieldArray[y][x + 1].color == BasePuyo.OJAMA) {
 						const ojamaPuyoShape = this._fieldArray[y][x + 1];
 						ojamaPuyoShape.color = BasePuyo.NONE;
+
+						// アニメーション
+						const tween = this._canvas.getErasetween(x + 1, y, BasePuyo.OJAMA);
+						timeline.addTween(tween);
 					}
 
 					// left
-					if ((x - 1 >= 0) && this._fieldArray[y][x - 1].color === BasePuyo.OJAMA) {
+					if ((x - 1 >= 0) && this._fieldArray[y][x - 1].color == BasePuyo.OJAMA) {
 						const ojamaPuyoShape = this._fieldArray[y][x - 1];
 						ojamaPuyoShape.color = BasePuyo.NONE;
+
+						// アニメーション
+						const tween = this._canvas.getErasetween(x - 1, y, BasePuyo.OJAMA);
+						timeline.addTween(tween);
 					}
 				}
 			}
 		}
 
-		return erased;
+		return {erased, timeline};
 	}
 
 	/**
@@ -178,11 +221,11 @@ export class Field {
 		}
 
 		// 色ぷよでないときはチェック不要
-		if (checkPuyo.color === BasePuyo.NONE || checkPuyo.color === BasePuyo.OJAMA) {
+		if (checkPuyo.color == BasePuyo.NONE || checkPuyo.color == BasePuyo.OJAMA) {
 			return;
 		}
 
-		if (prex === -1 && prey === -1) {
+		if (prex == -1 && prey == -1) {
 			connect = new PuyoConnect();
 		} else {
 			const prePuyo = this._fieldArray[prey][prex];

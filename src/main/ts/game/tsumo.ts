@@ -32,13 +32,13 @@ export class Tsumo {
 		let x = this._axisX + vec;
 
 		// 左端check
-		const leftEnd = this._tsumoPosition === EnumTsumoPosition.LEFT ? 1 : 0;
+		const leftEnd = this._tsumoPosition == EnumTsumoPosition.LEFT ? 1 : 0;
 		if (x < leftEnd) {
 			x = leftEnd;
 		}
 
 		// 右端check
-		const rightEnd = this._tsumoPosition === EnumTsumoPosition.RIGHT ? Field.X_SIZE - 2 : Field.X_SIZE - 1;
+		const rightEnd = this._tsumoPosition == EnumTsumoPosition.RIGHT ? Field.X_SIZE - 2 : Field.X_SIZE - 1;
 		if (x > rightEnd) {
 			x = rightEnd;
 		}
@@ -52,8 +52,8 @@ export class Tsumo {
 	 */
 	public rotate(clockwise: boolean) {
 		this._tsumoPosition = this._tsumoPosition.getRotatedEnum(clockwise);
-		if (this._axisX === Field.X_SIZE - 1 && this._tsumoPosition === EnumTsumoPosition.RIGHT) this._axisX = Field.X_SIZE - 2;
-		if (this._axisX === 0 && this._tsumoPosition === EnumTsumoPosition.LEFT) this._axisX = 1;
+		if (this._axisX == Field.X_SIZE - 1 && this._tsumoPosition == EnumTsumoPosition.RIGHT) this._axisX = Field.X_SIZE - 2;
+		if (this._axisX == 0 && this._tsumoPosition == EnumTsumoPosition.LEFT) this._axisX = 1;
 	}
 
 	// ACCESSOR

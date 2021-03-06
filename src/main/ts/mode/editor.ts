@@ -11,5 +11,11 @@ export class Editor extends EditableMode {
 	 */
 	constructor() {
 		super();
+
+		// event
+		$("#drop").on("click", () => {
+			this._timelineList = this._puyopuyo.dropFieldPuyo();
+			this._timelineList.play();
+		});
 	}
 }

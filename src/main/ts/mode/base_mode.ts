@@ -1,6 +1,7 @@
 import { Ticker } from "@createjs/tweenjs";
 import { FieldCanvas } from "../canvas/field_canvas";
 import { NextCanvas } from "../canvas/next_canvas";
+import { TimelineList } from "../canvas/timeline/timeline_list";
 import { TsumoCanvas } from "../canvas/tsumo_canvas";
 import { Puyopuyo } from "../game/puyopuyo";
 
@@ -9,6 +10,8 @@ export abstract class BaseMode {
 	protected _fieldCanvas: FieldCanvas;
 	protected _tsumoCanvas: TsumoCanvas;
 	protected _nextCanvas: NextCanvas;
+
+	protected _timelineList: TimelineList;
 
 	protected _puyopuyo: Puyopuyo;
 
@@ -21,5 +24,7 @@ export abstract class BaseMode {
 		this._nextCanvas = new NextCanvas();
 
 		this._puyopuyo = new Puyopuyo(this._fieldCanvas, this._tsumoCanvas, this._nextCanvas);
+
+		this._timelineList = new TimelineList;
 	}
 }

@@ -61,7 +61,7 @@ export class BoxCanvas extends BaseCanvas {
 					this._stage.addChild(puyoShape);
 
 					// 「けす」の文字
-					if (color === BasePuyo.NONE) {
+					if (color == BasePuyo.NONE) {
 						const keShape = new Text("け", "bold 16px BIZ UDPGothic", "#4242FF");
 						keShape.x = BoxCellShape.CELLSIZE * x + BoxCanvas.KESU_PADDING;
 						keShape.y = BoxCellShape.CELLSIZE * y + BoxCanvas.KESU_PADDING;
