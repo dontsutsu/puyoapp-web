@@ -7,6 +7,7 @@ import { Util } from "../util/util";
 import { FieldPuyoShape } from "./shape/puyo_shape/field_puyo_shape";
 import { EditableMode } from "../mode/editable_mode";
 import { BasePuyo } from "../game/puyo/base_puyo";
+import { Tsumo } from "../game/tsumo";
 
 export class FieldCanvas extends BaseCanvas {
 	// CONSTANT
@@ -145,6 +146,47 @@ export class FieldCanvas extends BaseCanvas {
 				.call(() => { erasePuyo.changeColor(BasePuyo.NONE); });
 		}
 		return tween;
+	}
+
+	/**
+	 * 
+	 * @param tsumo 
+	 * @param axisToY 
+	 * @param childToY 
+	 * @returns 
+	 */
+	public getTsumoDropTween(tsumo: Tsumo, axisToY: number, childToY: number): {axisTween: Tween, childTween: Tween} {
+		const val = Util.getAnimateMode();
+
+		// ツモの座標位置 15,16,17 になるように
+		const axisFromY = Field.Y_SIZE + 2 + tsumo.axisY;
+		const childFromY = Field.Y_SIZE + 2 + tsumo.childY;
+
+		// axis
+		const axisRemovePuyo = this._puyoShapeArray[axisToY][tsumo.axisX];
+		const axisNewPuyo = new FieldPuyoShape(tsumo.axisX, axisFromY, tsumo.axisColor);
+		this._container.addChild(axisNewPuyo);
+
+		this._puyoShapeArray[axisToY][tsumo.axisX] = axisNewPuyo;
+		
+		const axisTween = Tween.get(axisNewPuyo)
+			.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(axisFromY)})
+			.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(axisToY)}, FieldCanvas.DROP_VEL * (axisFromY - axisToY) * val)
+			.call(() => { this._container.removeChild(axisRemovePuyo); });
+
+		// child
+		const childRemovePuyo = this._puyoShapeArray[childToY][tsumo.childX];
+		const childNewPuyo = new FieldPuyoShape(tsumo.childX, childFromY, tsumo.childColor);
+		this._container.addChild(childNewPuyo);
+
+		this._puyoShapeArray[childToY][tsumo.childX] = childNewPuyo;
+		
+		const childTween = Tween.get(childNewPuyo)
+			.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(childFromY)})
+			.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(childToY)}, FieldCanvas.DROP_VEL * (childFromY - childToY) * val)
+			.call(() => { this._container.removeChild(childRemovePuyo); });
+
+		return {axisTween, childTween};
 	}
 
 	/**

@@ -29,21 +29,21 @@ export class Tsumo {
 	 * @param vec 
 	 */
 	public move(vec: number): void {
-		let x = this._axisX + vec;
+		let toX = this._axisX + vec;
 
 		// 左端check
 		const leftEnd = this._tsumoPosition == EnumTsumoPosition.LEFT ? 1 : 0;
-		if (x < leftEnd) {
-			x = leftEnd;
+		if (toX < leftEnd) {
+			toX = leftEnd;
 		}
 
 		// 右端check
 		const rightEnd = this._tsumoPosition == EnumTsumoPosition.RIGHT ? Field.X_SIZE - 2 : Field.X_SIZE - 1;
-		if (x > rightEnd) {
-			x = rightEnd;
+		if (toX > rightEnd) {
+			toX = rightEnd;
 		}
 
-		this._axisX = x;
+		this._axisX = toX;
 	}
 
 	/**
@@ -69,8 +69,24 @@ export class Tsumo {
 		return this._axisX;
 	}
 
+	get axisY(): number {
+		return 1;
+	}
+
+	get axisColor(): string {
+		return this._axisPuyo.color;
+	}
+
 	get childX(): number {
-		return this._axisX + this._tsumoPosition.childRelaiveX;
+		return this._axisX + this._tsumoPosition.childRelativeX;
+	}
+
+	get childY(): number {
+		return 1 + this._tsumoPosition.childRelativeY;
+	}
+
+	get childColor(): string {
+		return this._childPuyo.color;
 	}
 	
 	get tsumoPosition(): EnumTsumoPosition {

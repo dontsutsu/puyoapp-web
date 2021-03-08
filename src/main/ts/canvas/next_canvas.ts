@@ -1,7 +1,9 @@
 import { Container, Shape } from "@createjs/easeljs";
+import { Tsumo } from "../game/tsumo";
 import { Util } from "../util/util";
 import { BaseCanvas } from "./base_canvas";
 import { NextCellShape } from "./shape/cell_shape/next_cell_shape";
+import { NextPuyoShape } from "./shape/puyo_shape/next_puyo_shape";
 
 export class NextCanvas extends BaseCanvas {
 	// CONSTANT
@@ -9,7 +11,11 @@ export class NextCanvas extends BaseCanvas {
 
 	// CLASS FIELD
 	private _container: Container;
-	
+	private _nextAxisPuyoShape!: NextPuyoShape;
+	private _nextChildPuyoShape!: NextPuyoShape;
+	private _doubleNextAxisPuyoShape!: NextPuyoShape;
+	private _doubleNextChildPuyoShape!: NextPuyoShape;
+
 	/**
 	 * コンストラクタ
 	 */
@@ -35,6 +41,22 @@ export class NextCanvas extends BaseCanvas {
 		}
 	}
 
+	/**
+	 * 
+	 * @param next 
+	 * @param doubleNext 
+	 */
+	public init(next: Tsumo, doubleNext: Tsumo): void {
+		this._nextAxisPuyoShape = new NextPuyoShape(0, 1, next.axisColor);
+		this._nextChildPuyoShape = new NextPuyoShape(0, 0, next.childColor);
+		this._doubleNextAxisPuyoShape = new NextPuyoShape(1, 1, doubleNext.axisColor);
+		this._doubleNextChildPuyoShape = new NextPuyoShape(1, 0, doubleNext.childColor);
+		this._container.addChild(this._nextAxisPuyoShape, this._nextChildPuyoShape, this._doubleNextAxisPuyoShape, this._doubleNextChildPuyoShape);	
+	}
+
+	/**
+	 * 
+	 */
 	private createFrameContainer(): Container {
 		const deg = NextCanvas.FRAME_SKEW_DEG;
 		const sin = Util.sin(deg);

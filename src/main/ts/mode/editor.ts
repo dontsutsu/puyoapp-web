@@ -14,6 +14,8 @@ export class Editor extends EditableMode {
 
 		// event
 		$("#drop").on("click", () => {
+			if (this._timelineList.isAnimation) return;
+
 			this._timelineList = this._puyopuyo.dropFieldPuyo();
 			this._timelineList.play();
 		});

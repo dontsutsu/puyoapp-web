@@ -5,10 +5,6 @@ export class TsumoCellShape extends BaseCellShape {
 	public static readonly CELLSIZE = 35;
 	public static readonly BG_COLOR = "#FFFFFF";
 
-	// CLASS FIELD
-	private _ax: number;
-	private _ay: number;
-
 	/**
 	 * コンストラクタ
 	 * @param x x座標
@@ -19,8 +15,5 @@ export class TsumoCellShape extends BaseCellShape {
 		const y = TsumoCellShape.CELLSIZE * ay; 
 
 		super(x, y, TsumoCellShape.CELLSIZE, TsumoCellShape.BG_COLOR);
-
-		this._ax = ax;
-		this._ay = ay;
 	}
 }

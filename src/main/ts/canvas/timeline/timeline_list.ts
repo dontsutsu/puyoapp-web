@@ -24,6 +24,19 @@ export class TimelineList {
 
 	/**
 	 * 
+	 * @param timelineListArray 
+	 */
+	public add(...timelineListArray: TimelineList[]): void {
+		for (let i = 0; i < timelineListArray.length; i++) {
+			const timelineList = timelineListArray[i];
+			for (let j = 0; j < timelineList._timelineList.length; j++) {
+				this.push(timelineList._timelineList[j]);
+			}
+		}
+	}
+
+	/**
+	 * 
 	 */
 	public play(): void {
 		if (this._timelineList.length == 0) return;

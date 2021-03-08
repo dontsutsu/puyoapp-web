@@ -1,4 +1,4 @@
-import { Timeline } from "@createjs/tweenjs";
+import { Timeline, Tween } from "@createjs/tweenjs";
 import { FieldCanvas } from "../canvas/field_canvas";
 import { TimelineList } from "../canvas/timeline/timeline_list";
 import { EnumTsumoPosition } from "./enum_tsumo_position";
@@ -36,14 +36,30 @@ export class Field {
 	 * 
 	 * @param tsumo 
 	 */
-	public dropTsumoToField(tsumo: Tsumo): void {
+	public dropTsumoToField(tsumo: Tsumo): TimelineList {
+		let axisToY: number;
+		let childToY: number;
+
 		if (tsumo.tsumoPosition == EnumTsumoPosition.BOTTOM) {
-			this.dropTsumoPuyo(tsumo.childPuyo.color, tsumo.childX);
-			this.dropTsumoPuyo(tsumo.axisPuyo.color, tsumo.axisX);
+			childToY = this.getDropToY(tsumo.childX);
+			this._fieldArray[childToY][tsumo.childX].color = tsumo.childColor;
+			axisToY = this.getDropToY(tsumo.axisX);
+			this._fieldArray[axisToY][tsumo.axisX].color = tsumo.axisColor;
 		} else {
-			this.dropTsumoPuyo(tsumo.axisPuyo.color, tsumo.axisX);
-			this.dropTsumoPuyo(tsumo.childPuyo.color, tsumo.childX);
-		}	
+			axisToY = this.getDropToY(tsumo.axisX);
+			this._fieldArray[axisToY][tsumo.axisX].color = tsumo.axisColor;
+			childToY = this.getDropToY(tsumo.childX);
+			this._fieldArray[childToY][tsumo.childX].color = tsumo.childColor;
+		}
+
+		// アニメーション
+		const timelineList = new TimelineList();
+		const timeline = new Timeline({paused: true});
+		const {axisTween, childTween} = this._canvas.getTsumoDropTween(tsumo, axisToY, childToY);
+		timeline.addTween(axisTween);
+		timeline.addTween(childTween);
+		timelineList.push(timeline);
+		return timelineList;
 	}
 
 	/**
@@ -78,6 +94,17 @@ export class Field {
 		
 		// canvas
 		this._canvas.changeFieldPuyo(x, y, color);
+	}
+
+	/**
+	 * 
+	 */
+	public reset(): void {
+		for (let y = 0; y < Field.Y_SIZE; y++) {
+			for (let x = 0; x < Field.X_SIZE; x++) {
+				this.changeFieldPuyo(x, y, BasePuyo.NONE);
+			}
+		}
 	}
 
 	/**
@@ -269,7 +296,7 @@ export class Field {
 	 * @param color 
 	 * @param x 
 	 */
-	private dropTsumoPuyo(color: string, x: number): void {
+	private getDropToY(x: number): number {
 		let y2 = Field.Y_SIZE - 1;
 		for (let y = Field.Y_SIZE - 1; y >= 0; y--) {
 			if (y == 0) {
@@ -279,6 +306,6 @@ export class Field {
 				break;
 			}
 		}
-		this._fieldArray[y2][x] = new FieldPuyo(color);
+		return y2;
 	}
 }

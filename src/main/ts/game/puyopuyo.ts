@@ -29,23 +29,27 @@ export class Puyopuyo {
 	 * ツモを動かします。
 	 * @param vec 動かす距離と方向（ex　右に1：+1、左に2：-2）
 	 */
-	public moveTsumo(vec: number): void {
-		this._tsumos.moveCurrentTsumo(vec);
+	public moveTsumo(vec: number): TimelineList {
+		return this._tsumos.moveCurrentTsumo(vec);
 	}
 
 	/**
 	 * ツモを回転します。
 	 * @param clockwise true：時計周り / false：反時計周り
 	 */
-	public rotateTsumo(clockwise: boolean): void {
-		this._tsumos.rotateCurrentTsumo(clockwise);
+	public rotateTsumo(clockwise: boolean): TimelineList {
+		return this._tsumos.rotateCurrentTsumo(clockwise);
 	}
 
 	/**
 	 * ツモをフィールドに落とします。
 	 */
-	public dropTsumoToField(): void {
-		this._field.dropTsumoToField(this._tsumos.getCurrentTsumo());
+	public dropTsumoToField(): TimelineList {
+		const {currentTsumo, dropTsumoTimelineList} = this._tsumos.getCurrentTsumo();
+		const dropTsumoToFieldTimelineList = this._field.dropTsumoToField(currentTsumo);
+		const dropFieldTimelineList = this._field.dropFieldPuyo();
+		dropTsumoTimelineList.add(dropTsumoToFieldTimelineList, dropFieldTimelineList);
+		return dropTsumoTimelineList;
 	}
 
 	/**
@@ -58,5 +62,11 @@ export class Puyopuyo {
 		this._field.changeFieldPuyo(x, y, color);
 	}
 
-	
+	/**
+	 * 
+	 */
+	public initTokopuyo(): void {
+		this._field.reset();
+		this._tsumos.reset();
+	}
 }

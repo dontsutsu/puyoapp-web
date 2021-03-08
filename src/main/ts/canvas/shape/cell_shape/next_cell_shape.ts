@@ -22,7 +22,7 @@ export class NextCellShape extends BaseCellShape {
 	 * @param type 0：子ぷよ、1：軸ぷよ
 	 * @return x：x座標、y：y座標
 	 */
-	static getXandY(next: number, type: number): { x: number, y: number } {
+	public static getXandY(next: number, type: number): { x: number, y: number } {
 		const x = NextCellShape.CELLSIZE * next;
 		const y = NextCellShape.CELLSIZE * type + (NextCellShape.CELLSIZE * 2 + NextCellShape.NEXT_PADDING) * next;
 		return {x, y};

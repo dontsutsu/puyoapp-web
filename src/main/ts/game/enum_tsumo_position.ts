@@ -50,7 +50,7 @@ export class EnumTsumoPosition {
 		return this._index;
 	}
 
-	get childRelaiveX(): number {
+	get childRelativeX(): number {
 		return this._childRelativeX;
 	}
 
