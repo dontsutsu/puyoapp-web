@@ -26,13 +26,15 @@ export class TimelineList {
 	 * 
 	 * @param timelineListArray 
 	 */
-	public add(...timelineListArray: TimelineList[]): void {
+	public add(...timelineListArray: TimelineList[]): TimelineList {
 		for (let i = 0; i < timelineListArray.length; i++) {
 			const timelineList = timelineListArray[i];
 			for (let j = 0; j < timelineList._timelineList.length; j++) {
 				this.push(timelineList._timelineList[j]);
 			}
 		}
+
+		return this;
 	}
 
 	/**

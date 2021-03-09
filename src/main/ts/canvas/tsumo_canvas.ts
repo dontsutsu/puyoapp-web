@@ -11,8 +11,9 @@ import { TsumoPuyoShape } from "./shape/puyo_shape/tsumo_puyo_shape";
 export class TsumoCanvas extends BaseCanvas {
 	// CONSTANT
 	private static readonly Y_SIZE = 3;
-	private static readonly MOVE_VEL = 100;
-	private static readonly ROTATE_VEL = 100;
+	private static readonly MOVE_VEL = 80;
+	private static readonly ROTATE_VEL = 80;
+	private static readonly DROP_VEL = 50;
 
 	// CLASS FIELD
 	private _container: Container;
@@ -53,7 +54,7 @@ export class TsumoCanvas extends BaseCanvas {
 	 * 
 	 * @param diffX 
 	 */
-	public getMoveTween(diffX: number): { axisTween: Tween, childTween: Tween } {
+	public getMoveTween(diffX: number): Tween[] {
 		const val = Util.getAnimateMode();
 
 		// axis
@@ -70,7 +71,7 @@ export class TsumoCanvas extends BaseCanvas {
 			.to({x: fromChildX})
 			.to({x: toChildX}, Math.abs(diffX) * TsumoCanvas.MOVE_VEL * val);
 
-		return {axisTween, childTween};
+		return [axisTween, childTween];
 	}
 
 	/**
@@ -79,7 +80,7 @@ export class TsumoCanvas extends BaseCanvas {
 	 * @param beforePosition 
 	 * @param diffX 
 	 */
-	public getRotateTween(diffX: number, beforePosition: EnumTsumoPosition, afterPosition: EnumTsumoPosition): { axisTween: Tween, childXTween: Tween, childYTween: Tween } {
+	public getRotateTween(diffX: number, beforePosition: EnumTsumoPosition, afterPosition: EnumTsumoPosition): Tween[] {
 		const val = Util.getAnimateMode();
 		
 		// axis
@@ -105,7 +106,7 @@ export class TsumoCanvas extends BaseCanvas {
 			.to({y: fromChildY})
 			.to({y: toChildY}, TsumoCanvas.ROTATE_VEL * val, easeY);
 		
-		return {axisTween, childXTween, childYTween};
+		return [axisTween, childXTween, childYTween];
 	}
 
 	/**
@@ -119,7 +120,7 @@ export class TsumoCanvas extends BaseCanvas {
 	/**
 	 * 
 	 */
-	public getDropTween(): { axisTween: Tween, childTween: Tween } {
+	public getDropTween(): Tween[] {
 		const val = Util.getAnimateMode();
 		const diffY = 3;
 
@@ -128,15 +129,49 @@ export class TsumoCanvas extends BaseCanvas {
 		const toAxisY = fromAxisY + TsumoCellShape.CELLSIZE * diffY;
 		const axisTween = Tween.get(this._axisPuyoShape)
 			.to({y: fromAxisY})
-			.to({y: toAxisY}, Math.abs(diffY) * TsumoCanvas.MOVE_VEL * val);
+			.to({y: toAxisY}, Math.abs(diffY) * TsumoCanvas.DROP_VEL * val);
 
 		// child
 		const fromChildY = this._childPuyoShape.y;
 		const toChildY = fromChildY + TsumoCellShape.CELLSIZE * diffY;
 		const childTween = Tween.get(this._childPuyoShape)
 			.to({y: fromChildY})
-			.to({y: toChildY}, Math.abs(diffY) * TsumoCanvas.MOVE_VEL * val);
+			.to({y: toChildY}, Math.abs(diffY) * TsumoCanvas.DROP_VEL * val);
 		
-		return {axisTween, childTween};
+		return [axisTween, childTween];
+	}
+
+	/**
+	 * 
+	 * @param tsumo 
+	 */
+	public advance(tsumo: Tsumo): Tween[] {
+		const val = Util.getAnimateMode();
+		const diffY = 3;
+
+		const oldAxisPuyo = this._axisPuyoShape;
+		const oldChildPuyo = this._childPuyoShape;
+
+		this._axisPuyoShape = new TsumoPuyoShape(tsumo.axisX, tsumo.axisY + diffY, tsumo.axisColor);
+		this._childPuyoShape = new TsumoPuyoShape(tsumo.childX, tsumo.childY + diffY, tsumo.childColor);
+		this._container.addChild(this._axisPuyoShape, this._childPuyoShape);
+
+		// axis
+		const fromAxisY = this._axisPuyoShape.y;
+		const toAxisY = this._axisPuyoShape.y + TsumoCellShape.CELLSIZE * diffY;
+		const axisTween = Tween.get(this._axisPuyoShape)
+			.to({y: fromAxisY})
+			.to({y: toAxisY}, Math.abs(diffY) * TsumoCanvas.DROP_VEL * val)
+			.call(() => { this._container.removeChild(oldAxisPuyo); });
+		
+		// child
+		const fromChildY = this._childPuyoShape.y;
+		const toChildY = this._childPuyoShape.y + TsumoCellShape.CELLSIZE * diffY;
+		const childTween = Tween.get(this._childPuyoShape)
+			.to({y: fromChildY})
+			.to({y: toChildY}, Math.abs(diffY) * TsumoCanvas.DROP_VEL * val)
+			.call(() => { this._container.removeChild(oldChildPuyo); });
+		
+		return [axisTween, childTween];
 	}
 }

@@ -12,7 +12,7 @@ import { Tsumo } from "../game/tsumo";
 export class FieldCanvas extends BaseCanvas {
 	// CONSTANT
 	private static readonly FRAME_SKEW_DEG = 5;
-	private static readonly DROP_VEL = 60;
+	private static readonly DROP_VEL = 50;
 	private static readonly ERASE_VEL = 500;
 	private static readonly STEP_ERASE_TIME = 300;
 
@@ -155,7 +155,7 @@ export class FieldCanvas extends BaseCanvas {
 	 * @param childToY 
 	 * @returns 
 	 */
-	public getTsumoDropTween(tsumo: Tsumo, axisToY: number, childToY: number): {axisTween: Tween, childTween: Tween} {
+	public getTsumoDropTween(tsumo: Tsumo, axisToY: number, childToY: number): Tween[] {
 		const val = Util.getAnimateMode();
 
 		// ツモの座標位置 15,16,17 になるように
@@ -186,7 +186,7 @@ export class FieldCanvas extends BaseCanvas {
 			.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(childToY)}, FieldCanvas.DROP_VEL * (childFromY - childToY) * val)
 			.call(() => { this._container.removeChild(childRemovePuyo); });
 
-		return {axisTween, childTween};
+		return [axisTween, childTween];
 	}
 
 	/**

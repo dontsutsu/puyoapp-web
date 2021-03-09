@@ -48,8 +48,7 @@ export class Puyopuyo {
 		const {currentTsumo, dropTsumoTimelineList} = this._tsumos.getCurrentTsumo();
 		const dropTsumoToFieldTimelineList = this._field.dropTsumoToField(currentTsumo);
 		const dropFieldTimelineList = this._field.dropFieldPuyo();
-		dropTsumoTimelineList.add(dropTsumoToFieldTimelineList, dropFieldTimelineList);
-		return dropTsumoTimelineList;
+		return dropTsumoTimelineList.add(dropTsumoToFieldTimelineList, dropFieldTimelineList);
 	}
 
 	/**
@@ -68,5 +67,12 @@ export class Puyopuyo {
 	public initTokopuyo(): void {
 		this._field.reset();
 		this._tsumos.reset();
+	}
+
+	/**
+	 * 
+	 */
+	public advanceTsumo(): TimelineList {
+		return this._tsumos.advance();
 	}
 }

@@ -36,9 +36,8 @@ export class Tsumos {
 		const diffX = toX - fromX;
 		const timelineList = new TimelineList();
 		const timeline = new Timeline({paused: true});
-		const {axisTween, childTween} = this._tsumoCanvas.getMoveTween(diffX);
-		timeline.addTween(axisTween);
-		timeline.addTween(childTween);
+		const tweenList = this._tsumoCanvas.getMoveTween(diffX);
+		timeline.addTween(...tweenList);
 		timelineList.push(timeline);
 		return timelineList;
 	}
@@ -58,10 +57,8 @@ export class Tsumos {
 		const diffX = toX - fromX;
 		const timelineList = new TimelineList();
 		const timeline = new Timeline({paused: true});
-		const {axisTween, childXTween, childYTween} = this._tsumoCanvas.getRotateTween(diffX, beforePosition, afterPosition);
-		timeline.addTween(axisTween);
-		timeline.addTween(childXTween);
-		timeline.addTween(childYTween);
+		const tweenList = this._tsumoCanvas.getRotateTween(diffX, beforePosition, afterPosition);
+		timeline.addTween(...tweenList);
 		timelineList.push(timeline);
 		return timelineList;
 	}
@@ -74,9 +71,8 @@ export class Tsumos {
 		// アニメーション
 		const timelineList = new TimelineList();
 		const timeline = new Timeline({paused: true});
-		const {axisTween, childTween} = this._tsumoCanvas.getDropTween();		
-		timeline.addTween(axisTween);
-		timeline.addTween(childTween);
+		const tweenList = this._tsumoCanvas.getDropTween();		
+		timeline.addTween(...tweenList);
 		timelineList.push(timeline);
 		return {currentTsumo: this._list[0], dropTsumoTimelineList: timelineList};
 	}
@@ -88,6 +84,25 @@ export class Tsumos {
 		this.initList();
 		this._tsumoCanvas.init(this._list[0]);
 		this._nextCanvas.init(this._list[1], this._list[2]);
+	}
+
+	/**
+	 * 
+	 */
+	public advance(): TimelineList {
+		const head = this._list.shift();
+		if (head == undefined) throw Error();
+
+		this._list.push(head);
+
+		// アニメーション
+		const timelineList = new TimelineList();
+		const timeline = new Timeline({paused: true});
+		const tsumoTweenList = this._tsumoCanvas.advance(this._list[0]);
+		const nextTweenList = this._nextCanvas.advance(this._list[2]);
+		timeline.addTween(...tsumoTweenList, ...nextTweenList);
+		timelineList.push(timeline);
+		return timelineList;
 	}
 
 	/**

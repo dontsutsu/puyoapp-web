@@ -1,4 +1,5 @@
 import { Container, Shape } from "@createjs/easeljs";
+import { Tween } from "@createjs/tweenjs";
 import { Tsumo } from "../game/tsumo";
 import { Util } from "../util/util";
 import { BaseCanvas } from "./base_canvas";
@@ -8,6 +9,7 @@ import { NextPuyoShape } from "./shape/puyo_shape/next_puyo_shape";
 export class NextCanvas extends BaseCanvas {
 	// CONSTANT
 	private static readonly FRAME_SKEW_DEG = 5;
+	private static readonly MOVE_TIME = 150;
 
 	// CLASS FIELD
 	private _container: Container;
@@ -52,6 +54,76 @@ export class NextCanvas extends BaseCanvas {
 		this._doubleNextAxisPuyoShape = new NextPuyoShape(1, 1, doubleNext.axisColor);
 		this._doubleNextChildPuyoShape = new NextPuyoShape(1, 0, doubleNext.childColor);
 		this._container.addChild(this._nextAxisPuyoShape, this._nextChildPuyoShape, this._doubleNextAxisPuyoShape, this._doubleNextChildPuyoShape);	
+	}
+
+	/**
+	 * 
+	 * @param tsumo 
+	 */
+	public advance(tsumo: Tsumo): Tween[] {
+		const val = Util.getAnimateMode();
+
+		// old next
+		const oldNextAxisPuyo = this._nextAxisPuyoShape;
+		const oldNextChildPuyo = this._nextChildPuyoShape;
+
+		const onaFromY = oldNextAxisPuyo.y;
+		const onaToY = onaFromY - NextCellShape.CELLSIZE * 3;
+		const onaTween = Tween.get(oldNextAxisPuyo)
+			.to({y: onaFromY})
+			.to({y: onaToY}, NextCanvas.MOVE_TIME * val)
+			.call(() => { this._container.removeChild(oldNextAxisPuyo); });
+
+		const oncFromY = oldNextChildPuyo.y;
+		const oncToY = oncFromY - NextCellShape.CELLSIZE * 3;
+		const oncTween = Tween.get(oldNextChildPuyo)
+			.to({y: oncFromY})
+			.to({y: oncToY}, NextCanvas.MOVE_TIME * val)
+			.call(() => { this._container.removeChild(oldNextChildPuyo); });
+		
+		// new next
+		const newNextAxisPuyo = this._doubleNextAxisPuyoShape;
+		const newNextChildPuyo = this._doubleNextChildPuyoShape;
+
+		const nnaFromX = newNextAxisPuyo.x;
+		const nnaFromY = newNextAxisPuyo.y;
+		const nnaToXY = NextCellShape.getXandY(0, 1);
+		const nnaTween = Tween.get(newNextAxisPuyo)
+			.to({x: nnaFromX, y: nnaFromY})
+			.to({x: nnaToXY.x, y: nnaToXY.y}, NextCanvas.MOVE_TIME * val);
+
+		const nncFromX = newNextChildPuyo.x;
+		const nncFromY = newNextChildPuyo.y;
+		const nncToXY = NextCellShape.getXandY(0, 0);
+		const nncTween = Tween.get(newNextChildPuyo)
+			.to({x: nncFromX, y: nncFromY})
+			.to({x: nncToXY.x, y: nncToXY.y}, NextCanvas.MOVE_TIME * val);
+
+		// new doubleNext
+		const newDoubleNextAxisPuyo = new NextPuyoShape(1, 1, tsumo.axisColor);
+		const newDoubleNextChildPuyo = new NextPuyoShape(1, 0, tsumo.childColor);
+
+		const ndaToY = newDoubleNextAxisPuyo.y;
+		const ndaFromY = ndaToY + NextCellShape.CELLSIZE * 3;
+		newDoubleNextAxisPuyo.y = ndaFromY;
+		const ndaTween = Tween.get(newDoubleNextAxisPuyo)
+			.to({y: ndaFromY})
+			.to({y: ndaToY}, NextCanvas.MOVE_TIME * val);
+
+		const ndcToY = newDoubleNextChildPuyo.y;
+		const ndcFromY = ndcToY + NextCellShape.CELLSIZE * 3;
+		newDoubleNextChildPuyo.y = ndcFromY;
+		const ndcTween = Tween.get(newDoubleNextChildPuyo)
+			.to({y: ndcFromY})
+			.to({y: ndcToY}, NextCanvas.MOVE_TIME * val);
+
+		this._container.addChild(newDoubleNextAxisPuyo, newDoubleNextChildPuyo);
+		this._nextAxisPuyoShape = newNextAxisPuyo;
+		this._nextChildPuyoShape = newNextChildPuyo;
+		this._doubleNextAxisPuyoShape = newDoubleNextAxisPuyo;
+		this._doubleNextChildPuyoShape = newDoubleNextChildPuyo;
+		
+		return [onaTween, oncTween, nnaTween, nncTween, ndaTween, ndcTween];
 	}
 
 	/**

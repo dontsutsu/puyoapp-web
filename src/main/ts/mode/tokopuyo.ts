@@ -30,21 +30,24 @@ export class Tokopuyo extends BaseMode {
 				case "ArrowDown" : // Key[↓]
 					if (this._timelineList.isAnimation) return;
 
-					this._timelineList = this._puyopuyo.dropTsumoToField();
+					const dropTimelineList = this._puyopuyo.dropTsumoToField();
+					const advanceTsumoTimelineList = this._puyopuyo.advanceTsumo();
+
+					this._timelineList = dropTimelineList.add(advanceTsumoTimelineList);
 					this._timelineList.play();
 				break;
 
 				case "z" : // Key[z]
 					if (this._timelineList.isAnimation) return;
 
-					this._timelineList = this._puyopuyo.rotateTsumo(true);
+					this._timelineList = this._puyopuyo.rotateTsumo(false);
 					this._timelineList.play();
 				break;
 
 				case "x" : // Key[x]
 					if (this._timelineList.isAnimation) return;
 
-					this._timelineList = this._puyopuyo.rotateTsumo(false);
+					this._timelineList = this._puyopuyo.rotateTsumo(true);
 					this._timelineList.play();
 				break;
 			}

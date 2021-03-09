@@ -55,9 +55,8 @@ export class Field {
 		// アニメーション
 		const timelineList = new TimelineList();
 		const timeline = new Timeline({paused: true});
-		const {axisTween, childTween} = this._canvas.getTsumoDropTween(tsumo, axisToY, childToY);
-		timeline.addTween(axisTween);
-		timeline.addTween(childTween);
+		const tweenList = this._canvas.getTsumoDropTween(tsumo, axisToY, childToY);
+		timeline.addTween(...tweenList);
 		timelineList.push(timeline);
 		return timelineList;
 	}
