@@ -30,10 +30,10 @@ export class Tokopuyo extends BaseMode {
 				case "ArrowDown" : // Key[↓]
 					if (this._timelineList.isAnimation) return;
 
-					const dropTimelineList = this._puyopuyo.dropTsumoToField();
-					const advanceTsumoTimelineList = this._puyopuyo.advanceTsumo();
+					const dropTlList = this._puyopuyo.dropTsumoToField();
+					const advanceTsumoTlList = this._puyopuyo.advanceTsumo();
 
-					this._timelineList = dropTimelineList.add(advanceTsumoTimelineList);
+					this._timelineList = dropTlList.add(advanceTsumoTlList);
 					this._timelineList.play();
 				break;
 

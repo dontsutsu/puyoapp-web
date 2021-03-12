@@ -82,7 +82,7 @@ export class FieldCanvas extends BaseCanvas {
 
 				cellShape.addEventListener("mouseout", () => {
 					cellShape.mouseout();
-				})
+				});
 			}
 		}
 	}

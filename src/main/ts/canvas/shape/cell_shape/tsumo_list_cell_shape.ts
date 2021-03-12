@@ -1,3 +1,4 @@
+import { TsumoListCanvas } from "../../tsumo_list_canvas";
 import { BaseCellShape } from "./base_cell_shape";
 
 /**
@@ -13,6 +14,7 @@ export class TsumoListCellShape extends BaseCellShape {
 
 	// CLASS FIELD
 	private _type: number;
+	private _index: number;
 
 	/**
 	 * コンストラクタ
@@ -25,6 +27,7 @@ export class TsumoListCellShape extends BaseCellShape {
 		super(x, y, TsumoListCellShape.CELLSIZE, TsumoListCellShape.BG_COLOR, TsumoListCellShape.TSUMO_LIST_BORDER_COLOR);
 
 		this._type = type;
+		this._index = ax + ay * TsumoListCanvas.X_SIZE;
 	}
 
 	/**
@@ -59,7 +62,7 @@ export class TsumoListCellShape extends BaseCellShape {
 		return this._type;
 	}
 
-	set type(type: number) {
-		this._type = type;
+	get index(): number {
+		return this._index;
 	}
 }

@@ -4,7 +4,7 @@ import { EnumTsumoPosition } from "./enum_tsumo_position";
 
 export class Tsumo {
 	// CONSTANT
-	private static readonly INI_AXIS_X = 2;
+	public static readonly INI_AXIS_X = 2;
 
 	// CLASS FIELD
 	private _axisPuyo: TsumoPuyo;	// 軸ぷよ
@@ -56,6 +56,14 @@ export class Tsumo {
 		if (this._axisX == 0 && this._tsumoPosition == EnumTsumoPosition.LEFT) this._axisX = 1;
 	}
 
+	/**
+	 * 
+	 * @param name 
+	 */
+	public setTsumoPositionByEnumName(name: string): void {
+		this._tsumoPosition = EnumTsumoPosition.fromName(name);
+	}
+
 	// ACCESSOR
 	get axisPuyo(): TsumoPuyo {
 		return this._axisPuyo;
@@ -91,5 +99,9 @@ export class Tsumo {
 	
 	get tsumoPosition(): EnumTsumoPosition {
 		return this._tsumoPosition;
+	}
+
+	set axisX(axisX: number) {
+		this._axisX = axisX;
 	}
 }

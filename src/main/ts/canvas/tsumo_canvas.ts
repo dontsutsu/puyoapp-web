@@ -52,24 +52,26 @@ export class TsumoCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param diffX 
+	 * @param fromAX 
+	 * @param toAX 
+	 * @returns 
 	 */
-	public getMoveTween(diffX: number): Tween[] {
+	public getMoveTween(fromAX: number, toAX: number): Tween[] {
 		const val = Util.getAnimateMode();
+		const diffAX = toAX - fromAX;
 
+		const fromX = TsumoCellShape.CELLSIZE * fromAX;
+		const toX = TsumoCellShape.CELLSIZE * toAX;
+		
 		// axis
-		const fromAxisX = this._axisPuyoShape.x;
-		const toAxisX = fromAxisX + TsumoCellShape.CELLSIZE * diffX;
 		const axisTween = Tween.get(this._axisPuyoShape)
-			.to({x: fromAxisX})
-			.to({x: toAxisX}, Math.abs(diffX) * TsumoCanvas.MOVE_VEL * val);
+			.to({x: fromX})
+			.to({x: toX}, Math.abs(diffAX) * TsumoCanvas.MOVE_VEL * val);
 
 		// child
-		const fromChildX = this._childPuyoShape.x;
-		const toChildX = fromChildX + TsumoCellShape.CELLSIZE * diffX;
 		const childTween = Tween.get(this._childPuyoShape)
-			.to({x: fromChildX})
-			.to({x: toChildX}, Math.abs(diffX) * TsumoCanvas.MOVE_VEL * val);
+			.to({x: fromX})
+			.to({x: toX}, Math.abs(diffAX) * TsumoCanvas.MOVE_VEL * val);
 
 		return [axisTween, childTween];
 	}
@@ -80,27 +82,27 @@ export class TsumoCanvas extends BaseCanvas {
 	 * @param beforePosition 
 	 * @param diffX 
 	 */
-	public getRotateTween(diffX: number, beforePosition: EnumTsumoPosition, afterPosition: EnumTsumoPosition): Tween[] {
+	public getRotateTween(fromAxisAX: number, toAxisAX: number, beforePosition: EnumTsumoPosition, afterPosition: EnumTsumoPosition): Tween[] {
 		const val = Util.getAnimateMode();
 		
 		// axis
-		const fromAxisX = this._axisPuyoShape.x;
-		const toAxisX = fromAxisX + TsumoCellShape.CELLSIZE * diffX;
+		const fromAxisX = TsumoCellShape.CELLSIZE * fromAxisAX;
+		const toAxisX = TsumoCellShape.CELLSIZE * toAxisAX;
 		const axisTween = Tween.get(this._axisPuyoShape)
 			.to({x: fromAxisX})
 			.to({x: toAxisX}, TsumoCanvas.ROTATE_VEL * val);
 		
 		// child(X)
-		const fromChildX = this._childPuyoShape.x;
-		const toChildX = fromChildX + TsumoCellShape.CELLSIZE * (afterPosition.childRelativeX - beforePosition.childRelativeX + diffX);
+		const fromChildX = TsumoCellShape.CELLSIZE * (fromAxisAX + beforePosition.childRelativeX);
+		const toChildX = TsumoCellShape.CELLSIZE * (toAxisAX + afterPosition.childRelativeX);
 		const easeX = (beforePosition == EnumTsumoPosition.TOP || beforePosition == EnumTsumoPosition.BOTTOM) ? Ease.sineOut : Ease.sineIn;
 		const childXTween = Tween.get(this._childPuyoShape)
 			.to({x: fromChildX})
 			.to({x: toChildX}, TsumoCanvas.ROTATE_VEL * val, easeX);
 
 		//child(Y)
-		const fromChildY = this._childPuyoShape.y;
-		const toChildY = fromChildY + TsumoCellShape.CELLSIZE * (afterPosition.childRelativeY - beforePosition.childRelativeY) * (-1);	// ロジック上のy方向とcanvas上のy方向が異なるため
+		const fromChildY = TsumoCellShape.CELLSIZE * TsumoCanvas.convertY(1 + beforePosition.childRelativeY);
+		const toChildY = TsumoCellShape.CELLSIZE * TsumoCanvas.convertY(1 + afterPosition.childRelativeY);
 		const easeY = (beforePosition == EnumTsumoPosition.TOP || beforePosition == EnumTsumoPosition.BOTTOM) ? Ease.sineIn : Ease.sineOut;
 		const childYTween = Tween.get(this._childPuyoShape)
 			.to({y: fromChildY})
@@ -120,23 +122,22 @@ export class TsumoCanvas extends BaseCanvas {
 	/**
 	 * 
 	 */
-	public getDropTween(): Tween[] {
+	public getDropTween(beforePosition: EnumTsumoPosition): Tween[] {
 		const val = Util.getAnimateMode();
-		const diffY = 3;
 
 		// axis
-		const fromAxisY = this._axisPuyoShape.y;
-		const toAxisY = fromAxisY + TsumoCellShape.CELLSIZE * diffY;
+		const fromAxisY = TsumoCellShape.CELLSIZE * TsumoCanvas.convertY(1);
+		const toAxisY = TsumoCellShape.CELLSIZE * TsumoCanvas.convertY(-2);
 		const axisTween = Tween.get(this._axisPuyoShape)
 			.to({y: fromAxisY})
-			.to({y: toAxisY}, Math.abs(diffY) * TsumoCanvas.DROP_VEL * val);
+			.to({y: toAxisY}, 3 * TsumoCanvas.DROP_VEL * val);
 
 		// child
-		const fromChildY = this._childPuyoShape.y;
-		const toChildY = fromChildY + TsumoCellShape.CELLSIZE * diffY;
+		const fromChildY = TsumoCellShape.CELLSIZE * TsumoCanvas.convertY(1 + beforePosition.childRelativeY);
+		const toChildY = TsumoCellShape.CELLSIZE * TsumoCanvas.convertY(-2 + beforePosition.childRelativeY);
 		const childTween = Tween.get(this._childPuyoShape)
 			.to({y: fromChildY})
-			.to({y: toChildY}, Math.abs(diffY) * TsumoCanvas.DROP_VEL * val);
+			.to({y: toChildY}, 3 * TsumoCanvas.DROP_VEL * val);
 		
 		return [axisTween, childTween];
 	}

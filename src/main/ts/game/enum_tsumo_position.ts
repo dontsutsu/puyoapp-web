@@ -41,6 +41,12 @@ export class EnumTsumoPosition {
 		return rtn;
 	}
 
+	public static fromName(name: string): EnumTsumoPosition {
+		const rtn = EnumTsumoPosition.VALUES.find(position => position._name == name);
+		if (rtn == undefined) throw Error("illegal argument");
+		return rtn;
+	}
+
 	// ACCESSOR
 	get name(): string {
 		return this._name;

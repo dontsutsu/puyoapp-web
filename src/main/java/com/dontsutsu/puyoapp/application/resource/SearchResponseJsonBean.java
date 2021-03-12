@@ -23,12 +23,10 @@ public class SearchResponseJsonBean implements Serializable {
 			for (int j = 0; j < tsumoList.size(); j++) {
 				ResponseTsumoData data = new ResponseTsumoData();
 				Tsumo t = tsumoList.get(j);
-				data.setAx(t.getAxisX() + "");
-				data.setAy(1 + "");
-				data.setAc(t.getAxisPuyo().getColor() + "");
-				data.setCx(t.getChildX() + "");
-				data.setCy((1 + t.getChildPosition().getChildRelativeY()) + "");
-				data.setCc(t.getChildPuyo().getColor() + "");
+				data.setAxisColor(t.getAxisPuyo().getColor() + "");
+				data.setChildColor(t.getChildPuyo().getColor() + "");
+				data.setAxisX(t.getAxisX() + "");
+				data.setTsumoPosition(t.getChildPosition().getName());
 				list2.add(data);
 			}
 			correctList.add(list2);
@@ -46,47 +44,33 @@ public class SearchResponseJsonBean implements Serializable {
 	}
 
 	public class ResponseTsumoData {
-		private String ax;
-		private String ay;
-		private String ac;
-		private String cx;
-		private String cy;
-		private String cc;
-		public String getAx() {
-			return ax;
+		private String axisColor;
+		private String childColor;
+		private String tsumoPosition;
+		private String axisX;
+		public String getAxisColor() {
+			return axisColor;
 		}
-		public void setAx(String ax) {
-			this.ax = ax;
+		public void setAxisColor(String axisColor) {
+			this.axisColor = axisColor;
 		}
-		public String getAy() {
-			return ay;
+		public String getChildColor() {
+			return childColor;
 		}
-		public void setAy(String ay) {
-			this.ay = ay;
+		public void setChildColor(String childColor) {
+			this.childColor = childColor;
 		}
-		public String getAc() {
-			return ac;
+		public String getTsumoPosition() {
+			return tsumoPosition;
 		}
-		public void setAc(String ac) {
-			this.ac = ac;
+		public void setTsumoPosition(String tsumoPosition) {
+			this.tsumoPosition = tsumoPosition;
 		}
-		public String getCx() {
-			return cx;
+		public String getAxisX() {
+			return axisX;
 		}
-		public void setCx(String cx) {
-			this.cx = cx;
-		}
-		public String getCy() {
-			return cy;
-		}
-		public void setCy(String cy) {
-			this.cy = cy;
-		}
-		public String getCc() {
-			return cc;
-		}
-		public void setCc(String cc) {
-			this.cc = cc;
+		public void setAxisX(String axisX) {
+			this.axisX = axisX;
 		}
 	}
 

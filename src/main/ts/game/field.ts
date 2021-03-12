@@ -107,6 +107,19 @@ export class Field {
 	}
 
 	/**
+	 * 
+	 */
+	public toString(): string {
+		let str = "";
+		for (let y = 0; y < Field.Y_SIZE; y++) {
+			for (let x = 0; x < Field.X_SIZE; x++) {
+				str += this._fieldArray[y][x].color;
+			}
+		}
+		return str;
+	}
+
+	/**
 	 * フィールドで浮いているぷよを落とします。
 	 */
 	private drop(): Timeline {

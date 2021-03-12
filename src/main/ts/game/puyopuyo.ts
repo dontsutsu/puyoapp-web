@@ -3,6 +3,7 @@ import { NextCanvas } from "../canvas/next_canvas";
 import { TimelineList } from "../canvas/timeline/timeline_list";
 import { TsumoCanvas } from "../canvas/tsumo_canvas";
 import { Field } from "./field";
+import { Tsumo } from "./tsumo";
 import { Tsumos } from "./tsumos";
 
 export class Puyopuyo {
@@ -74,5 +75,20 @@ export class Puyopuyo {
 	 */
 	public advanceTsumo(): TimelineList {
 		return this._tsumos.advance();
+	}
+
+	/**
+	 * 
+	 */
+	public getFieldString(): string {
+		return this._field.toString();
+	}
+
+	/**
+	 * 
+	 * @param tsumoList 
+	 */
+	public setTsumoList(tsumoList: Tsumo[]): void {
+		this._tsumos.set(tsumoList);
 	}
 }

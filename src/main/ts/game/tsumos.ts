@@ -33,10 +33,9 @@ export class Tsumos {
 		const toX = this._list[0].axisX;
 
 		// アニメーション
-		const diffX = toX - fromX;
 		const timelineList = new TimelineList();
 		const timeline = new Timeline({paused: true});
-		const tweenList = this._tsumoCanvas.getMoveTween(diffX);
+		const tweenList = this._tsumoCanvas.getMoveTween(fromX, toX);
 		timeline.addTween(...tweenList);
 		timelineList.push(timeline);
 		return timelineList;
@@ -54,10 +53,9 @@ export class Tsumos {
 		const afterPosition = this._list[0].tsumoPosition;
 
 		// アニメーション
-		const diffX = toX - fromX;
 		const timelineList = new TimelineList();
 		const timeline = new Timeline({paused: true});
-		const tweenList = this._tsumoCanvas.getRotateTween(diffX, beforePosition, afterPosition);
+		const tweenList = this._tsumoCanvas.getRotateTween(fromX, toX, beforePosition, afterPosition);
 		timeline.addTween(...tweenList);
 		timelineList.push(timeline);
 		return timelineList;
@@ -71,7 +69,8 @@ export class Tsumos {
 		// アニメーション
 		const timelineList = new TimelineList();
 		const timeline = new Timeline({paused: true});
-		const tweenList = this._tsumoCanvas.getDropTween();		
+		const tsumoPosition = this._list[0].tsumoPosition;
+		const tweenList = this._tsumoCanvas.getDropTween(tsumoPosition);		
 		timeline.addTween(...tweenList);
 		timelineList.push(timeline);
 		return {currentTsumo: this._list[0], dropTsumoTimelineList: timelineList};
@@ -103,6 +102,19 @@ export class Tsumos {
 		timeline.addTween(...tsumoTweenList, ...nextTweenList);
 		timelineList.push(timeline);
 		return timelineList;
+	}
+
+	/**
+	 * 
+	 */
+	public set(tsumoList: Tsumo[]): void {
+		this._list.length = 0;
+		for (let i = 0; i < tsumoList.length; i++) {
+			const tsumo = tsumoList[i];
+			this._list.push(new Tsumo(tsumo.axisColor, tsumo.childColor));
+		}
+		this._tsumoCanvas.init(this._list[0]);
+		this._nextCanvas.init(this._list[1], this._list[2]);
 	}
 
 	/**

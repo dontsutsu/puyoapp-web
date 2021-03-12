@@ -23,7 +23,7 @@ dependencies {
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	implementation 'com.dontsutsu:puyopuyo:0.0.1'
+	implementation 'com.dontsutsu:puyopuyo:0.0.2'
 }
 
 test {
