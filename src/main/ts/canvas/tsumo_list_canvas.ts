@@ -161,4 +161,16 @@ export class TsumoListCanvas extends BaseCanvas {
 
 		return true;
 	}
+
+	public setTsumoList(tsumoListStr: string): void {
+		for (let i = 0; i < tsumoListStr.length; i += 2) {
+			const index = i / 2;
+			const axisColor = tsumoListStr.charAt(i);
+			const childColor = tsumoListStr.charAt(i + 1);
+
+			this.changeColor(index, 1, axisColor);
+			this.changeColor(index, 0, childColor);
+		}
+		this._stage.update();
+	}
 }

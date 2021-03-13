@@ -119,6 +119,15 @@ export class Field {
 		return str;
 	}
 
+	public setField(fieldStr: string): void {
+		for (let i = 0; i < fieldStr.length; i++) {
+			const color = fieldStr.charAt(i);
+			const x = i % Field.X_SIZE;
+			const y = i / Field.X_SIZE | 0;
+			this.changeFieldPuyo(x, y, color);
+		}
+	}
+
 	/**
 	 * フィールドで浮いているぷよを落とします。
 	 */

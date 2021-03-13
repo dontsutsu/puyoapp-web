@@ -16,8 +16,24 @@ export class Editor extends EditableMode {
 		$("#drop").on("click", () => {
 			if (this._timelineList.isAnimation) return;
 
-			this._timelineList = this._puyopuyo.dropFieldPuyo();
+			this.doWithRecordHistory(() => {
+				this._timelineList = this._puyopuyo.dropFieldPuyo();
+			});
 			this._timelineList.play();
 		});
+	}
+	
+	/**
+	 * @inheritdoc
+	 */
+	protected getState(): string {
+		return this._puyopuyo.getFieldString();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected setState(state: string): void {
+		this._puyopuyo.setField(state);
 	}
 }

@@ -6,6 +6,7 @@ import { Tsumo } from "../game/tsumo";
 import { TimelineList } from "../canvas/timeline/timeline_list";
 import { BasePuyo } from "../game/puyo/base_puyo";
 import { EnumTsumoPosition } from "../game/enum_tsumo_position";
+import { Field } from "../game/field";
 
 $(() => {
 	new Nazotoki();
@@ -51,7 +52,29 @@ export class Nazotoki extends EditableMode {
 	 */
 	public changeTsumoListPuyo(index: number, type: number): void {
 		const color = this.getSelectColor();
-		this._tsumoListCanvas.changeColor(index, type, color);
+		this.doWithRecordHistory(() => {
+			this._tsumoListCanvas.changeColor(index, type, color);
+		});
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected getState(): string {
+		return this._puyopuyo.getFieldString() + this._tsumoListCanvas.getTsumoListString();
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	protected setState(state: string) {
+		const lenField = Field.X_SIZE * Field.Y_SIZE;
+
+		const field = state.substring(0, lenField);
+		const tsumoList = state.substring(lenField, state.length);
+
+		this._puyopuyo.setField(field);
+		this._tsumoListCanvas.setTsumoList(tsumoList);
 	}
 
 	/**

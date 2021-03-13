@@ -91,4 +91,8 @@ export class Puyopuyo {
 	public setTsumoList(tsumoList: Tsumo[]): void {
 		this._tsumos.set(tsumoList);
 	}
+
+	public setField(fieldStr: string): void {
+		this._field.setField(fieldStr);
+	}
 }

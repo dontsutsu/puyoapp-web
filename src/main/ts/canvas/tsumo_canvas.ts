@@ -56,22 +56,23 @@ export class TsumoCanvas extends BaseCanvas {
 	 * @param toAX 
 	 * @returns 
 	 */
-	public getMoveTween(fromAX: number, toAX: number): Tween[] {
+	public getMoveTween(fromAX: number, toAX: number, position: EnumTsumoPosition): Tween[] {
 		const val = Util.getAnimateMode();
 		const diffAX = toAX - fromAX;
 
-		const fromX = TsumoCellShape.CELLSIZE * fromAX;
-		const toX = TsumoCellShape.CELLSIZE * toAX;
-		
 		// axis
+		const fromAxisX = TsumoCellShape.CELLSIZE * fromAX;
+		const toAxisX = TsumoCellShape.CELLSIZE * toAX;
 		const axisTween = Tween.get(this._axisPuyoShape)
-			.to({x: fromX})
-			.to({x: toX}, Math.abs(diffAX) * TsumoCanvas.MOVE_VEL * val);
+			.to({x: fromAxisX})
+			.to({x: toAxisX}, Math.abs(diffAX) * TsumoCanvas.MOVE_VEL * val);
 
 		// child
+		const fromChildX = TsumoCellShape.CELLSIZE * (fromAX + position.childRelativeX);
+		const toChildX = TsumoCellShape.CELLSIZE * (toAX + position.childRelativeX);
 		const childTween = Tween.get(this._childPuyoShape)
-			.to({x: fromX})
-			.to({x: toX}, Math.abs(diffAX) * TsumoCanvas.MOVE_VEL * val);
+			.to({x: fromChildX})
+			.to({x: toChildX}, Math.abs(diffAX) * TsumoCanvas.MOVE_VEL * val);
 
 		return [axisTween, childTween];
 	}

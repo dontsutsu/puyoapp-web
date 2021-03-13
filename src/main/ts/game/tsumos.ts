@@ -35,7 +35,7 @@ export class Tsumos {
 		// アニメーション
 		const timelineList = new TimelineList();
 		const timeline = new Timeline({paused: true});
-		const tweenList = this._tsumoCanvas.getMoveTween(fromX, toX);
+		const tweenList = this._tsumoCanvas.getMoveTween(fromX, toX, this._list[0].tsumoPosition);
 		timeline.addTween(...tweenList);
 		timelineList.push(timeline);
 		return timelineList;
