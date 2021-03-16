@@ -1,4 +1,4 @@
-import { Timeline, Tween } from "@createjs/tweenjs";
+import { Timeline } from "@createjs/tweenjs";
 import { FieldCanvas } from "../canvas/field_canvas";
 import { TimelineList } from "../canvas/timeline/timeline_list";
 import { EnumTsumoPosition } from "./enum_tsumo_position";
@@ -11,6 +11,8 @@ export class Field {
 	// CONSTANT
 	public static readonly X_SIZE = 6;
 	public static readonly Y_SIZE = 13;
+	public static readonly DEAD_X = 2;
+	public static readonly DEAD_Y = 11;
 
 	// CLASS FIELD
 	private _fieldArray: FieldPuyo[][];
@@ -119,6 +121,10 @@ export class Field {
 		return str;
 	}
 
+	/**
+	 * 
+	 * @param fieldStr 
+	 */
 	public setField(fieldStr: string): void {
 		for (let i = 0; i < fieldStr.length; i++) {
 			const color = fieldStr.charAt(i);
@@ -126,6 +132,25 @@ export class Field {
 			const y = i / Field.X_SIZE | 0;
 			this.changeFieldPuyo(x, y, color);
 		}
+	}
+
+	/**
+	 * 
+	 */
+	public getHeights(): number[] {
+		const heights = [];
+		for (let x = 0; x < Field.X_SIZE; x++) {
+			const y = this.getDropToY(x);
+			heights.push(y);
+		}
+		return heights;
+	}
+
+	/**
+	 * 
+	 */
+	public isDead(): boolean {
+		return this._fieldArray[Field.DEAD_Y][Field.DEAD_X].color != BasePuyo.NONE;
 	}
 
 	/**

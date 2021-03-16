@@ -92,7 +92,36 @@ export class Puyopuyo {
 		this._tsumos.set(tsumoList);
 	}
 
+	/**
+	 * 
+	 * @param fieldStr 
+	 */
 	public setField(fieldStr: string): void {
 		this._field.setField(fieldStr);
+	}
+
+	/**
+	 * 
+	 */
+	public isDroppableTsumo(): boolean {
+		const fieldHeights = this._field.getHeights();
+		
+		const axisX = this._tsumos.current.axisX;
+		const childX = this._tsumos.current.childX;
+		return fieldHeights[axisX] <= Field.Y_SIZE && fieldHeights[childX] <= Field.Y_SIZE;
+	}
+
+	/**
+	 * 
+	 */
+	public isDead(): boolean {
+		return this._field.isDead();
+	}
+
+	/**
+	 * 
+	 */
+	public backTsumo(): void {
+		return this._tsumos.back();
 	}
 }

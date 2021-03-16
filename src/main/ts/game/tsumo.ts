@@ -50,7 +50,7 @@ export class Tsumo {
 	 * 
 	 * @param clockwise 
 	 */
-	public rotate(clockwise: boolean) {
+	public rotate(clockwise: boolean): void {
 		this._tsumoPosition = this._tsumoPosition.getRotatedEnum(clockwise);
 		if (this._axisX == Field.X_SIZE - 1 && this._tsumoPosition == EnumTsumoPosition.RIGHT) this._axisX = Field.X_SIZE - 2;
 		if (this._axisX == 0 && this._tsumoPosition == EnumTsumoPosition.LEFT) this._axisX = 1;
@@ -62,6 +62,14 @@ export class Tsumo {
 	 */
 	public setTsumoPositionByEnumName(name: string): void {
 		this._tsumoPosition = EnumTsumoPosition.fromName(name);
+	}
+
+	/**
+	 * 
+	 */
+	public resetPosition(): void {
+		this._tsumoPosition = EnumTsumoPosition.TOP;
+		this._axisX = Tsumo.INI_AXIS_X;
 	}
 
 	// ACCESSOR

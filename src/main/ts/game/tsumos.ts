@@ -117,6 +117,19 @@ export class Tsumos {
 		this._nextCanvas.init(this._list[1], this._list[2]);
 	}
 
+	public back(): void {
+		// backのときは現在のツモの位置をリセットしておく
+		this._list[0].resetPosition();
+
+		const tail = this._list.pop();
+		if (tail == undefined) throw Error();
+		
+		this._list.unshift(tail);
+
+		this._tsumoCanvas.set(this._list[0]);
+		this._nextCanvas.set(this._list[1], this._list[2]);
+	}
+
 	/**
 	 * 
 	 */
@@ -158,5 +171,10 @@ export class Tsumos {
 			&& list[1] != list[2]
 			&& list[1] != list[3]
 			&& list[2] != list[3];
+	}
+
+	// ACCESSOR
+	get current(): Tsumo {
+		return this._list[0];
 	}
 }

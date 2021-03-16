@@ -176,4 +176,14 @@ export class TsumoCanvas extends BaseCanvas {
 		
 		return [axisTween, childTween];
 	}
+
+	/**
+	 * 
+	 */
+	public set(tsumo: Tsumo): void {
+		// 現在のshapeをremove
+		this._container.removeChild(this._axisPuyoShape, this._childPuyoShape);
+
+		this.init(tsumo);
+	}
 }

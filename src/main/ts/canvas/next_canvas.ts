@@ -122,6 +122,16 @@ export class NextCanvas extends BaseCanvas {
 
 	/**
 	 * 
+	 * @param next 
+	 * @param doubleNext 
+	 */
+	public set(next: Tsumo, doubleNext: Tsumo): void {
+		this._container.removeChild(this._nextAxisPuyoShape, this._nextChildPuyoShape, this._doubleNextAxisPuyoShape, this._doubleNextChildPuyoShape);
+		this.init(next, doubleNext);
+	}
+
+	/**
+	 * 
 	 */
 	private createFrameContainer(): Container {
 		const deg = NextCanvas.FRAME_SKEW_DEG;
