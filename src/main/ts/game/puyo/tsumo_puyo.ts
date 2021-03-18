@@ -5,7 +5,7 @@ export class TsumoPuyo extends BasePuyo {
 
 	/**
 	 * コンストラクタ
-	 * @param color 色
+	 * @param {string} color 色
 	 */
 	constructor(color: string) {
 		super(color);

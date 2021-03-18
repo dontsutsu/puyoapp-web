@@ -11,11 +11,11 @@ export class BaseCellShape extends Shape {
 
 	/**
 	 * コンストラクタ
-	 * @param x createjs.Shape.x に設定する値
-	 * @param y createjs.Shape.y に設定する値
-	 * @param cellsize セルのサイズ
-	 * @param bgColor 背景色
-	 * @param borderColor 枠の色
+	 * @param {number} x createjs.Shape.x に設定する値
+	 * @param {number} y createjs.Shape.y に設定する値
+	 * @param {number} cellsize セルのサイズ
+	 * @param {string} bgColor 背景色
+	 * @param {string} [borderColor] 枠の色
 	 */
 	constructor(x: number, y: number, cellsize: number, bgColor: string, borderColor: string = BaseCellShape.BORDER_COLOR) {
 		super();
@@ -31,7 +31,7 @@ export class BaseCellShape extends Shape {
 
 	/**
 	 * 背景色を変更します。
-	 * @param bgColor
+	 * @param {string} bgColor
 	 */
 	public changeBgColor(bgColor: string): void {
 		this._bgColor = bgColor;

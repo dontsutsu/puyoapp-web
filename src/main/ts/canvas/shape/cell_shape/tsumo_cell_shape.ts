@@ -7,8 +7,8 @@ export class TsumoCellShape extends BaseCellShape {
 
 	/**
 	 * コンストラクタ
-	 * @param x x座標
-	 * @param y y座標
+	 * @param {number} ax x座標
+	 * @param {number} ay y座標
 	 */
 	constructor(ax: number, ay: number) {
 		const x = TsumoCellShape.CELLSIZE * ax;

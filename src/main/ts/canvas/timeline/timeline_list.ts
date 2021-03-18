@@ -15,8 +15,8 @@ export class TimelineList {
 
 	/**
 	 * 
-	 * @param timeline 
-	 * @returns 
+	 * @param {Timeline} timeline 
+	 * @returns {number}
 	 */
 	public push(timeline: Timeline): number {
 		return this._timelineList.push(timeline);
@@ -24,7 +24,8 @@ export class TimelineList {
 
 	/**
 	 * 
-	 * @param timelineListArray 
+	 * @param {TimelineList[]} timelineListArray 
+	 * @returns {TimelineList}
 	 */
 	public add(...timelineListArray: TimelineList[]): TimelineList {
 		for (let i = 0; i < timelineListArray.length; i++) {

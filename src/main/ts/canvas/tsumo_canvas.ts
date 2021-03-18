@@ -42,7 +42,7 @@ export class TsumoCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param tsumo 
+	 * @param {Tsumo} tsumo 
 	 */
 	public init(tsumo: Tsumo): void {
 		this._axisPuyoShape = new TsumoPuyoShape(tsumo.axisX, tsumo.axisY, tsumo.axisColor);
@@ -52,9 +52,10 @@ export class TsumoCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param fromAX 
-	 * @param toAX 
-	 * @returns 
+	 * @param {number} fromAX 
+	 * @param {number} toAX
+	 * @param {EnumTsumoPosition} position 
+	 * @returns {Tween[]}
 	 */
 	public getMoveTween(fromAX: number, toAX: number, position: EnumTsumoPosition): Tween[] {
 		const val = Util.getAnimateMode();
@@ -79,9 +80,11 @@ export class TsumoCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param clockwise 
-	 * @param beforePosition 
-	 * @param diffX 
+	 * @param {number} fromAxisAX 
+	 * @param {number} toAxisAX 
+	 * @param {EnumTsumoPosition} beforePosition 
+	 * @param {EnumTsumoPosition} afterPosition 
+	 * @returns {Tween[]}
 	 */
 	public getRotateTween(fromAxisAX: number, toAxisAX: number, beforePosition: EnumTsumoPosition, afterPosition: EnumTsumoPosition): Tween[] {
 		const val = Util.getAnimateMode();
@@ -114,14 +117,16 @@ export class TsumoCanvas extends BaseCanvas {
 
 	/**
 	 * ロジック上のy方向とcanvas上のy方向が異なるため、yの値を変換します。
-	 * @param y 
+	 * @param {number} y
+	 * @returns {number} 
 	 */
 	public static convertY(y: number): number {
 		return TsumoCanvas.Y_SIZE - 1 - y;
 	}
 
 	/**
-	 * 
+	 * @param {EnumTsumoPosition} beforePosition
+	 * @returns {Tween[]}
 	 */
 	public getDropTween(beforePosition: EnumTsumoPosition): Tween[] {
 		const val = Util.getAnimateMode();
@@ -145,7 +150,8 @@ export class TsumoCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param tsumo 
+	 * @param {Tsumo} tsumo
+	 * @returns {Tween[]} 
 	 */
 	public advance(tsumo: Tsumo): Tween[] {
 		const val = Util.getAnimateMode();
@@ -178,7 +184,7 @@ export class TsumoCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
+	 * @param {Tsumo} tsumo
 	 */
 	public set(tsumo: Tsumo): void {
 		// 現在のshapeをremove

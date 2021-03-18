@@ -10,11 +10,12 @@ export abstract class BaseMode {
 	protected _fieldCanvas: FieldCanvas;
 	protected _tsumoCanvas: TsumoCanvas;
 	protected _nextCanvas: NextCanvas;
-
-	protected _timelineList: TimelineList;
-
 	protected _puyopuyo: Puyopuyo;
-
+	protected _timelineList: TimelineList;
+	
+	/**
+	 * コンストラクタ
+	 */
 	constructor() {
 		// createjsで使用するアニメーションのフレームレートを設定しておく
 		Ticker.timingMode = Ticker.RAF;
@@ -22,9 +23,7 @@ export abstract class BaseMode {
 		this._fieldCanvas = new FieldCanvas();
 		this._tsumoCanvas = new TsumoCanvas();
 		this._nextCanvas = new NextCanvas();
-
 		this._puyopuyo = new Puyopuyo(this._fieldCanvas, this._tsumoCanvas, this._nextCanvas);
-
 		this._timelineList = new TimelineList;
 	}
 }

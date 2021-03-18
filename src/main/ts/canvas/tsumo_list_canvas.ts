@@ -80,7 +80,7 @@ export class TsumoListCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param nazotoki 
+	 * @param {Nazotoki} nazotoki 
 	 */
 	public setMouseEvent(nazotoki: Nazotoki): void {
 		for (const indexArray of this._cellShapeArray) {
@@ -107,9 +107,9 @@ export class TsumoListCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param index 
-	 * @param type 
-	 * @param color 
+	 * @param {number} index 
+	 * @param {number} type 
+	 * @param {string} color 
 	 */
 	public changeColor(index: number, type: number, color: string): void {
 		this._colorArray[index][type] = color;
@@ -117,7 +117,7 @@ export class TsumoListCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
+	 * @returns {string}
 	 */
 	public getTsumoListString(): string {
 		let str = "";
@@ -129,7 +129,7 @@ export class TsumoListCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
+	 * @returns {boolean}
 	 */
 	public check(): boolean {
 		let noneFlg = false;
@@ -162,6 +162,10 @@ export class TsumoListCanvas extends BaseCanvas {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param {string} tsumoListStr 
+	 */
 	public setTsumoList(tsumoListStr: string): void {
 		for (let i = 0; i < tsumoListStr.length; i += 2) {
 			const index = i / 2;

@@ -3,7 +3,8 @@ import $ from "jquery";
 export class Util {
 	/**
 	 * 角度（度数法）から正弦を取得します。
-	 * @param degree 角度（度数法） 
+	 * @param {number} degree 角度（度数法）
+	 * @returns {number} 正弦
 	 */
 	public static sin(degree: number): number {
 		return Math.sin(degree * (Math.PI / 180));
@@ -11,17 +12,19 @@ export class Util {
 
 	/**
 	 * 角度（度数法）から余弦を取得します。
-	 * @param degree 角度（度数法） 
+	 * @param {number} degree 角度（度数法） 
+	 * @returns {number} 余弦
 	 */
 	public static cos(degree: number): number {
 		return Math.cos(degree * (Math.PI / 180));
 	}
 
 	/**
-	 * 
-	 * @param workList 
+	 * 配列をシャッフルします。
+	 * @param {T[]} array 配列
+	 * @returns {T[]} 引数の配列をシャッフルした配列
 	 */
-	public static shuffle([...array]) {
+	public static shuffle<T>(array: T[]): T[] {
 		for (let i = array.length - 1; i >= 0; i--) {
 			const j = Math.random() * (i + 1) | 0;
 			[array[i], array[j]] = [array[j], array[i]];
@@ -30,7 +33,7 @@ export class Util {
 	}
 
 	/**
-	 * @return 1：アニメーション、0：ステップ
+	 * @returns {number} 1：アニメーション、0：ステップ
 	 */
 	 public static getAnimateMode(): number {
 		return $("input:radio[name='animation']:checked").val() as number;
@@ -38,7 +41,7 @@ export class Util {
 
 	/**
 	 * ローディング画面を表示します。
-	 * @param msg メッセージ
+	 * @param {string} msg メッセージ
 	 */
 	 public static dispLoading(msg: string): void {
 		$("#loadMsg").text(msg);
@@ -54,10 +57,10 @@ export class Util {
 
 	/**
 	 * ダイアログを表示します。
-	 * @param msg メッセージ
-	 * @param level エラーレベル "0":info、"1":warning、"2":error （デフォルトは"1"）
+	 * @param {string} msg メッセージ
+	 * @param {string} [level] エラーレベル "0"：info、"1"：warning、"2"：error （デフォルトは"1"）
 	 */
-	public static dispMsg(msg: string, level: string): void {
+	public static dispMsg(msg: string, level: string = "1"): void {
 		const dispTime = 3000;
 
 		if (msg == undefined) {
@@ -103,5 +106,4 @@ export class Util {
 			});
 		});
 	}
-
 }

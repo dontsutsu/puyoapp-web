@@ -14,8 +14,8 @@ export class Tsumos {
 
 	/**
 	 * コンストラクタ
-	 * @param tsumoCanvas 
-	 * @param nextCanvas 
+	 * @param {TsumoCanvas} tsumoCanvas 
+	 * @param {NextCanvas} nextCanvas 
 	 */
 	constructor(tsumoCanvas: TsumoCanvas, nextCanvas: NextCanvas) {
 		this._list = [];
@@ -24,8 +24,9 @@ export class Tsumos {
 	}
 
 	/**
-	 * 
-	 * @param vec 
+	 * ツモを動かします。
+	 * @param {number} vec 動かす距離と方向（ex　右に1：+1、左に2：-2）
+	 * @returns {TimelineList}
 	 */
 	public moveCurrentTsumo(vec: number): TimelineList {
 		const fromX = this._list[0].axisX;
@@ -42,8 +43,9 @@ export class Tsumos {
 	}
 
 	/**
-	 * 
-	 * @param clockwise 
+	 * ツモを回転します。
+	 * @param {boolean} clockwise true：時計周り / false：反時計周り
+	 * @returns {TimelineList}
 	 */
 	public rotateCurrentTsumo(clockwise: boolean): TimelineList {
 		const fromX = this._list[0].axisX;
@@ -62,8 +64,8 @@ export class Tsumos {
 	}
 
 	/**
-	 * 
-	 * @return 
+	 * 現在のツモを取得します。
+	 * @returns {currentTsumo: Tsumo, dropTsumoTimelineList: TimelineList}
 	 */
 	public getCurrentTsumo(): {currentTsumo: Tsumo, dropTsumoTimelineList: TimelineList} {
 		// アニメーション
@@ -77,7 +79,7 @@ export class Tsumos {
 	}
 
 	/**
-	 * 
+	 * リセットします。
 	 */
 	public reset(): void {
 		this.initList();
@@ -86,7 +88,8 @@ export class Tsumos {
 	}
 
 	/**
-	 * 
+	 * ツモを1つ進めます。
+	 * @returns {TimelineList}
 	 */
 	public advance(): TimelineList {
 		const head = this._list.shift();
@@ -105,7 +108,8 @@ export class Tsumos {
 	}
 
 	/**
-	 * 
+	 * ツモのリストをセットします。
+	 * @param {Tsumo[]} tsumoList
 	 */
 	public set(tsumoList: Tsumo[]): void {
 		this._list.length = 0;
@@ -117,6 +121,9 @@ export class Tsumos {
 		this._nextCanvas.init(this._list[1], this._list[2]);
 	}
 
+	/**
+	 * ツモを1つ戻します。
+	 */
 	public back(): void {
 		// backのときは現在のツモの位置をリセットしておく
 		this._list[0].resetPosition();
@@ -131,7 +138,8 @@ export class Tsumos {
 	}
 
 	/**
-	 * 
+	 * ツモのリストを初期化します。（とこぷよ用）
+	 * 128[手] = 4[色] * 64[ぷよ/色] / 2[ぷよ/手]
 	 */
 	private initList(): void {
 		const colorList = [BasePuyo.GREEN, BasePuyo.RED, BasePuyo.BLUE, BasePuyo.YELLOW, BasePuyo.PURPLE];
@@ -161,8 +169,9 @@ export class Tsumos {
 	}
 
 	/**
-	 * 
-	 * @param list
+	 * 最初のツモ2手が4色であるか確認します。
+	 * @param {string[]} list
+	 * @returns {boolean} true：4色 / false：3色以下
 	 */
 	private isInitTsumoFourColor(list: string[]) : boolean {
 		return list[0] != list[1]

@@ -8,9 +8,9 @@ import { BasePuyoShape } from "./base_puyo_shape";
 export class BoxPuyoShape extends BasePuyoShape {
 	/**
 	 * コンストラクタ
-	 * @param x x座標
-	 * @param y y座標
-	 * @param color 色
+	 * @param {number} ax x座標
+	 * @param {number} ay y座標
+	 * @param {string} color 色
 	 */
 	constructor(ax: number, ay: number, color: string) {
 		const x = BoxCellShape.CELLSIZE * ax;

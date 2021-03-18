@@ -9,9 +9,9 @@ import { BasePuyoShape } from "./base_puyo_shape";
 export class FieldPuyoShape extends BasePuyoShape {
 	/**
 	 * コンストラクタ
-	 * @param ax x座標
-	 * @param ay y座標
-	 * @param color 色
+	 * @param {number} ax x座標
+	 * @param {number} ay y座標
+	 * @param {string} color 色
 	 */
 	constructor(ax: number, ay: number, color: string = BasePuyo.NONE) {
 		const x = FieldCellShape.CELLSIZE * ax;
@@ -21,7 +21,7 @@ export class FieldPuyoShape extends BasePuyoShape {
 
 	/**
 	 * 
-	 * @param eraseColor 
+	 * @param {string} eraseColor 
 	 */
 	public setStepEraseGraphics(eraseColor: string): void {
 		const cellsize = this.cellsize;

@@ -45,8 +45,8 @@ export class NextCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param next 
-	 * @param doubleNext 
+	 * @param {Tsumo} next 
+	 * @param {Tsumo} doubleNext 
 	 */
 	public init(next: Tsumo, doubleNext: Tsumo): void {
 		this._nextAxisPuyoShape = new NextPuyoShape(0, 1, next.axisColor);
@@ -58,7 +58,8 @@ export class NextCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param tsumo 
+	 * @param {Tsumo} tsumo 
+	 * @returns {Tween[]}
 	 */
 	public advance(tsumo: Tsumo): Tween[] {
 		const val = Util.getAnimateMode();
@@ -122,8 +123,8 @@ export class NextCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param next 
-	 * @param doubleNext 
+	 * @param {Tsumo} next 
+	 * @param {Tsumo} doubleNext 
 	 */
 	public set(next: Tsumo, doubleNext: Tsumo): void {
 		this._container.removeChild(this._nextAxisPuyoShape, this._nextChildPuyoShape, this._doubleNextAxisPuyoShape, this._doubleNextChildPuyoShape);
@@ -131,7 +132,7 @@ export class NextCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
+	 * @returns {Container}
 	 */
 	private createFrameContainer(): Container {
 		const deg = NextCanvas.FRAME_SKEW_DEG;

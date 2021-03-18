@@ -19,7 +19,7 @@ export class BoxCanvas extends BaseCanvas {
 	private static readonly X_SIZE = 5;
 	private static readonly Y_SIZE = 2;
 
-	// インスタンス変数
+	// CLASS FIELD
 	private _selectShape: Shape;
 	private _selectColor!: string;	// constructorでsetSelectShapeを呼んでいるので初期化チェックしない
 
@@ -91,8 +91,8 @@ export class BoxCanvas extends BaseCanvas {
 	/**
 	 * 指定の座標のぷよを選択中に設定します。
 	 * 選択中のぷよは赤枠で囲みます。
-	 * @param x x座標
-	 * @param y y座標
+	 * @param {number} x x座標
+	 * @param {number} y y座標
 	 */
 	private setSelectShape(x: number, y: number): void {
 		const i = x + y * 5;

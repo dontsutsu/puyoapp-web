@@ -14,9 +14,9 @@ export class BoxCellShape extends BaseCellShape {
 
 	/**
 	 * コンストラクタ
-	 * @param ax
-	 * @param ay
-	 * @param index
+	 * @param {number} ax
+	 * @param {number} ay
+	 * @param {number} index
 	 */
 	constructor(ax: number, ay: number, index: number) {
 		const bgColor = index < BoxCanvas.KEY_ORDER.length ? BoxCellShape.ENABLED_COLOR : BoxCellShape.DISABLED_COLOR;

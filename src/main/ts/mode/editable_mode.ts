@@ -33,9 +33,9 @@ export abstract class EditableMode extends BaseMode {
 	}
 
 	/**
-	 *
-	 * @param x
-	 * @param y
+	 * フィールドの指定座標のぷよを変更します。
+	 * @param {number} x x座標
+	 * @param {number} y y座標
 	 */
 	public changeFieldPuyo(x: number, y: number): void {
 		const color = this.getSelectColor();
@@ -46,7 +46,7 @@ export abstract class EditableMode extends BaseMode {
 
 	/**
 	 * 選択している色を取得します。
-	 * @return 選択している色
+	 * @returns {string} 選択している色
 	 */
 	public getSelectColor(): string {
 		return this._boxCanvas.selectColor;
@@ -87,18 +87,19 @@ export abstract class EditableMode extends BaseMode {
 
 	/**
 	 * 履歴に保存する状態を取得します。
-	 * @return 状態
+	 * @returns {string} 状態
 	 */
 	protected abstract getState(): string;
 
 	/**
 	 * 履歴から取得した状態を反映します。
-	 * @param state 状態
+	 * @param {string} state 状態
 	 */
 	protected abstract setState(state: string): void;
 
 	/**
 	 * UNDO用の履歴を残します。
+	 * @param {string} state 
 	 */
 	private pushUndoStack(state: string): void {
 		this._undoStack.push(state);

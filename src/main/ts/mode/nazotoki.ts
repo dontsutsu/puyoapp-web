@@ -17,6 +17,9 @@ export class Nazotoki extends EditableMode {
 	private _tsumoListCanvas: TsumoListCanvas;
 	private _correctTsumoList: Tsumo[][];
 
+	/**
+	 * コンストラクタ
+	 */
 	constructor() {
 		super();
 		this._tsumoListCanvas = new TsumoListCanvas();
@@ -46,9 +49,9 @@ export class Nazotoki extends EditableMode {
 	}
 
 	/**
-	 * 
-	 * @param index 
-	 * @param type 
+	 * ツモリストの指定のindex、typeのぷよを変更します。
+	 * @param index index（0～9）
+	 * @param type 0：子ぷよ、1：軸ぷよ
 	 */
 	public changeTsumoListPuyo(index: number, type: number): void {
 		const color = this.getSelectColor();
@@ -79,7 +82,7 @@ export class Nazotoki extends EditableMode {
 
 	/**
 	 * 
-	 * @param nazoType 
+	 * @param nazoType なぞぷよの種類
 	 */
 	private nazoSwitch(nazoType: string): void {
 		$("#nazoRequire").children().remove();
@@ -177,7 +180,8 @@ export class Nazotoki extends EditableMode {
 	}
 
 	/**
-	 * 
+	 * 検索時のajax通信
+	 * @returns {JQuery.jqXHR<any>}
 	 */
 	private searchAjax(): JQuery.jqXHR<any> {
 		const fieldStr = this._puyopuyo.getFieldString();
@@ -202,8 +206,9 @@ export class Nazotoki extends EditableMode {
 	}
 
 	/**
-	 * 
+	 * searchAjaxのdataを変換します。
 	 * @param data 
+	 * @returns {Tsumo[][]}
 	 */
 	private convertSearchAjaxData(data: any): Tsumo[][] {
 		const dataCorrectList = data.correctList;
@@ -225,6 +230,7 @@ export class Nazotoki extends EditableMode {
 
 	/**
 	 * 
+	 * @returns {TimelineList}
 	 */
 	private playCorrect(): TimelineList {
 		const timelineList = new TimelineList();

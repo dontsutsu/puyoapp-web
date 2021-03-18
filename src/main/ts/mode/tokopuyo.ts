@@ -9,6 +9,9 @@ export class Tokopuyo extends BaseMode {
 	// CLASS FIELD
 	private _undoStack: string[];
 
+	/**
+	 * コンストラクタ
+	 */
 	constructor() {
 		super();
 		this._puyopuyo.initTokopuyo();

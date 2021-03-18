@@ -13,6 +13,9 @@ export class Puyopuyo {
 
 	/**
 	 * コンストラクタ
+	 * @param {FieldCanvas} fieldCanvas 
+	 * @param {TsumoCanvas} tsumoCanvas 
+	 * @param {NextCanvas} nextCanvas 
 	 */
 	constructor(fieldCanvas: FieldCanvas, tsumoCanvas: TsumoCanvas, nextCanvas: NextCanvas) {
 		this._field = new Field(fieldCanvas);
@@ -21,6 +24,7 @@ export class Puyopuyo {
 
 	/**
 	 * フィールドのぷよを落とし、連鎖処理を実行します。
+	 * @returns {TimelineList}
 	 */
 	public dropFieldPuyo(): TimelineList {
 		return this._field.dropFieldPuyo();
@@ -28,7 +32,8 @@ export class Puyopuyo {
 
 	/**
 	 * ツモを動かします。
-	 * @param vec 動かす距離と方向（ex　右に1：+1、左に2：-2）
+	 * @param {number} vec 動かす距離と方向（ex　右に1：+1、左に2：-2）
+	 * @returns {TimelineList}
 	 */
 	public moveTsumo(vec: number): TimelineList {
 		return this._tsumos.moveCurrentTsumo(vec);
@@ -36,7 +41,8 @@ export class Puyopuyo {
 
 	/**
 	 * ツモを回転します。
-	 * @param clockwise true：時計周り / false：反時計周り
+	 * @param {boolean} clockwise true：時計周り / false：反時計周り
+	 * @returns {TimelineList}
 	 */
 	public rotateTsumo(clockwise: boolean): TimelineList {
 		return this._tsumos.rotateCurrentTsumo(clockwise);
@@ -44,6 +50,7 @@ export class Puyopuyo {
 
 	/**
 	 * ツモをフィールドに落とします。
+	 * @returns {TimelineList}
 	 */
 	public dropTsumoToField(): TimelineList {
 		const {currentTsumo, dropTsumoTimelineList} = this._tsumos.getCurrentTsumo();
@@ -54,16 +61,16 @@ export class Puyopuyo {
 
 	/**
 	 * フィールドの指定座標のぷよを変更します。
-	 * @param x 
-	 * @param y 
-	 * @param color 
+	 * @param {number} x x座標
+	 * @param {number} y y座標
+	 * @param {string} color 変更する色
 	 */
 	public changeFieldPuyo(x: number, y: number, color: string): void {
 		this._field.changeFieldPuyo(x, y, color);
 	}
 
 	/**
-	 * 
+	 * とこぷよ開始時の初期化処理を行います。
 	 */
 	public initTokopuyo(): void {
 		this._field.reset();
@@ -71,55 +78,59 @@ export class Puyopuyo {
 	}
 
 	/**
-	 * 
+	 * ツモを1つ進めます。
+	 * @returns {TimelineList}
 	 */
 	public advanceTsumo(): TimelineList {
 		return this._tsumos.advance();
 	}
 
 	/**
-	 * 
+	 * フィールドを表す文字列を取得します。
+	 * @returns {string} フィールドを表す文字列
 	 */
 	public getFieldString(): string {
 		return this._field.toString();
 	}
 
 	/**
-	 * 
-	 * @param tsumoList 
+	 * ツモのリストをセットします。
+	 * @param {Tsumo[]} tsumoList 
 	 */
 	public setTsumoList(tsumoList: Tsumo[]): void {
 		this._tsumos.set(tsumoList);
 	}
 
 	/**
-	 * 
-	 * @param fieldStr 
+	 * フィールドを表す文字列から、フィールドを設定します。
+	 * @param {string} fieldStr フィールドを表す文字列
 	 */
 	public setField(fieldStr: string): void {
 		this._field.setField(fieldStr);
 	}
 
 	/**
-	 * 
+	 * 現在のツモをフィールドに落とせるかどうか判定します。
+	 * @returns {boolean} true：落とせる / false：落とせない
 	 */
 	public isDroppableTsumo(): boolean {
 		const fieldHeights = this._field.getHeights();
 		
 		const axisX = this._tsumos.current.axisX;
 		const childX = this._tsumos.current.childX;
-		return fieldHeights[axisX] <= Field.Y_SIZE && fieldHeights[childX] <= Field.Y_SIZE;
+		return fieldHeights[axisX] < Field.Y_SIZE && fieldHeights[childX] < Field.Y_SIZE;
 	}
 
 	/**
-	 * 
+	 * 死んでいるかどうかを判定します。
+	 * @returns {boolean} true：死んでいる / false：死んでいない
 	 */
 	public isDead(): boolean {
 		return this._field.isDead();
 	}
 
 	/**
-	 * 
+	 * ツモを1つ戻します。
 	 */
 	public backTsumo(): void {
 		return this._tsumos.back();

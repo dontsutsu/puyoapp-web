@@ -21,7 +21,7 @@ export class PuyoConnect {
 
 	/**
 	 * 消去可能な連結数であるかを返します。
-	 * @return true：消去可能 / false：消去不可
+	 * @returns {boolean} true：消去可能 / false：消去不可
 	 */
 	public isErasable(): boolean {
 		return this._size >= PuyoConnect.ERASE_SIZE;

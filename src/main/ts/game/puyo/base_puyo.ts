@@ -13,7 +13,7 @@ export class BasePuyo {
 
 	/**
 	 * コンストラクタ
-	 * @param color 色
+	 * @param {string} color 色
 	 */
 	constructor(color: string) {
 		this._color = color;

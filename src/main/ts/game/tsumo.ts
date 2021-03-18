@@ -5,6 +5,7 @@ import { EnumTsumoPosition } from "./enum_tsumo_position";
 export class Tsumo {
 	// CONSTANT
 	public static readonly INI_AXIS_X = 2;
+	private static readonly INI_POSITION = EnumTsumoPosition.TOP;
 
 	// CLASS FIELD
 	private _axisPuyo: TsumoPuyo;	// 軸ぷよ
@@ -14,19 +15,19 @@ export class Tsumo {
 
 	/**
 	 * コンストラクタ
-	 * @param axisColor 軸ぷよの色
-	 * @param childColor 子ぷよの色
+	 * @param {string} axisColor 軸ぷよの色
+	 * @param {string} childColor 子ぷよの色
 	 */
 	constructor(axisColor: string, childColor: string) {
 		this._axisPuyo = new TsumoPuyo(axisColor);
 		this._childPuyo = new TsumoPuyo(childColor);
-		this._tsumoPosition = EnumTsumoPosition.TOP;
+		this._tsumoPosition = Tsumo.INI_POSITION;
 		this._axisX = Tsumo.INI_AXIS_X;
 	}
 
 	/**
-	 * 
-	 * @param vec 
+	 * ツモを動かします。
+	 * @param {number} vec 動かす距離と方向（ex　右に1：+1、左に2：-2）
 	 */
 	public move(vec: number): void {
 		let toX = this._axisX + vec;
@@ -47,8 +48,8 @@ export class Tsumo {
 	}
 
 	/**
-	 * 
-	 * @param clockwise 
+	 * ツモを回転します。
+	 * @param {boolean} clockwise true：時計周り / false：反時計周り
 	 */
 	public rotate(clockwise: boolean): void {
 		this._tsumoPosition = this._tsumoPosition.getRotatedEnum(clockwise);
@@ -57,18 +58,18 @@ export class Tsumo {
 	}
 
 	/**
-	 * 
-	 * @param name 
+	 * nameからTsumoPositionを設定します。
+	 * @param {string} name TsumoPositionのname
 	 */
 	public setTsumoPositionByEnumName(name: string): void {
 		this._tsumoPosition = EnumTsumoPosition.fromName(name);
 	}
 
 	/**
-	 * 
+	 * ツモを初期位置に戻します。
 	 */
 	public resetPosition(): void {
-		this._tsumoPosition = EnumTsumoPosition.TOP;
+		this._tsumoPosition = Tsumo.INI_POSITION;
 		this._axisX = Tsumo.INI_AXIS_X;
 	}
 

@@ -20,6 +20,7 @@ export class Field {
 
 	/**
 	 * コンストラクタ
+	 * @param {FieldCanvas} canvas
 	 */
 	constructor(canvas: FieldCanvas) {
 		this._canvas = canvas;
@@ -36,7 +37,8 @@ export class Field {
 
 	/**
 	 * 
-	 * @param tsumo 
+	 * @param {Tsumo} tsumo
+	 * @returns {TimelineList} 
 	 */
 	public dropTsumoToField(tsumo: Tsumo): TimelineList {
 		let axisToY: number;
@@ -44,14 +46,14 @@ export class Field {
 
 		if (tsumo.tsumoPosition == EnumTsumoPosition.BOTTOM) {
 			childToY = this.getDropToY(tsumo.childX);
-			this._fieldArray[childToY][tsumo.childX].color = tsumo.childColor;
+			if (childToY < Field.Y_SIZE) this._fieldArray[childToY][tsumo.childX].color = tsumo.childColor;
 			axisToY = this.getDropToY(tsumo.axisX);
-			this._fieldArray[axisToY][tsumo.axisX].color = tsumo.axisColor;
+			if (axisToY < Field.Y_SIZE) this._fieldArray[axisToY][tsumo.axisX].color = tsumo.axisColor;
 		} else {
 			axisToY = this.getDropToY(tsumo.axisX);
-			this._fieldArray[axisToY][tsumo.axisX].color = tsumo.axisColor;
+			if (axisToY < Field.Y_SIZE) this._fieldArray[axisToY][tsumo.axisX].color = tsumo.axisColor;
 			childToY = this.getDropToY(tsumo.childX);
-			this._fieldArray[childToY][tsumo.childX].color = tsumo.childColor;
+			if (childToY < Field.Y_SIZE) this._fieldArray[childToY][tsumo.childX].color = tsumo.childColor;
 		}
 
 		// アニメーション
@@ -65,6 +67,7 @@ export class Field {
 
 	/**
 	 * フィールドのぷよを落とし、連鎖処理を実行します。
+	 * @returns {TimelineList}
 	 */
 	public dropFieldPuyo(): TimelineList {
 		const timelineList = new TimelineList();
@@ -75,10 +78,12 @@ export class Field {
 			const dropTimeline = this.drop();
 			timelineList.push(dropTimeline);
 
-			// 消す処理
-			const erase = this.erase();
-			erased = erase.erased;
-			timelineList.push(erase.timeline);
+			// 消す処理 前後のぷよ数比較して消したか判断する
+			const before = this.countNone();
+			const timeline = this.erase();
+			const after = this.countNone();
+			erased = before != after;
+			timelineList.push(timeline);
 		} while(erased);
 
 		return timelineList;
@@ -86,9 +91,9 @@ export class Field {
 
 	/**
 	 * フィールドの指定座標のぷよを変更します。
-	 * @param x 
-	 * @param y 
-	 * @param color 
+	 * @param {number} x 
+	 * @param {number} y 
+	 * @param {string} color 
 	 */
 	public changeFieldPuyo(x: number, y: number, color: string): void {
 		this._fieldArray[y][x].color = color;
@@ -110,6 +115,7 @@ export class Field {
 
 	/**
 	 * 
+	 * @returns {string}
 	 */
 	public toString(): string {
 		let str = "";
@@ -123,7 +129,7 @@ export class Field {
 
 	/**
 	 * 
-	 * @param fieldStr 
+	 * @param {string} fieldStr 
 	 */
 	public setField(fieldStr: string): void {
 		for (let i = 0; i < fieldStr.length; i++) {
@@ -136,6 +142,7 @@ export class Field {
 
 	/**
 	 * 
+	 * @returns {number[]}
 	 */
 	public getHeights(): number[] {
 		const heights = [];
@@ -148,6 +155,7 @@ export class Field {
 
 	/**
 	 * 
+	 * @returns {boolean}
 	 */
 	public isDead(): boolean {
 		return this._fieldArray[Field.DEAD_Y][Field.DEAD_X].color != BasePuyo.NONE;
@@ -155,6 +163,7 @@ export class Field {
 
 	/**
 	 * フィールドで浮いているぷよを落とします。
+	 * @returns {Timeline}
 	 */
 	private drop(): Timeline {
 		const timeline = new Timeline({paused: true});
@@ -198,10 +207,9 @@ export class Field {
 	/**
 	 * 消去可能な連結数以上のぷよを消去します。
 	 * ぷよを消去したかどうかを返します。
-	 * @return true：消去した / false：消去していない
+	 * @returns {Timeline} 
 	 */
-	private erase(): {erased: boolean, timeline: Timeline} {
-		let erased = false;
+	private erase(): Timeline {
 		const timeline = new Timeline({paused: true});
 
 		for (let x = 0; x < Field.X_SIZE; x++) {
@@ -221,7 +229,6 @@ export class Field {
 				const puyo = this._fieldArray[y][x];
 				if (puyo.connect != null && puyo.connect.isErasable()) {
 					// 自分消去
-					erased = true;
 					const eraseColor = puyo.color;
 					puyo.color = BasePuyo.NONE;
 
@@ -273,15 +280,15 @@ export class Field {
 			}
 		}
 
-		return {erased, timeline};
+		return timeline;
 	}
 
 	/**
 	 * 連結数をチェックします。
-	 * @param x 
-	 * @param y 
-	 * @param prex 
-	 * @param prey 
+	 * @param {number} x 
+	 * @param {number} y 
+	 * @param {number} prex 
+	 * @param {number} prey 
 	 */
 	private check(x: number, y: number, prex: number, prey: number): void {
 
@@ -339,12 +346,12 @@ export class Field {
 
 	/**
 	 * 
-	 * @param color 
-	 * @param x 
+	 * @param {number} x
+	 * @returns {number} 
 	 */
 	private getDropToY(x: number): number {
-		let y2 = Field.Y_SIZE - 1;
-		for (let y = Field.Y_SIZE - 1; y >= 0; y--) {
+		let y2 = Field.Y_SIZE;
+		for (let y = y2; y >= 0; y--) {
 			if (y == 0) {
 				y2 = y;
 			} else if (this._fieldArray[y - 1][x].color != BasePuyo.NONE) {
@@ -353,5 +360,19 @@ export class Field {
 			}
 		}
 		return y2;
+	}
+
+	/**
+	 * 
+	 * @returns {number} フィールド上のNoneの数
+	 */
+	private countNone(): number {
+		let count = 0;
+		for (let y = 0; y < Field.Y_SIZE; y++) {
+			for (let x = 0; x < Field.X_SIZE; x++) {
+				if (this._fieldArray[y][x].color == BasePuyo.NONE) count++;
+			}
+		}
+		return count;
 	}
 }

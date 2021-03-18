@@ -65,7 +65,7 @@ export class FieldCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param eMode 
+	 * @param {EditableMode} eMode 
 	 */
 	public setMouseEvent(eMode: EditableMode): void {
 		for (const yarray of this._cellShapeArray) {
@@ -89,9 +89,9 @@ export class FieldCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param x 
-	 * @param y 
-	 * @param color 
+	 * @param {number} x 
+	 * @param {number} y 
+	 * @param {string} color 
 	 */
 	public changeFieldPuyo(x: number, y: number, color: string): void {
 		this._puyoShapeArray[y][x].changeColor(color);
@@ -99,9 +99,10 @@ export class FieldCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param x 
-	 * @param fromY 
-	 * @param toY 
+	 * @param {number} x 
+	 * @param {number} fromY 
+	 * @param {number} toY 
+	 * @returns {Tween}
 	 */
 	public getDropTween(x: number, fromY: number, toY: number): Tween {
 		const val = Util.getAnimateMode();
@@ -127,8 +128,10 @@ export class FieldCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param x 
-	 * @param y 
+	 * @param {number} x 
+	 * @param {number} y 
+	 * @param {string} eraseColor
+	 * @returns {Tween}
 	 */
 	public getErasetween(x: number, y: number, eraseColor: string): Tween {
 		const val = Util.getAnimateMode();
@@ -150,10 +153,10 @@ export class FieldCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param tsumo 
-	 * @param axisToY 
-	 * @param childToY 
-	 * @returns 
+	 * @param {Tsumo} tsumo 
+	 * @param {number} axisToY 
+	 * @param {number} childToY 
+	 * @returns {Tween[]}
 	 */
 	public getTsumoDropTween(tsumo: Tsumo, axisToY: number, childToY: number): Tween[] {
 		const val = Util.getAnimateMode();
@@ -162,35 +165,44 @@ export class FieldCanvas extends BaseCanvas {
 		const axisFromY = Field.Y_SIZE + 2 + tsumo.axisY;
 		const childFromY = Field.Y_SIZE + 2 + tsumo.childY;
 
-		// axis
-		const axisRemovePuyo = this._puyoShapeArray[axisToY][tsumo.axisX];
-		const axisNewPuyo = new FieldPuyoShape(tsumo.axisX, axisFromY, tsumo.axisColor);
-		this._container.addChild(axisNewPuyo);
+		const tweens: Tween[] = [];
 
-		this._puyoShapeArray[axisToY][tsumo.axisX] = axisNewPuyo;
-		
-		const axisTween = Tween.get(axisNewPuyo)
-			.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(axisFromY)})
-			.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(axisToY)}, FieldCanvas.DROP_VEL * (axisFromY - axisToY) * val)
-			.call(() => { this._container.removeChild(axisRemovePuyo); });
+		// axis
+		if (axisToY < Field.Y_SIZE) {
+			const axisRemovePuyo = this._puyoShapeArray[axisToY][tsumo.axisX];
+			const axisNewPuyo = new FieldPuyoShape(tsumo.axisX, axisFromY, tsumo.axisColor);
+			this._container.addChild(axisNewPuyo);
+
+			this._puyoShapeArray[axisToY][tsumo.axisX] = axisNewPuyo;
+			
+			const axisTween = Tween.get(axisNewPuyo)
+				.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(axisFromY)})
+				.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(axisToY)}, FieldCanvas.DROP_VEL * (axisFromY - axisToY) * val)
+				.call(() => { this._container.removeChild(axisRemovePuyo); });
+			
+			tweens.push(axisTween);
+		}
 
 		// child
-		const childRemovePuyo = this._puyoShapeArray[childToY][tsumo.childX];
-		const childNewPuyo = new FieldPuyoShape(tsumo.childX, childFromY, tsumo.childColor);
-		this._container.addChild(childNewPuyo);
+		if (childToY < Field.Y_SIZE) {
+			const childRemovePuyo = this._puyoShapeArray[childToY][tsumo.childX];
+			const childNewPuyo = new FieldPuyoShape(tsumo.childX, childFromY, tsumo.childColor);
+			this._container.addChild(childNewPuyo);
 
-		this._puyoShapeArray[childToY][tsumo.childX] = childNewPuyo;
-		
-		const childTween = Tween.get(childNewPuyo)
-			.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(childFromY)})
-			.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(childToY)}, FieldCanvas.DROP_VEL * (childFromY - childToY) * val)
-			.call(() => { this._container.removeChild(childRemovePuyo); });
+			this._puyoShapeArray[childToY][tsumo.childX] = childNewPuyo;
+			
+			const childTween = Tween.get(childNewPuyo)
+				.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(childFromY)})
+				.to({y: FieldCellShape.CELLSIZE * FieldCanvas.convertY(childToY)}, FieldCanvas.DROP_VEL * (childFromY - childToY) * val)
+				.call(() => { this._container.removeChild(childRemovePuyo); });
+			tweens.push(childTween);
+		}
 
-		return [axisTween, childTween];
+		return tweens;
 	}
 
 	/**
-	 * 
+	 * @returns {Container}
 	 */
 	private createFrameContainer(): Container {
 		// 傾けた分の計算
@@ -221,7 +233,8 @@ export class FieldCanvas extends BaseCanvas {
 
 	/**
 	 * ロジック上のy方向とcanvas上のy方向が異なるため、yの値を変換します。
-	 * @param y 
+	 * @param {number} y 
+	 * @returns {number}
 	 */
 	public static convertY(y: number): number {
 		return Field.Y_SIZE - 1 - y;

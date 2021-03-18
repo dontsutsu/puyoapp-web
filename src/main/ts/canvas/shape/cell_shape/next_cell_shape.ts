@@ -8,8 +8,8 @@ export class NextCellShape extends BaseCellShape {
 
 	/**
 	 * コンストラクタ
-	 * @param next 0：ネクスト、1：ダブネク
-	 * @param type 0：子ぷよ、1：軸ぷよ
+	 * @param {number} next 0：ネクスト、1：ダブネク
+	 * @param {number} type 0：子ぷよ、1：軸ぷよ
 	 */
 	constructor (next: number, type: number) {
 		const {x, y} = NextCellShape.getXandY(next, type);
@@ -18,9 +18,9 @@ export class NextCellShape extends BaseCellShape {
 	}
 
 	/**
-	 * @param next 0：ネクスト、1：ダブネク
-	 * @param type 0：子ぷよ、1：軸ぷよ
-	 * @return x：x座標、y：y座標
+	 * @param {number} next 0：ネクスト、1：ダブネク
+	 * @param {number} type 0：子ぷよ、1：軸ぷよ
+	 * @returns {{x: number, y: number}}
 	 */
 	public static getXandY(next: number, type: number): { x: number, y: number } {
 		const x = NextCellShape.CELLSIZE * next;

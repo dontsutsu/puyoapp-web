@@ -18,9 +18,9 @@ export class TsumoListCellShape extends BaseCellShape {
 
 	/**
 	 * コンストラクタ
-	 * @param ax x座標
-	 * @param ay y座標
-	 * @param type 0：子ぷよ、1：軸ぷよ
+	 * @param {number} ax x座標
+	 * @param {number} ay y座標
+	 * @param {number} type 0：子ぷよ、1：軸ぷよ
 	 */
 	constructor (ax: number, ay: number, type: number) {
 		const {x, y} = TsumoListCellShape.getXandY(ax, ay, type);
@@ -32,10 +32,10 @@ export class TsumoListCellShape extends BaseCellShape {
 
 	/**
 	 * 座標の位置および軸ぷよor子ぷよから、Shape.x、Shape.yに設定する値を取得します。
-	 * @param x x座標
-	 * @param y y座標
-	 * @param type 0：子ぷよ、1：軸ぷよ
-	 * @return x：Shape.xに設定する値、y：Shape.yに設定する値
+	 * @param {number} ax x座標
+	 * @param {number} ay y座標
+	 * @param {number} type 0：子ぷよ、1：軸ぷよ
+	 * @returns {{x: number, y: number}}
 	 */
 	static getXandY(ax: number, ay: number, type: number): { x: number, y: number } {
 		const x = (TsumoListCellShape.CELLSIZE + TsumoListCellShape.PADDING) * ax;

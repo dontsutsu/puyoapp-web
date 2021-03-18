@@ -20,10 +20,10 @@ export class BasePuyoShape extends Shape {
 
 	/**
 	 * コンストラクタ
-	 * @param x createjs.Shape.x に設定する値
-	 * @param y createjs.Shape.y に設定する値
-	 * @param color 色
-	 * @param cellsize セルサイズ
+	 * @param {number} x createjs.Shape.x に設定する値
+	 * @param {number} y createjs.Shape.y に設定する値
+	 * @param {string} color 色
+	 * @param {number} cellsize セルサイズ
 	 */
 	constructor(x: number, y:number, color: string, cellsize: number) {
 		super();
@@ -36,8 +36,8 @@ export class BasePuyoShape extends Shape {
 
 	/**
 	 * 描画します。
-	 * @param color 色
-	 * @param cellsize セルサイズ
+	 * @param {string} color 色
+	 * @param {number} cellsize セルサイズ
 	 */
 	private setGraphics(color: string, cellsize: number): void {
 		const dict = BasePuyoShape.getDictionary(color);
@@ -52,7 +52,7 @@ export class BasePuyoShape extends Shape {
 
 	/**
 	 * ぷよの色を変更します。
-	 * @param color 色
+	 * @param {string} color 色
 	 */
 	public changeColor(color: string): void{
 		const cellsize = this._cellsize;
@@ -63,9 +63,10 @@ export class BasePuyoShape extends Shape {
 
 	/**
 	 * 
-	 * @param color
+	 * @param {string} color
+	 * @returns {{ color: string, bgColor: string, alpha: number, borderColor: string }}
 	 */
-	public static getDictionary(color: string): { color: string , bgColor: string, alpha: number, borderColor: string } {
+	public static getDictionary(color: string): { color: string, bgColor: string, alpha: number, borderColor: string } {
 		const dict = BasePuyoShape.PUYO_DICT.find(dict => dict.color == color);
 		if (dict == undefined) throw Error("illegal argument");
 		return dict;
