@@ -27,4 +27,9 @@ export class PuyoConnect {
 		return this._size >= PuyoConnect.ERASE_SIZE;
 	}
 
+	// ACCESSOR
+	get size(): number {
+		return this._size;
+	}
+
 }

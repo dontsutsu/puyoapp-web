@@ -86,8 +86,8 @@ export class Puyopuyo {
 	}
 
 	/**
-	 * フィールドを表す文字列を取得します。
-	 * @returns {string} フィールドを表す文字列
+	 * フィールドの文字列を取得します。
+	 * @returns {string} フィールド文字列
 	 */
 	public getFieldString(): string {
 		return this._field.toString();
@@ -102,7 +102,7 @@ export class Puyopuyo {
 	}
 
 	/**
-	 * フィールドを表す文字列から、フィールドを設定します。
+	 * フィールド文字列から、フィールドを設定します。
 	 * @param {string} fieldStr フィールドを表す文字列
 	 */
 	public setField(fieldStr: string): void {

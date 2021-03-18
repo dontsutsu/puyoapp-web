@@ -13,6 +13,9 @@ export class Field {
 	public static readonly Y_SIZE = 13;
 	public static readonly DEAD_X = 2;
 	public static readonly DEAD_Y = 11;
+	private static readonly CHAIN_BONUS = [0, 8, 16, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 480, 512];
+	private static readonly CONNECT_BONUS = [0, 2, 3, 4, 5, 6, 7, 10];
+	private static readonly COLOR_BONUS = [0, 3, 6, 12, 24];
 
 	// CLASS FIELD
 	private _fieldArray: FieldPuyo[][];
@@ -36,8 +39,8 @@ export class Field {
 	}
 
 	/**
-	 * 
-	 * @param {Tsumo} tsumo
+	 * ツモをフィールドに落とします。
+	 * @param {Tsumo} tsumo ツモ
 	 * @returns {TimelineList} 
 	 */
 	public dropTsumoToField(tsumo: Tsumo): TimelineList {
@@ -72,19 +75,28 @@ export class Field {
 	public dropFieldPuyo(): TimelineList {
 		const timelineList = new TimelineList();
 
-		let erased: boolean;
+		let chain = 0;
+		let score = 0;
 		do {
+			chain++;
+
 			// 落とす処理
 			const dropTimeline = this.drop();
 			timelineList.push(dropTimeline);
 
-			// 消す処理 前後のぷよ数比較して消したか判断する
-			const before = this.countNone();
+			// 消す処理 
+			// １．連結数チェック
+			this.connectCheck();
+
+			// ２．得点計算
+			score = this.calcScore(chain);
+			console.log(score);
+			console.log("----------");
+
+			// ３．消去
 			const timeline = this.erase();
-			const after = this.countNone();
-			erased = before != after;
 			timelineList.push(timeline);
-		} while(erased);
+		} while(score > 0);	// scoreが0でない＝消したぷよがあるため、ループ
 
 		return timelineList;
 	}
@@ -103,7 +115,7 @@ export class Field {
 	}
 
 	/**
-	 * 
+	 * フィールドをリセットします。
 	 */
 	public reset(): void {
 		for (let y = 0; y < Field.Y_SIZE; y++) {
@@ -114,8 +126,8 @@ export class Field {
 	}
 
 	/**
-	 * 
-	 * @returns {string}
+	 * フィールドの文字列を取得します。
+	 * @returns {string} フィールド文字列
 	 */
 	public toString(): string {
 		let str = "";
@@ -128,8 +140,8 @@ export class Field {
 	}
 
 	/**
-	 * 
-	 * @param {string} fieldStr 
+	 * フィールド文字列から、フィールドを設定します。
+	 * @param {string} fieldStr フィールド文字列
 	 */
 	public setField(fieldStr: string): void {
 		for (let i = 0; i < fieldStr.length; i++) {
@@ -141,8 +153,8 @@ export class Field {
 	}
 
 	/**
-	 * 
-	 * @returns {number[]}
+	 * 各列の高さ（0～13）を格納した配列を取得します。
+	 * @returns {number[]} 高さ（0～13）の配列
 	 */
 	public getHeights(): number[] {
 		const heights = [];
@@ -154,8 +166,8 @@ export class Field {
 	}
 
 	/**
-	 * 
-	 * @returns {boolean}
+	 * 死んでいるかどうかを判定します。
+	 * @returns {boolean} true：死んでいる / false：死んでいない
 	 */
 	public isDead(): boolean {
 		return this._fieldArray[Field.DEAD_Y][Field.DEAD_X].color != BasePuyo.NONE;
@@ -163,7 +175,7 @@ export class Field {
 
 	/**
 	 * フィールドで浮いているぷよを落とします。
-	 * @returns {Timeline}
+	 * @returns {Timeline} 
 	 */
 	private drop(): Timeline {
 		const timeline = new Timeline({paused: true});
@@ -200,30 +212,85 @@ export class Field {
 				timeline.addTween(tween);
 			}
 		}
-
 		return timeline;
 	}
 
 	/**
-	 * 消去可能な連結数以上のぷよを消去します。
-	 * ぷよを消去したかどうかを返します。
-	 * @returns {Timeline} 
+	 * 連結数のチェック処理
 	 */
-	private erase(): Timeline {
-		const timeline = new Timeline({paused: true});
-
+	private connectCheck(): void {
+		// 連結数をリセット
 		for (let x = 0; x < Field.X_SIZE; x++) {
 			for (let y = 0; y < Field.Y_SIZE - 1; y++) {
 				this._fieldArray[y][x].connect = null;
 			}
 		}
 
+		// 連結数チェック
 		for (let x = 0; x < Field.X_SIZE; x++) {
 			for (let y = 0; y < Field.Y_SIZE - 1; y++) {
 				this.check(x, y, -1, -1);
 			}
 		}
+	}
 
+	/**
+	 * 
+	 * @param {number} chain 連鎖数
+	 * @returns {number} 得点
+	 */
+	private calcScore(chain: number): number {
+		// 得点計算に必要な変数設定
+		const connectArray: PuyoConnect[] = [];	// 連結数の配列
+		const colorArray: string[] = [];		// 消去した色の配列
+
+		for (let x = 0; x < Field.X_SIZE; x++) {
+			for (let y = 0; y < Field.Y_SIZE - 1; y++) {
+				const puyo = this._fieldArray[y][x];
+				if (puyo.connect != null && puyo.connect.isErasable()) {
+					// 得点計算の処理
+					if (!connectArray.includes(puyo.connect)) connectArray.push(puyo.connect);
+					if (!colorArray.includes(puyo.color)) colorArray.push(puyo.color);
+				}
+			}
+		}
+
+		// 連結数の配列が空の場合（＝消去できるものがなかった場合）、得点は0
+		if (connectArray.length == 0) return 0;
+
+		// 消去数
+		const erase = connectArray.reduce((sum, connect) => { return sum + connect.size; }, 0);
+
+		// 連結ボーナス
+		let connectBonus = 0;
+		for (const connect of connectArray) {
+			const index = (connect.size > 11 ? 11 : connect.size) - 4;
+			connectBonus += Field.CONNECT_BONUS[index];
+		}
+		
+		// 色数ボーナス
+		const colorBonus = Field.COLOR_BONUS[colorArray.length - 1];
+
+		// 連鎖ボーナス
+		const chainBonus = Field.CHAIN_BONUS[chain - 1];
+		
+		// ボーナス合計
+		let bonus = connectBonus + colorBonus + chainBonus;
+		if (bonus == 0) bonus = 1;
+
+		// 得点
+		const score = erase * bonus * 10;
+
+		return score;
+	}
+
+	/**
+	 * 消去可能な連結数以上のぷよを消去します。
+	 * @returns {Timeline} 
+	 */
+	private erase(): Timeline {
+		const timeline = new Timeline({paused: true});
+		
 		for (let x = 0; x < Field.X_SIZE; x++) {
 			for (let y = 0; y < Field.Y_SIZE - 1; y++) {
 				const puyo = this._fieldArray[y][x];
@@ -345,9 +412,9 @@ export class Field {
 	}
 
 	/**
-	 * 
-	 * @param {number} x
-	 * @returns {number} 
+	 * 指定のx座標に落とせるy座標を取得します。
+	 * @param {number} x x座標
+	 * @returns {number} y座標
 	 */
 	private getDropToY(x: number): number {
 		let y2 = Field.Y_SIZE;
@@ -360,19 +427,5 @@ export class Field {
 			}
 		}
 		return y2;
-	}
-
-	/**
-	 * 
-	 * @returns {number} フィールド上のNoneの数
-	 */
-	private countNone(): number {
-		let count = 0;
-		for (let y = 0; y < Field.Y_SIZE; y++) {
-			for (let x = 0; x < Field.X_SIZE; x++) {
-				if (this._fieldArray[y][x].color == BasePuyo.NONE) count++;
-			}
-		}
-		return count;
 	}
 }
