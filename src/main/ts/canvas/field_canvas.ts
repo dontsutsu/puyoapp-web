@@ -1,4 +1,4 @@
-import { Container, Shape } from "@createjs/easeljs";
+import { Container, Shadow, Shape, Text } from "@createjs/easeljs";
 import { Tween } from "@createjs/tweenjs";
 import { BaseCanvas } from "./base_canvas";
 import { Field } from "../game/field";
@@ -20,6 +20,8 @@ export class FieldCanvas extends BaseCanvas {
 	private _container: Container;
 	private _cellShapeArray: FieldCellShape[][];
 	private _puyoShapeArray: FieldPuyoShape[][];
+	private _score: Text;
+	private _scoreOutline: Text;
 
 	/**
 	 * コンストラクタ
@@ -38,6 +40,23 @@ export class FieldCanvas extends BaseCanvas {
 		this._container.x = 20;
 		this._container.y = 20 + 250 * Util.sin(FieldCanvas.FRAME_SKEW_DEG);
 
+		// score
+		const scoreStr = "0".padStart(9, "0");
+		this._score = new Text(scoreStr, "bold 24px BIZ UDPGothic");
+		this._score.textAlign = "end";
+		this._score.textBaseline = "top";
+		this._score.x = FieldCellShape.CELLSIZE * Field.X_SIZE + 0.5;
+		this._score.y = FieldCellShape.CELLSIZE * Field.Y_SIZE + 4.5;	// 4は余白
+		// outline clone
+		this._scoreOutline = this._score.clone();
+		// color, outline
+		this._score.color = "#FFFFFF";
+		this._scoreOutline.color = "#707070";
+		this._scoreOutline.shadow = new Shadow(this._scoreOutline.color, 1, 1, 0);
+		this._scoreOutline.outline = 3;
+		// add outlineを先に
+		this._container.addChild(this._scoreOutline, this._score);
+
 		// CellShape
 		this._cellShapeArray = [];
 		for (let y = 0; y < Field.Y_SIZE; y++) {
@@ -49,6 +68,10 @@ export class FieldCanvas extends BaseCanvas {
 			}
 			this._cellShapeArray.push(yarray);
 		}
+
+		// 致死座標の×印
+		const crossShape = this.createCrossShape();
+		this._container.addChild(crossShape);
 
 		// PuyoShape
 		this._puyoShapeArray = [];
@@ -202,6 +225,58 @@ export class FieldCanvas extends BaseCanvas {
 	}
 
 	/**
+	 * 
+	 * @param {number} erase 消去数
+	 * @param {number} bonus ボーナス倍率
+	 * @returns {Tween[]}
+	 */
+	public getEraseScoreTween(erase: number, bonus: number): Tween[] {
+		const scoreStr = (erase * 10) + " × " + bonus;
+		return this.getScoreStringTween(scoreStr);
+	}
+
+	/**
+	 * 
+	 * @param {number} score 
+	 * @returns {Tween[]}
+	 */
+	public getDropScoreTween(score: number): Tween[] {
+		return this.getScoreStringTween(FieldCanvas.formatScore(score));
+	}
+
+	/**
+	 * 
+	 * @param {number} score スコア
+	 */
+	public setScore(score: number): void {
+		this.setScoreString(FieldCanvas.formatScore(score));
+	}
+
+	/**
+	 * スコアに表示するTweenを取得します。
+	 * @param {string} dispStr 表示する文字列
+	 * @returns {Tween[]}
+	 */
+	private getScoreStringTween(dispStr: string): Tween[] {
+		const tweens: Tween[] = [];
+		const scoreTween = Tween.get(this._score)
+			.call(() => { this._score.text = dispStr; });
+		const scoreOutlineTween = Tween.get(this._scoreOutline)
+			.call(() => { this._scoreOutline.text = dispStr });
+		tweens.push(scoreTween, scoreOutlineTween);
+		return tweens;
+	}
+
+	/**
+	 * スコアの文字列を設定します。
+	 * @param {string} dispStr 表示する文字列
+	 */
+	private setScoreString(dispStr: string): void {
+		this._score.text = dispStr;
+		this._scoreOutline.text = dispStr;
+	}
+
+	/**
 	 * @returns {Container}
 	 */
 	private createFrameContainer(): Container {
@@ -232,11 +307,48 @@ export class FieldCanvas extends BaseCanvas {
 	}
 
 	/**
+	 * 致死座標×印のShapeを作成します。
+	 * @returns {Shape} ×印のcreatejs.Shape
+	 */
+	private createCrossShape(): Shape {
+		const crossShape = new Shape();
+		// TODO ループとかで上手くかけそうなら変更したい、思いつかないのでゴリ押し
+		const uni = FieldCellShape.CELLSIZE / 4;
+		crossShape.graphics
+			.f("#FF4A2F")
+			.mt(uni * 0, uni * 1)
+			.lt(uni * 1, uni * 0)
+			.lt(uni * 2, uni * 1)
+			.lt(uni * 3, uni * 0)			
+			.lt(uni * 4, uni * 1)
+			.lt(uni * 3, uni * 2)
+			.lt(uni * 4, uni * 3)
+			.lt(uni * 3, uni * 4)
+			.lt(uni * 2, uni * 3)
+			.lt(uni * 1, uni * 4)
+			.lt(uni * 0, uni * 3)
+			.lt(uni * 1, uni * 2)
+			.lt(uni * 0, uni * 1);
+		crossShape.x = FieldCellShape.CELLSIZE * Field.DEAD_X;
+		crossShape.y = FieldCellShape.CELLSIZE * FieldCanvas.convertY(Field.DEAD_Y);
+		return crossShape;
+	}
+
+	/**
 	 * ロジック上のy方向とcanvas上のy方向が異なるため、yの値を変換します。
 	 * @param {number} y 
 	 * @returns {number}
 	 */
 	public static convertY(y: number): number {
 		return Field.Y_SIZE - 1 - y;
+	}
+	
+	/**
+	 * scoreを指定フォーマットの文字列に変換します。
+	 * @param {number} score スコア
+	 * @returns {string} 0埋め9桁の文字列
+	 */
+	public static formatScore(score: number): string {
+		return (score + "").padStart(9, "0");
 	}
 }

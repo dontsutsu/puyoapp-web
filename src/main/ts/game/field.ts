@@ -20,6 +20,7 @@ export class Field {
 	// CLASS FIELD
 	private _fieldArray: FieldPuyo[][];
 	private _canvas: FieldCanvas;
+	private _totalScore: number;
 
 	/**
 	 * コンストラクタ
@@ -27,6 +28,7 @@ export class Field {
 	 */
 	constructor(canvas: FieldCanvas) {
 		this._canvas = canvas;
+		this._totalScore = 0;
 
 		this._fieldArray = [];
 		for (let y = 0; y < Field.Y_SIZE; y++) {
@@ -82,6 +84,8 @@ export class Field {
 
 			// 落とす処理
 			const dropTimeline = this.drop();
+			const dropScoreTween = this._canvas.getDropScoreTween(this._totalScore);
+			dropTimeline.addTween(...dropScoreTween);
 			timelineList.push(dropTimeline);
 
 			// 消す処理 
@@ -89,13 +93,17 @@ export class Field {
 			this.connectCheck();
 
 			// ２．得点計算
-			score = this.calcScore(chain);
-			console.log(score);
-			console.log("----------");
+			const {erase, bonus} = this.calcScore(chain);
+			score = erase * bonus * 10;
+			this._totalScore += score;
 
 			// ３．消去
-			const timeline = this.erase();
-			timelineList.push(timeline);
+			const eraseTimeline = this.erase();
+			if (score > 0)  {
+				const eraseScoreTween = this._canvas.getEraseScoreTween(erase, bonus);
+				eraseTimeline.addTween(...eraseScoreTween);
+			}
+			timelineList.push(eraseTimeline);
 		} while(score > 0);	// scoreが0でない＝消したぷよがあるため、ループ
 
 		return timelineList;
@@ -174,6 +182,23 @@ export class Field {
 	}
 
 	/**
+	 * スコアを取得します。
+	 * @returns {number} スコア
+	 */
+	public getScore(): number {
+		return this._totalScore;
+	}
+
+	/**
+	 * スコアを設定します。
+	 * @param {number} score スコア
+	 */
+	public setScore(score: number): void {
+		this._totalScore = score;
+		this._canvas.setScore(score);
+	}
+
+	/**
 	 * フィールドで浮いているぷよを落とします。
 	 * @returns {Timeline} 
 	 */
@@ -235,11 +260,12 @@ export class Field {
 	}
 
 	/**
-	 * 
+	 * 得点を計算し、返します。
+	 * 得点表示用に、消去数とボーナス倍率を返します。
 	 * @param {number} chain 連鎖数
-	 * @returns {number} 得点
+	 * @returns {erase: number, bonus: number} erase：消去数、bonus：ボーナス倍率
 	 */
-	private calcScore(chain: number): number {
+	private calcScore(chain: number): {erase: number, bonus: number} {
 		// 得点計算に必要な変数設定
 		const connectArray: PuyoConnect[] = [];	// 連結数の配列
 		const colorArray: string[] = [];		// 消去した色の配列
@@ -256,7 +282,7 @@ export class Field {
 		}
 
 		// 連結数の配列が空の場合（＝消去できるものがなかった場合）、得点は0
-		if (connectArray.length == 0) return 0;
+		if (connectArray.length == 0) return {erase: 0, bonus: 1};
 
 		// 消去数
 		const erase = connectArray.reduce((sum, connect) => { return sum + connect.size; }, 0);
@@ -278,10 +304,7 @@ export class Field {
 		let bonus = connectBonus + colorBonus + chainBonus;
 		if (bonus == 0) bonus = 1;
 
-		// 得点
-		const score = erase * bonus * 10;
-
-		return score;
+		return {erase, bonus};
 	}
 
 	/**

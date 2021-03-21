@@ -135,4 +135,20 @@ export class Puyopuyo {
 	public backTsumo(): void {
 		return this._tsumos.back();
 	}
+
+	/**
+	 * スコアを取得します。
+	 * @returns {number} スコア
+	 */
+	public getScore(): number {
+		return this._field.getScore();
+	}
+
+	/**
+	 * スコアを設定します。
+	 * @param {number} score スコア
+	 */
+	public setScore(score: number): void {
+		this._field.setScore(score);
+	}
 }

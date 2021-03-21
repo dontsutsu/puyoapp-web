@@ -7,7 +7,7 @@ $(() => {
 
 export class Tokopuyo extends BaseMode {
 	// CLASS FIELD
-	private _undoStack: string[];
+	private _undoStack: {field: string, score: number}[];
 
 	/**
 	 * コンストラクタ
@@ -50,7 +50,9 @@ export class Tokopuyo extends BaseMode {
 					if (!this._puyopuyo.isDroppableTsumo()) return;
 
 					// UNDO用
-					this._undoStack.push(this._puyopuyo.getFieldString());
+					const field = this._puyopuyo.getFieldString();
+					const score = this._puyopuyo.getScore();
+					this._undoStack.push({field, score});
 
 					const dropTlList = this._puyopuyo.dropTsumoToField();
 					const advanceTsumoTlList = this._puyopuyo.advanceTsumo();
@@ -64,7 +66,8 @@ export class Tokopuyo extends BaseMode {
 
 					if (undo == undefined) return;
 
-					this._puyopuyo.setField(undo);
+					this._puyopuyo.setField(undo.field);
+					this._puyopuyo.setScore(undo.score);
 					this._puyopuyo.backTsumo();
 				break;
 
