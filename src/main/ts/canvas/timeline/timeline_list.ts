@@ -41,6 +41,9 @@ export class TimelineList {
 	/**
 	 * 
 	 */
+	// TODO 
+	// public play(before?: () => void, after?: () => void) 
+	// に変更して、コールバック関数で再生前、再生後に処理を差し込みたい
 	public play(): void {
 		if (this._timelineList.length == 0) return;
 
