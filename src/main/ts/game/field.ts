@@ -46,20 +46,9 @@ export class Field {
 	 * @returns {TimelineList} 
 	 */
 	public dropTsumoToField(tsumo: Tsumo): TimelineList {
-		let axisToY: number;
-		let childToY: number;
-
-		if (tsumo.tsumoPosition == EnumTsumoPosition.BOTTOM) {
-			childToY = this.getDropToY(tsumo.childX);
-			if (childToY < Field.Y_SIZE) this._fieldArray[childToY][tsumo.childX].color = tsumo.childColor;
-			axisToY = this.getDropToY(tsumo.axisX);
-			if (axisToY < Field.Y_SIZE) this._fieldArray[axisToY][tsumo.axisX].color = tsumo.axisColor;
-		} else {
-			axisToY = this.getDropToY(tsumo.axisX);
-			if (axisToY < Field.Y_SIZE) this._fieldArray[axisToY][tsumo.axisX].color = tsumo.axisColor;
-			childToY = this.getDropToY(tsumo.childX);
-			if (childToY < Field.Y_SIZE) this._fieldArray[childToY][tsumo.childX].color = tsumo.childColor;
-		}
+		const {axisToY, childToY} = this.getDropTsumoToY(tsumo);
+		if (axisToY < Field.Y_SIZE) this._fieldArray[axisToY][tsumo.axisX].color = tsumo.axisColor;
+		if (childToY < Field.Y_SIZE) this._fieldArray[childToY][tsumo.childX].color = tsumo.childColor;
 
 		// アニメーション
 		const timelineList = new TimelineList();
@@ -167,7 +156,7 @@ export class Field {
 	public getHeights(): number[] {
 		const heights = [];
 		for (let x = 0; x < Field.X_SIZE; x++) {
-			const y = this.getDropToY(x);
+			const y = this.getDropPuyoToY(x);
 			heights.push(y);
 		}
 		return heights;
@@ -196,6 +185,40 @@ export class Field {
 	public setScore(score: number): void {
 		this._totalScore = score;
 		this._canvas.setScore(score);
+	}
+
+	public setGuideNoAnimation(tsumo: Tsumo): void {
+		const {axisToY, childToY} = this.getDropTsumoToY(tsumo);
+		this._canvas.setGuide(tsumo, axisToY, childToY);
+	}
+
+	/**
+	 * @returns {TimelineList}
+	 */
+	public hideGuide(): TimelineList {
+		const timelineList = new TimelineList();
+		const timeline = new Timeline({paused: true});
+		const hideGuideTween = this._canvas.getHideGuideTween();
+		timeline.addTween(...hideGuideTween);
+		timelineList.push(timeline);
+		return timelineList;
+	}
+
+	/**
+	 * 
+	 * @param {Tsumo} tsumo 
+	 * @returns {TimelineList}
+	 */
+	public setGuide(tsumo: Tsumo): TimelineList {
+		const timelineList = new TimelineList();
+		const timeline = new Timeline({paused: true});
+
+		const {axisToY, childToY} = this.getDropTsumoToY(tsumo);
+		const setGuideTween = this._canvas.getSetGuideTween(tsumo, axisToY, childToY);
+
+		timeline.addTween(...setGuideTween);
+		timelineList.push(timeline);
+		return timelineList;
 	}
 
 	/**
@@ -435,11 +458,34 @@ export class Field {
 	}
 
 	/**
+	 * 指定のツモを落としたときのy座標を取得します。
+	 * @param {Tsumo} tsumo 
+	 * @returns {axisToY: number, childToY: number} axisToY：軸ぷよの落下先y座標、childToY：子ぷよの落下先y座標
+	 */
+	private getDropTsumoToY(tsumo: Tsumo): {axisToY: number, childToY: number} {
+		let axisToY: number;
+		let childToY: number;
+
+		if (tsumo.tsumoPosition == EnumTsumoPosition.BOTTOM) {
+			childToY = this.getDropPuyoToY(tsumo.childX);
+			axisToY = childToY + 1;
+		} else if (tsumo.tsumoPosition == EnumTsumoPosition.TOP) {
+			axisToY = this.getDropPuyoToY(tsumo.axisX);
+			childToY = axisToY + 1;
+		} else {
+			axisToY = this.getDropPuyoToY(tsumo.axisX);
+			childToY = this.getDropPuyoToY(tsumo.childX);
+		}
+
+		return {axisToY, childToY};
+	}
+
+	/**
 	 * 指定のx座標に落とせるy座標を取得します。
 	 * @param {number} x x座標
 	 * @returns {number} y座標
 	 */
-	private getDropToY(x: number): number {
+	private getDropPuyoToY(x: number): number {
 		let y2 = Field.Y_SIZE;
 		for (let y = y2; y >= 0; y--) {
 			if (y == 0) {

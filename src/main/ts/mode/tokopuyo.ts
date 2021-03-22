@@ -20,27 +20,40 @@ export class Tokopuyo extends BaseMode {
 		// event
 		$("html").on("keydown", (e) => {
 			switch(e.key) {
-				case "ArrowRight" : // Key[→]
+				// Key[→]
+				case "ArrowRight" : {
 					if (this._timelineList.isAnimation) return;
 
 					// 死んでるかチェック
 					if (this._puyopuyo.isDead()) return;
 
-					this._timelineList = this._puyopuyo.moveTsumo(1);
-					this._timelineList.play();
-				break;
+					const hideGuide = this._puyopuyo.hideGuide();
+					const move = this._puyopuyo.moveTsumo(1);
+					const setGuide = this._puyopuyo.setGuide();
 
-				case "ArrowLeft" : // Key[←]
+					this._timelineList = hideGuide.add(move, setGuide);
+					this._timelineList.play();
+					break;
+				}
+
+				// Key[←]
+				case "ArrowLeft" : {
 					if (this._timelineList.isAnimation) return;
 
 					// 死んでるかチェック
 					if (this._puyopuyo.isDead()) return;
 
-					this._timelineList = this._puyopuyo.moveTsumo(-1);
-					this._timelineList.play();
-				break;
+					const hideGuide = this._puyopuyo.hideGuide();
+					const move = this._puyopuyo.moveTsumo(-1);
+					const setGuide = this._puyopuyo.setGuide();
 
-				case "ArrowDown" : // Key[↓]
+					this._timelineList = hideGuide.add(move, setGuide);
+					this._timelineList.play();
+					break;
+				}
+
+				// Key[↓]
+				case "ArrowDown" : {
 					if (this._timelineList.isAnimation) return;
 
 					// 死んでるかチェック
@@ -54,14 +67,18 @@ export class Tokopuyo extends BaseMode {
 					const score = this._puyopuyo.getScore();
 					this._undoStack.push({field, score});
 
-					const dropTlList = this._puyopuyo.dropTsumoToField();
-					const advanceTsumoTlList = this._puyopuyo.advanceTsumo();
+					const hideGuide = this._puyopuyo.hideGuide();
+					const drop = this._puyopuyo.dropTsumoToField();
+					const advTsumo = this._puyopuyo.advanceTsumo();
+					const setGuide = this._puyopuyo.setGuide();
 
-					this._timelineList = dropTlList.add(advanceTsumoTlList);
+					this._timelineList = hideGuide.add(drop, advTsumo, setGuide);
 					this._timelineList.play();
-				break;
+					break;
+				}
 
-				case "ArrowUp" : // Key[↑]
+				// Key[↑]
+				case "ArrowUp" : {
 					const undo = this._undoStack.pop();
 
 					if (undo == undefined) return;
@@ -69,27 +86,41 @@ export class Tokopuyo extends BaseMode {
 					this._puyopuyo.setField(undo.field);
 					this._puyopuyo.setScore(undo.score);
 					this._puyopuyo.backTsumo();
-				break;
+					this._puyopuyo.setGuideNoAnimation();
+					break;
+				}
 
-				case "z" : // Key[z]
+				// Key[z]
+				case "z" : { 
 					if (this._timelineList.isAnimation) return;
 
 					// 死んでるかチェック
 					if (this._puyopuyo.isDead()) return;
 
-					this._timelineList = this._puyopuyo.rotateTsumo(false);
-					this._timelineList.play();
-				break;
+					const hideGuide = this._puyopuyo.hideGuide();
+					const rotate = this._puyopuyo.rotateTsumo(false);
+					const setGuide = this._puyopuyo.setGuide();
 
-				case "x" : // Key[x]
+					this._timelineList = hideGuide.add(rotate, setGuide);
+					this._timelineList.play();
+					break;
+				}
+
+				// Key[x]
+				case "x" : {
 					if (this._timelineList.isAnimation) return;
 
 					// 死んでるかチェック
 					if (this._puyopuyo.isDead()) return;
 
-					this._timelineList = this._puyopuyo.rotateTsumo(true);
+					const hideGuide = this._puyopuyo.hideGuide();
+					const rotate = this._puyopuyo.rotateTsumo(true);
+					const setGuide = this._puyopuyo.setGuide();
+
+					this._timelineList = hideGuide.add(rotate, setGuide);
 					this._timelineList.play();
-				break;
+					break;
+				}
 			}
 		});
 	}

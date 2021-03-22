@@ -8,6 +8,7 @@ import { FieldPuyoShape } from "./shape/puyo_shape/field_puyo_shape";
 import { EditableMode } from "../mode/editable_mode";
 import { BasePuyo } from "../game/puyo/base_puyo";
 import { Tsumo } from "../game/tsumo";
+import { FieldGuidePuyoShape } from "./shape/puyo_shape/field_guid_puyo_shape";
 
 export class FieldCanvas extends BaseCanvas {
 	// CONSTANT
@@ -22,6 +23,8 @@ export class FieldCanvas extends BaseCanvas {
 	private _puyoShapeArray: FieldPuyoShape[][];
 	private _score: Text;
 	private _scoreOutline: Text;
+	private _axisGuide: FieldGuidePuyoShape;
+	private _childGuide: FieldGuidePuyoShape;
 
 	/**
 	 * コンストラクタ
@@ -72,6 +75,11 @@ export class FieldCanvas extends BaseCanvas {
 		// 致死座標の×印
 		const crossShape = this.createCrossShape();
 		this._container.addChild(crossShape);
+
+		// guide
+		this._axisGuide = new FieldGuidePuyoShape();
+		this._childGuide = new FieldGuidePuyoShape();
+		this._container.addChild(this._axisGuide, this._childGuide);
 
 		// PuyoShape
 		this._puyoShapeArray = [];
@@ -250,6 +258,48 @@ export class FieldCanvas extends BaseCanvas {
 	 */
 	public setScore(score: number): void {
 		this.setScoreString(FieldCanvas.formatScore(score));
+	}
+
+	/**
+	 * 
+	 * @param tsumo 
+	 * @param axisToY 
+	 * @param childToY 
+	 */
+	public setGuide(tsumo: Tsumo, axisToY: number, childToY: number): void {
+		this._axisGuide.update(tsumo.axisX, axisToY, tsumo.axisColor);
+		this._childGuide.update(tsumo.childX, childToY, tsumo.childColor);
+	}
+
+	/**
+	 * 
+	 * @returns {Tween[]}
+	 */
+	public getHideGuideTween(): Tween[] {
+		const tweens: Tween[] = [];
+		const hideAxisGuideTwn = Tween.get(this._axisGuide)
+			.call(() => { this._axisGuide.visible = false; });
+		const hideChildGuideTwn = Tween.get(this._childGuide)
+			.call(() => { this._childGuide.visible = false; });
+		tweens.push(hideAxisGuideTwn, hideChildGuideTwn);
+		return tweens;
+	}
+
+	/**
+	 * 
+	 * @param {Tsumo} tsumo 
+	 * @param {number} axisToY 
+	 * @param {number} childToY 
+	 * @returns {Tween[]}
+	 */
+	public getSetGuideTween(tsumo: Tsumo, axisToY: number, childToY: number): Tween[] {
+		const tweens: Tween[] = [];
+		const setAxisGuideTwn = Tween.get(this._axisGuide)
+			.call(() => { this._axisGuide.update(tsumo.axisX, axisToY, tsumo.axisColor); });
+		const setChildGuideTwn = Tween.get(this._childGuide)
+			.call(() => { this._childGuide.update(tsumo.childX, childToY, tsumo.childColor); });
+		tweens.push(setAxisGuideTwn, setChildGuideTwn);
+		return tweens;
 	}
 
 	/**
