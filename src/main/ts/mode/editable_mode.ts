@@ -66,7 +66,7 @@ export abstract class EditableMode extends BaseMode {
 	/**
 	 * やり直します（REDO機能）。
 	 */
-	 protected redo(): void {
+	protected redo(): void {
 		const redo = this._redoStack.pop();
 		if (redo != undefined) {
 			this._undoStack.push(this.getState());
@@ -78,7 +78,7 @@ export abstract class EditableMode extends BaseMode {
 	 * 指定の関数を実行時に履歴登録の処理を行います。
 	 * @param doing callback関数
 	 */
-	 public doWithRecordHistory(doing: () => void) {
+	public doWithRecordHistory(doing: () => void) {
 		const before = this.getState();
 		doing();
 		const after = this.getState();

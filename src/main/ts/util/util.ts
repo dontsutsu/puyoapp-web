@@ -35,7 +35,7 @@ export class Util {
 	/**
 	 * @returns {number} 1：アニメーション、0：ステップ
 	 */
-	 public static getAnimateMode(): number {
+	public static getAnimateMode(): number {
 		return $("input:radio[name='animation']:checked").val() as number;
 	}
 
@@ -43,7 +43,7 @@ export class Util {
 	 * ローディング画面を表示します。
 	 * @param {string} msg メッセージ
 	 */
-	 public static dispLoading(msg: string): void {
+	public static dispLoading(msg: string): void {
 		$("#loadMsg").text(msg);
 		$("#load").fadeIn(300);
 	}
