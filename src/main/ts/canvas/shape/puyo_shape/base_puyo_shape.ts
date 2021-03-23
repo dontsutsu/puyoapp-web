@@ -5,6 +5,7 @@ import { BasePuyo } from "../../../game/puyo/base_puyo";
  * ぷよ用 createjs.Shape 基底クラス
  */
 export class BasePuyoShape extends Shape {
+	// CONSTANT
 	private static readonly PUYO_DICT = [
 		  { color: BasePuyo.GREEN , bgColor: "#68EE26", alpha: 1, borderColor: "#236F1A" }
 		, { color: BasePuyo.RED   , bgColor: "#F34A49", alpha: 1, borderColor: "#852D20" }
@@ -15,6 +16,7 @@ export class BasePuyoShape extends Shape {
 		, { color: BasePuyo.NONE  , bgColor: "#FFFFFF", alpha: 0, borderColor: "#FFFFFF" }
 	];
 
+	// CLASS FIELD
 	private _color: string;
 	private _cellsize: number;
 

@@ -9,16 +9,17 @@
 </head>
 <body>
 	<!-- left area -->
-	<div id="left">
-		<div id="tsumoAndField">
-			<canvas id="tsumo" width="251" height="106"></canvas>
-			<canvas id="field" width="251" height="540"></canvas>
-		</div>
+	<div class="row" id="first-row">
+		<canvas id="tsumo" width="251" height="106"></canvas>
+		<canvas id="field" width="251" height="540"></canvas>
+	</div>
+	<div class="row" id="second-row">
 		<canvas id="next" width="101" height="185"></canvas>
+		<canvas id="notice" width="251" height="36"></canvas>
 	</div>
 
 	<!-- right area -->
-	<div id="right">
+	<div class="row" id="third-row">
 		<!-- mode switch -->
 		<div id="mode">
 			<a href="editor">editor</a>

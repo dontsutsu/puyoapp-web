@@ -273,33 +273,10 @@ export class FieldCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @returns {Tween[]}
 	 */
-	public getHideGuideTween(): Tween[] {
-		const tweens: Tween[] = [];
-		const hideAxisGuideTwn = Tween.get(this._axisGuide)
-			.call(() => { this._axisGuide.visible = false; });
-		const hideChildGuideTwn = Tween.get(this._childGuide)
-			.call(() => { this._childGuide.visible = false; });
-		tweens.push(hideAxisGuideTwn, hideChildGuideTwn);
-		return tweens;
-	}
-
-	/**
-	 * 
-	 * @param {Tsumo} tsumo 
-	 * @param {number} axisToY 
-	 * @param {number} childToY 
-	 * @returns {Tween[]}
-	 */
-	public getSetGuideTween(tsumo: Tsumo, axisToY: number, childToY: number): Tween[] {
-		const tweens: Tween[] = [];
-		const setAxisGuideTwn = Tween.get(this._axisGuide)
-			.call(() => { this._axisGuide.update(tsumo.axisX, axisToY, tsumo.axisColor); });
-		const setChildGuideTwn = Tween.get(this._childGuide)
-			.call(() => { this._childGuide.update(tsumo.childX, childToY, tsumo.childColor); });
-		tweens.push(setAxisGuideTwn, setChildGuideTwn);
-		return tweens;
+	public hideGuide(): void {
+		this._axisGuide.visible = false;
+		this._childGuide.visible = false;
 	}
 
 	/**
@@ -365,7 +342,9 @@ export class FieldCanvas extends BaseCanvas {
 		// TODO ループとかで上手くかけそうなら変更したい、思いつかないのでゴリ押し
 		const uni = FieldCellShape.CELLSIZE / 4;
 		crossShape.graphics
-			.f("#FF4A2F")
+			.s("#872819")
+			.ss(FieldCellShape.CELLSIZE / 20)
+			.f("#EC4141")
 			.mt(uni * 0, uni * 1)
 			.lt(uni * 1, uni * 0)
 			.lt(uni * 2, uni * 1)
@@ -379,8 +358,8 @@ export class FieldCanvas extends BaseCanvas {
 			.lt(uni * 0, uni * 3)
 			.lt(uni * 1, uni * 2)
 			.lt(uni * 0, uni * 1);
-		crossShape.x = FieldCellShape.CELLSIZE * Field.DEAD_X;
-		crossShape.y = FieldCellShape.CELLSIZE * FieldCanvas.convertY(Field.DEAD_Y);
+		crossShape.x = FieldCellShape.CELLSIZE * Field.DEAD_X + 0.5;
+		crossShape.y = FieldCellShape.CELLSIZE * FieldCanvas.convertY(Field.DEAD_Y) + 0.5;
 		return crossShape;
 	}
 

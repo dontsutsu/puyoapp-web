@@ -27,12 +27,10 @@ export class Tokopuyo extends BaseMode {
 					// 死んでるかチェック
 					if (this._puyopuyo.isDead()) return;
 
-					const hideGuide = this._puyopuyo.hideGuide();
-					const move = this._puyopuyo.moveTsumo(1);
-					const setGuide = this._puyopuyo.setGuide();
-
-					this._timelineList = hideGuide.add(move, setGuide);
-					this._timelineList.play();
+					this._timelineList = this._puyopuyo.moveTsumo(1);
+					const before = () => { this._puyopuyo.hideGuide(); };
+					const after = () => { this._puyopuyo.setGuide(); };
+					this._timelineList.play(before, after);
 					break;
 				}
 
@@ -43,12 +41,10 @@ export class Tokopuyo extends BaseMode {
 					// 死んでるかチェック
 					if (this._puyopuyo.isDead()) return;
 
-					const hideGuide = this._puyopuyo.hideGuide();
-					const move = this._puyopuyo.moveTsumo(-1);
-					const setGuide = this._puyopuyo.setGuide();
-
-					this._timelineList = hideGuide.add(move, setGuide);
-					this._timelineList.play();
+					this._timelineList = this._puyopuyo.moveTsumo(-1);
+					const before = () => { this._puyopuyo.hideGuide(); };
+					const after = () => { this._puyopuyo.setGuide(); };
+					this._timelineList.play(before, after);
 					break;
 				}
 
@@ -67,13 +63,12 @@ export class Tokopuyo extends BaseMode {
 					const score = this._puyopuyo.getScore();
 					this._undoStack.push({field, score});
 
-					const hideGuide = this._puyopuyo.hideGuide();
 					const drop = this._puyopuyo.dropTsumoToField();
 					const advTsumo = this._puyopuyo.advanceTsumo();
-					const setGuide = this._puyopuyo.setGuide();
-
-					this._timelineList = hideGuide.add(drop, advTsumo, setGuide);
-					this._timelineList.play();
+					this._timelineList = drop.add(advTsumo);
+					const before = () => { this._puyopuyo.hideGuide(); };
+					const after = () => { this._puyopuyo.setGuide(); };
+					this._timelineList.play(before, after);
 					break;
 				}
 
@@ -86,7 +81,7 @@ export class Tokopuyo extends BaseMode {
 					this._puyopuyo.setField(undo.field);
 					this._puyopuyo.setScore(undo.score);
 					this._puyopuyo.backTsumo();
-					this._puyopuyo.setGuideNoAnimation();
+					this._puyopuyo.setGuide();
 					break;
 				}
 
@@ -97,12 +92,10 @@ export class Tokopuyo extends BaseMode {
 					// 死んでるかチェック
 					if (this._puyopuyo.isDead()) return;
 
-					const hideGuide = this._puyopuyo.hideGuide();
-					const rotate = this._puyopuyo.rotateTsumo(false);
-					const setGuide = this._puyopuyo.setGuide();
-
-					this._timelineList = hideGuide.add(rotate, setGuide);
-					this._timelineList.play();
+					this._timelineList = this._puyopuyo.rotateTsumo(false);
+					const before = () => { this._puyopuyo.hideGuide(); };
+					const after = () => { this._puyopuyo.setGuide(); };
+					this._timelineList.play(before, after);
 					break;
 				}
 
@@ -113,12 +106,10 @@ export class Tokopuyo extends BaseMode {
 					// 死んでるかチェック
 					if (this._puyopuyo.isDead()) return;
 
-					const hideGuide = this._puyopuyo.hideGuide();
-					const rotate = this._puyopuyo.rotateTsumo(true);
-					const setGuide = this._puyopuyo.setGuide();
-
-					this._timelineList = hideGuide.add(rotate, setGuide);
-					this._timelineList.play();
+					this._timelineList = this._puyopuyo.rotateTsumo(true);
+					const before = () => { this._puyopuyo.hideGuide(); };
+					const after = () => { this._puyopuyo.setGuide(); };
+					this._timelineList.play(before, after);
 					break;
 				}
 			}

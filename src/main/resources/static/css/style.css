@@ -2,19 +2,12 @@ canvas {
 	display: block;
 }
 
-#left {
-	position: absolute;
-	top: 10px;
-	left: 10px;
+div.row {
+	float: left;
+	margin: 0px 10px 0px 0px;
 }
 
-#right {
-	position: absolute;
-	top: 10px;
-	left: 400px;
-}
-
-#right > div {
+#third-row > div {
 	border: solid 1px #EEEEEE;
 	background-color: #EEEEEE;
 	padding: 4px 2px;
@@ -35,11 +28,6 @@ canvas {
  ********************/
 #field {
 
-}
-
-#tsumoAndField {
-	float: left;
-	margin: 0px 10px 0px 0px;
 }
 
 /********************

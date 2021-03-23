@@ -187,38 +187,20 @@ export class Field {
 		this._canvas.setScore(score);
 	}
 
-	public setGuideNoAnimation(tsumo: Tsumo): void {
-		const {axisToY, childToY} = this.getDropTsumoToY(tsumo);
-		this._canvas.setGuide(tsumo, axisToY, childToY);
-	}
-
 	/**
-	 * @returns {TimelineList}
+	 * 
 	 */
-	public hideGuide(): TimelineList {
-		const timelineList = new TimelineList();
-		const timeline = new Timeline({paused: true});
-		const hideGuideTween = this._canvas.getHideGuideTween();
-		timeline.addTween(...hideGuideTween);
-		timelineList.push(timeline);
-		return timelineList;
+	public hideGuide(): void {
+		this._canvas.hideGuide();
 	}
 
 	/**
 	 * 
 	 * @param {Tsumo} tsumo 
-	 * @returns {TimelineList}
 	 */
-	public setGuide(tsumo: Tsumo): TimelineList {
-		const timelineList = new TimelineList();
-		const timeline = new Timeline({paused: true});
-
+	public setGuide(tsumo: Tsumo): void {
 		const {axisToY, childToY} = this.getDropTsumoToY(tsumo);
-		const setGuideTween = this._canvas.getSetGuideTween(tsumo, axisToY, childToY);
-
-		timeline.addTween(...setGuideTween);
-		timelineList.push(timeline);
-		return timelineList;
+		this._canvas.setGuide(tsumo, axisToY, childToY);
 	}
 
 	/**

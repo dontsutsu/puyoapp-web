@@ -44,7 +44,7 @@ export class TimelineList {
 	// TODO 
 	// public play(before?: () => void, after?: () => void) 
 	// に変更して、コールバック関数で再生前、再生後に処理を差し込みたい
-	public play(): void {
+	public play(before?: () => void, after?: () => void): void {
 		if (this._timelineList.length == 0) return;
 
 		this._isAnimation = true;
@@ -54,11 +54,18 @@ export class TimelineList {
 			if (i < this._timelineList.length - 1) {
 				afterComplete = () => this._timelineList[i + 1].gotoAndPlay(0);
 			} else {
-				afterComplete = () => this._isAnimation = false;
+				afterComplete = () => {
+					this._isAnimation = false;
+					// callback
+					if (after != undefined) after();
+				}
 			}
 			this._timelineList[i].addEventListener("complete", afterComplete);
 		}
 
+		// callback
+		if (before != undefined) before();
+		
 		this._timelineList[0].gotoAndPlay(0);
 	}
 

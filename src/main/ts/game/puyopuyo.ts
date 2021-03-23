@@ -75,7 +75,7 @@ export class Puyopuyo {
 	public initTokopuyo(): void {
 		this._field.reset();
 		this._tsumos.reset();
-		this._field.setGuideNoAnimation(this._tsumos.current);
+		this._field.setGuide(this._tsumos.current);
 	}
 
 	/**
@@ -155,21 +155,15 @@ export class Puyopuyo {
 
 	/**
 	 * 
-	 * @returns {TimelineList}
 	 */
-	public hideGuide(): TimelineList {
-		return this._field.hideGuide();
+	public hideGuide(): void {
+		this._field.hideGuide();
 	}
 
 	/**
 	 * 
-	 * @returns {TimelineList}
 	 */
-	public setGuide(): TimelineList {
-		return this._field.setGuide(this._tsumos.current);
-	}
-
-	public setGuideNoAnimation(): void {
-		this._field.setGuideNoAnimation(this._tsumos.current);
+	public setGuide(): void {
+		this._field.setGuide(this._tsumos.current);
 	}
 }
