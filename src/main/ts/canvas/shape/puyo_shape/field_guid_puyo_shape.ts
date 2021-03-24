@@ -13,7 +13,8 @@ export class FieldGuidePuyoShape extends BasePuyoShape {
 	 */
 	constructor() {
 		const {x, y} = FieldGuidePuyoShape.convert(0, 0);
-		super(x, y, BasePuyo.NONE, FieldCellShape.CELLSIZE * FieldGuidePuyoShape.SIZE_RATIO);
+		const radius = FieldCellShape.CELLSIZE / 2 * FieldGuidePuyoShape.SIZE_RATIO;
+		super(x, y, BasePuyo.NONE, radius);
 		this.alpha = this.alpha * 0.5;
 	}
 

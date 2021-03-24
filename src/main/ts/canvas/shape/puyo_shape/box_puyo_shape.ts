@@ -15,6 +15,7 @@ export class BoxPuyoShape extends BasePuyoShape {
 	constructor(ax: number, ay: number, color: string) {
 		const x = BoxCellShape.CELLSIZE * ax;
 		const y = BoxCellShape.CELLSIZE * ay;
-		super(x, y, color, BoxCellShape.CELLSIZE);
+		const radius = BoxCellShape.CELLSIZE / 2;
+		super(x, y, color, radius);
 	}
 }

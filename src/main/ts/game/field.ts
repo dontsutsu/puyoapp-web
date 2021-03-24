@@ -1,5 +1,6 @@
 import { Timeline } from "@createjs/tweenjs";
 import { FieldCanvas } from "../canvas/field_canvas";
+import { NoticeCanvas } from "../canvas/notice_canvas";
 import { TimelineList } from "../canvas/timeline/timeline_list";
 import { EnumTsumoPosition } from "./enum_tsumo_position";
 import { BasePuyo } from "./puyo/base_puyo";
@@ -19,15 +20,17 @@ export class Field {
 
 	// CLASS FIELD
 	private _fieldArray: FieldPuyo[][];
-	private _canvas: FieldCanvas;
+	private _fieldCanvas: FieldCanvas;
+	private _noticeCanvas: NoticeCanvas;
 	private _totalScore: number;
 
 	/**
 	 * コンストラクタ
-	 * @param {FieldCanvas} canvas
+	 * @param {FieldCanvas} fieldCanvas
 	 */
-	constructor(canvas: FieldCanvas) {
-		this._canvas = canvas;
+	constructor(fieldCanvas: FieldCanvas) {
+		this._fieldCanvas = fieldCanvas;
+		this._noticeCanvas = new NoticeCanvas();
 		this._totalScore = 0;
 
 		this._fieldArray = [];
@@ -53,7 +56,7 @@ export class Field {
 		// アニメーション
 		const timelineList = new TimelineList();
 		const timeline = new Timeline({paused: true});
-		const tweenList = this._canvas.getTsumoDropTween(tsumo, axisToY, childToY);
+		const tweenList = this._fieldCanvas.getTsumoDropTween(tsumo, axisToY, childToY);
 		timeline.addTween(...tweenList);
 		timelineList.push(timeline);
 		return timelineList;
@@ -73,7 +76,7 @@ export class Field {
 
 			// 落とす処理
 			const dropTimeline = this.drop();
-			const dropScoreTween = this._canvas.getDropScoreTween(this._totalScore);
+			const dropScoreTween = this._fieldCanvas.getDropScoreTween(this._totalScore);
 			dropTimeline.addTween(...dropScoreTween);
 			timelineList.push(dropTimeline);
 
@@ -89,7 +92,7 @@ export class Field {
 			// ３．消去
 			const eraseTimeline = this.erase();
 			if (score > 0)  {
-				const eraseScoreTween = this._canvas.getEraseScoreTween(erase, bonus);
+				const eraseScoreTween = this._fieldCanvas.getEraseScoreTween(erase, bonus);
 				eraseTimeline.addTween(...eraseScoreTween);
 			}
 			timelineList.push(eraseTimeline);
@@ -108,7 +111,7 @@ export class Field {
 		this._fieldArray[y][x].color = color;
 		
 		// canvas
-		this._canvas.changeFieldPuyo(x, y, color);
+		this._fieldCanvas.changeFieldPuyo(x, y, color);
 	}
 
 	/**
@@ -184,14 +187,14 @@ export class Field {
 	 */
 	public setScore(score: number): void {
 		this._totalScore = score;
-		this._canvas.setScore(score);
+		this._fieldCanvas.setScore(score);
 	}
 
 	/**
 	 * 
 	 */
 	public hideGuide(): void {
-		this._canvas.hideGuide();
+		this._fieldCanvas.hideGuide();
 	}
 
 	/**
@@ -200,7 +203,7 @@ export class Field {
 	 */
 	public setGuide(tsumo: Tsumo): void {
 		const {axisToY, childToY} = this.getDropTsumoToY(tsumo);
-		this._canvas.setGuide(tsumo, axisToY, childToY);
+		this._fieldCanvas.setGuide(tsumo, axisToY, childToY);
 	}
 
 	/**
@@ -238,7 +241,7 @@ export class Field {
 				this._fieldArray[fromY][x] = new FieldPuyo();
 
 				// アニメーション
-				const tween = this._canvas.getDropTween(x, fromY, toY);
+				const tween = this._fieldCanvas.getDropTween(x, fromY, toY);
 				timeline.addTween(tween);
 			}
 		}
@@ -328,7 +331,7 @@ export class Field {
 					puyo.color = BasePuyo.NONE;
 
 					// アニメーション
-					const tween = this._canvas.getErasetween(x, y, eraseColor);
+					const tween = this._fieldCanvas.getErasetween(x, y, eraseColor);
 					timeline.addTween(tween);
 
 					// おじゃま消去
@@ -338,7 +341,7 @@ export class Field {
 						ojamaPuyoShape.color = BasePuyo.NONE;
 
 						// アニメーション
-						const tween = this._canvas.getErasetween(x, y + 1, BasePuyo.OJAMA);
+						const tween = this._fieldCanvas.getErasetween(x, y + 1, BasePuyo.OJAMA);
 						timeline.addTween(tween);
 					}
 
@@ -348,7 +351,7 @@ export class Field {
 						ojamaPuyoShape.color = BasePuyo.NONE;
 
 						// アニメーション
-						const tween = this._canvas.getErasetween(x, y - 1, BasePuyo.OJAMA);
+						const tween = this._fieldCanvas.getErasetween(x, y - 1, BasePuyo.OJAMA);
 						timeline.addTween(tween);
 					}
 
@@ -358,7 +361,7 @@ export class Field {
 						ojamaPuyoShape.color = BasePuyo.NONE;
 
 						// アニメーション
-						const tween = this._canvas.getErasetween(x + 1, y, BasePuyo.OJAMA);
+						const tween = this._fieldCanvas.getErasetween(x + 1, y, BasePuyo.OJAMA);
 						timeline.addTween(tween);
 					}
 
@@ -368,7 +371,7 @@ export class Field {
 						ojamaPuyoShape.color = BasePuyo.NONE;
 
 						// アニメーション
-						const tween = this._canvas.getErasetween(x - 1, y, BasePuyo.OJAMA);
+						const tween = this._fieldCanvas.getErasetween(x - 1, y, BasePuyo.OJAMA);
 						timeline.addTween(tween);
 					}
 				}

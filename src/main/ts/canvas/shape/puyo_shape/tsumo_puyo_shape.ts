@@ -12,6 +12,7 @@ export class TsumoPuyoShape extends BasePuyoShape {
     constructor(ax: number, ay: number, color: string) {
         const x = TsumoCellShape.CELLSIZE * ax;
         const y = TsumoCellShape.CELLSIZE * TsumoCanvas.convertY(ay);
-        super(x, y, color, TsumoCellShape.CELLSIZE);
+        const radius = TsumoCellShape.CELLSIZE / 2;
+        super(x, y, color, radius);
     }
 }

@@ -15,40 +15,42 @@ export class BasePuyoShape extends Shape {
 		, { color: BasePuyo.OJAMA , bgColor: "#BBBBBB", alpha: 1, borderColor: "#69686E" }
 		, { color: BasePuyo.NONE  , bgColor: "#FFFFFF", alpha: 0, borderColor: "#FFFFFF" }
 	];
+	protected static readonly THICKNESS_RATIO = 0.1;
 
 	// CLASS FIELD
 	private _color: string;
-	private _cellsize: number;
+	private _radius: number;
 
 	/**
 	 * コンストラクタ
 	 * @param {number} x createjs.Shape.x に設定する値
 	 * @param {number} y createjs.Shape.y に設定する値
 	 * @param {string} color 色
-	 * @param {number} cellsize セルサイズ
+	 * @param {number} radius 半径
 	 */
-	constructor(x: number, y:number, color: string, cellsize: number) {
+	constructor(x: number, y:number, color: string, radius: number) {
 		super();
 		this.x = x;
 		this.y = y;
 		this._color = color;
-		this._cellsize = cellsize;
-		this.setGraphics(color, cellsize);
+		this._radius = radius;
+		this.setGraphics(color);
 	}
 
 	/**
 	 * 描画します。
 	 * @param {string} color 色
-	 * @param {number} cellsize セルサイズ
 	 */
-	private setGraphics(color: string, cellsize: number): void {
+	private setGraphics(color: string): void {
 		const dict = BasePuyoShape.getDictionary(color);
+		const r = this._radius;
+		const t = r * BasePuyoShape.THICKNESS_RATIO;
 
 		this.graphics
 			.s(dict.borderColor)
-			.ss(cellsize / 20)
+			.ss(t)
 			.f(dict.bgColor)
-			.dc(cellsize / 2 + 0.5, cellsize / 2 + 0.5, (cellsize - 2) / 2);
+			.dc(r + 0.5, r + 0.5, r - t);
 		this.alpha = dict.alpha;
 	}
 
@@ -57,10 +59,9 @@ export class BasePuyoShape extends Shape {
 	 * @param {string} color 色
 	 */
 	public changeColor(color: string): void{
-		const cellsize = this._cellsize;
 		this.graphics
 			.c();
-		this.setGraphics(color, cellsize);
+		this.setGraphics(color);
 	}
 
 	/**
@@ -83,7 +84,7 @@ export class BasePuyoShape extends Shape {
 		this._color = color;
 	}
 
-	get cellsize(): number {
-		return this._cellsize;
+	get radius(): number {
+		return this._radius;
 	}
 }

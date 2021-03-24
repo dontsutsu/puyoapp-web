@@ -16,7 +16,8 @@ export class FieldPuyoShape extends BasePuyoShape {
 	constructor(ax: number, ay: number, color: string = BasePuyo.NONE) {
 		const x = FieldCellShape.CELLSIZE * ax;
 		const y = FieldCellShape.CELLSIZE * FieldCanvas.convertY(ay);
-		super(x, y, color, FieldCellShape.CELLSIZE);
+		const radius = FieldCellShape.CELLSIZE / 2;
+		super(x, y, color, radius);
 	}
 
 	/**
@@ -24,15 +25,16 @@ export class FieldPuyoShape extends BasePuyoShape {
 	 * @param {string} eraseColor 
 	 */
 	public setStepEraseGraphics(eraseColor: string): void {
-		const cellsize = this.cellsize;
+		const r = this.radius;
+		const t = r * BasePuyoShape.THICKNESS_RATIO;
 		const dict = BasePuyoShape.getDictionary(eraseColor);
 		const borderColor = dict.bgColor;	// borderに本来のbgColor使用
 
 		this.graphics
 			.s(borderColor)
-			.ss(cellsize / 20)
+			.ss(t)
 			.f("#FFFFFF")
-			.dc(cellsize / 2 + 0.5, cellsize / 2 + 0.5, (cellsize - 2) / 2);
+			.dc(r + 0.5, r + 0.5, r - t);
 		this.alpha = 1;
 	}
 }

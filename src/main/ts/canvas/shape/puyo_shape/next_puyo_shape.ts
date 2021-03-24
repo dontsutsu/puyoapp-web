@@ -11,6 +11,7 @@ export class NextPuyoShape extends BasePuyoShape {
 	 */
 	constructor(next: number, type: number, color: string) {
 		const {x, y} = NextCellShape.getXandY(next, type);
-		super(x, y, color, NextCellShape.CELLSIZE);
+		const radius = NextCellShape.CELLSIZE / 2;
+		super(x, y, color, radius);
 	}
 }
