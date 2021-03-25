@@ -38,15 +38,16 @@ export class BasePuyoShape extends Shape {
 	}
 
 	/**
-	 * 描画します。
+	 * 指定の色でぷよを描画します。
 	 * @param {string} color 色
 	 */
-	private setGraphics(color: string): void {
+	public setGraphics(color: string): void {
 		const dict = BasePuyoShape.getDictionary(color);
 		const r = this._radius;
 		const t = r * BasePuyoShape.THICKNESS_RATIO;
 
 		this.graphics
+			.c()
 			.s(dict.borderColor)
 			.ss(t)
 			.f(dict.bgColor)
@@ -55,13 +56,21 @@ export class BasePuyoShape extends Shape {
 	}
 
 	/**
-	 * ぷよの色を変更します。
-	 * @param {string} color 色
+	 * ステップ実行時の、消去されたぷよを描画します。
+	 * @param {string} eraseColor 消去された色
 	 */
-	public changeColor(color: string): void{
+	public setStepEraseGraphics(eraseColor: string): void {
+		const dict = BasePuyoShape.getDictionary(eraseColor);
+		const r = this.radius;
+		const t = r * BasePuyoShape.THICKNESS_RATIO;
+		
 		this.graphics
-			.c();
-		this.setGraphics(color);
+			.c()
+			.s(dict.bgColor)	// borderに本来のbgColor使用
+			.ss(t)
+			.f("#FFFFFF")
+			.dc(r + 0.5, r + 0.5, r - t);
+		this.alpha = 1;
 	}
 
 	/**

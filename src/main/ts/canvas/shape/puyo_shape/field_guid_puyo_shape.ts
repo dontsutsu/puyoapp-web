@@ -28,7 +28,7 @@ export class FieldGuidePuyoShape extends BasePuyoShape {
 		const {x, y} = FieldGuidePuyoShape.convert(ax, ay);
 		this.x = x;
 		this.y = y;
-		this.changeColor(color);
+		this.setGraphics(color);
 		this.alpha = this.alpha * 0.5;
 		this.visible = (ay < Field.Y_SIZE);
 	}

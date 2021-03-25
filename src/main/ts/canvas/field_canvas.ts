@@ -125,7 +125,7 @@ export class FieldCanvas extends BaseCanvas {
 	 * @param {string} color 
 	 */
 	public changeFieldPuyo(x: number, y: number, color: string): void {
-		this._puyoShapeArray[y][x].changeColor(color);
+		this._puyoShapeArray[y][x].setGraphics(color);
 	}
 
 	/**
@@ -172,12 +172,12 @@ export class FieldCanvas extends BaseCanvas {
 		let tween = Tween.get(erasePuyo);
 		if (val == 1) {
 			tween = tween.to({alpha: 0}, FieldCanvas.ERASE_VEL)
-				.call(() => { erasePuyo.changeColor(BasePuyo.NONE); });
+				.call(() => { erasePuyo.setGraphics(BasePuyo.NONE); });
 		} else {
 			tween = tween.wait(FieldCanvas.STEP_ERASE_TIME)
 				.call(() => { erasePuyo.setStepEraseGraphics(eraseColor); })
 				.wait(FieldCanvas.STEP_ERASE_TIME)
-				.call(() => { erasePuyo.changeColor(BasePuyo.NONE); });
+				.call(() => { erasePuyo.setGraphics(BasePuyo.NONE); });
 		}
 		return tween;
 	}
@@ -340,10 +340,11 @@ export class FieldCanvas extends BaseCanvas {
 	private createCrossShape(): Shape {
 		const crossShape = new Shape();
 		// TODO ループとかで上手くかけそうなら変更したい、思いつかないのでゴリ押し
-		const uni = FieldCellShape.CELLSIZE / 4;
+		const thickness = FieldCellShape.CELLSIZE / 20;
+		const uni = (FieldCellShape.CELLSIZE - thickness * 2) / 4;
 		crossShape.graphics
 			.s("#872819")
-			.ss(FieldCellShape.CELLSIZE / 20)
+			.ss(thickness)
 			.f("#EC4141")
 			.mt(uni * 0, uni * 1)
 			.lt(uni * 1, uni * 0)
@@ -358,8 +359,8 @@ export class FieldCanvas extends BaseCanvas {
 			.lt(uni * 0, uni * 3)
 			.lt(uni * 1, uni * 2)
 			.lt(uni * 0, uni * 1);
-		crossShape.x = FieldCellShape.CELLSIZE * Field.DEAD_X + 0.5;
-		crossShape.y = FieldCellShape.CELLSIZE * FieldCanvas.convertY(Field.DEAD_Y) + 0.5;
+		crossShape.x = FieldCellShape.CELLSIZE * Field.DEAD_X + thickness + 0.5;
+		crossShape.y = FieldCellShape.CELLSIZE * FieldCanvas.convertY(Field.DEAD_Y) + thickness + 0.5;
 		return crossShape;
 	}
 

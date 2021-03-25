@@ -113,7 +113,7 @@ export class TsumoListCanvas extends BaseCanvas {
 	 */
 	public changeColor(index: number, type: number, color: string): void {
 		this._colorArray[index][type] = color;
-		this._puyoShapeArray[index][type].changeColor(color);
+		this._puyoShapeArray[index][type].setGraphics(color);
 	}
 
 	/**
