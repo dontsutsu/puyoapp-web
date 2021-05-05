@@ -322,7 +322,7 @@ export class FieldCanvas extends BaseCanvas {
 
 		const insideFrame = new Shape();
 		insideFrame.graphics
-			.f("#EE808D")
+			.f("#00A1F2")
 			.rr(5.5, 5.5, 240 / cos, 485 + 240 * sin, 10);
 		insideFrame.skewY = deg * (-1);
 

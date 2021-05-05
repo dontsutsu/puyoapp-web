@@ -154,13 +154,13 @@ export class NextCanvas extends BaseCanvas {
 
 		const frame2_1 = new Shape();
 		frame2_1.graphics
-			.f("#EE808D")
+			.f("#00A1F2")
 			.rr(5.5, 5.5, 60 / cos, 90 + 60 * sin, 10);	//x: 20(pad)+30+20(pad), y: 20(pad)+60+20(pad)
 		frame2_1.skewY = deg;
 
 		const frame2_2 = new Shape();
 		frame2_2.graphics
-			.f("#EE808D")
+			.f("#00A1F2")
 			.rr(35.5, 75.5, 60 / cos, 90 + 60 * sin, 10);	//x: 20(pad)+30+20(pad), y: 20(pad)+60+20(pad)
 		frame2_2.skewY = deg;
 		
