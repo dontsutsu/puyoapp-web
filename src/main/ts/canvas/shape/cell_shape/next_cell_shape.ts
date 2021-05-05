@@ -1,9 +1,9 @@
+import { NextCanvas } from "../../next_canvas";
 import { BaseCellShape } from "./base_cell_shape";
 
 export class NextCellShape extends BaseCellShape {
 	// CONSTANT
-	public static readonly CELLSIZE = 30;
-	public static readonly NEXT_PADDING = 10;
+	public static readonly CELLSIZE = 25;
 	public static readonly BG_COLOR = "#FFFFFF";
 
 	/**
@@ -23,8 +23,8 @@ export class NextCellShape extends BaseCellShape {
 	 * @returns {{x: number, y: number}}
 	 */
 	public static getXandY(next: number, type: number): { x: number, y: number } {
-		const x = NextCellShape.CELLSIZE * next;
-		const y = NextCellShape.CELLSIZE * type + (NextCellShape.CELLSIZE * 2 + NextCellShape.NEXT_PADDING) * next;
+		const x = NextCanvas.F_X_SHIFT * next;
+		const y = NextCellShape.CELLSIZE * type + NextCanvas.F_Y_SHIFT * next;
 		return {x, y};
 	}
 }

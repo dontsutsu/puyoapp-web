@@ -5,11 +5,19 @@ import { Util } from "../util/util";
 import { BaseCanvas } from "./base_canvas";
 import { NextCellShape } from "./shape/cell_shape/next_cell_shape";
 import { NextPuyoShape } from "./shape/puyo_shape/next_puyo_shape";
+import $ from "jquery";
 
 export class NextCanvas extends BaseCanvas {
 	// CONSTANT
-	private static readonly FRAME_SKEW_DEG = 5;
 	private static readonly MOVE_TIME = 150;
+	// CONSTANT（FRAME用）
+	public static readonly F_X_SHIFT = NextCellShape.CELLSIZE;
+	public static readonly F_Y_SHIFT = NextCellShape.CELLSIZE / 3 * 7;
+	private static readonly F_O_PAD = NextCellShape.CELLSIZE / 6;
+	private static readonly F_I_PAD = NextCanvas.F_O_PAD * 3;
+	private static readonly F_SKEW_DEG = 5;
+	private static readonly F_BASE_X = NextCellShape.CELLSIZE + (NextCanvas.F_O_PAD + NextCanvas.F_I_PAD) * 2;
+	private static readonly F_BASE_Y = NextCellShape.CELLSIZE * 2 + (NextCanvas.F_O_PAD + NextCanvas.F_I_PAD) * 2;
 
 	// CLASS FIELD
 	private _container: Container;
@@ -25,6 +33,11 @@ export class NextCanvas extends BaseCanvas {
 	constructor(canvasId: string) {
 		super(canvasId, true);
 
+		const w = NextCanvas.F_X_SHIFT + NextCanvas.F_BASE_X;
+		const h = NextCanvas.F_Y_SHIFT + (NextCanvas.F_BASE_Y + NextCanvas.F_BASE_X * Util.sin(NextCanvas.F_SKEW_DEG) * 2);
+		$("#" + canvasId).attr("width", 1 + Math.ceil(w));
+		$("#" + canvasId).attr("height", 1 + Math.ceil(h));
+
 		// frame
 		const frame = this.createFrameContainer();
 		this._stage.addChild(frame);
@@ -32,8 +45,8 @@ export class NextCanvas extends BaseCanvas {
 		// Container
 		this._container = new Container();
 		this._stage.addChild(this._container);
-		this._container.x = 20;
-		this._container.y = 20 + 70 * Util.sin(NextCanvas.FRAME_SKEW_DEG);
+		this._container.x = NextCanvas.F_O_PAD + NextCanvas.F_I_PAD;
+		this._container.y = NextCanvas.F_O_PAD + NextCanvas.F_I_PAD + NextCanvas.F_BASE_X * Util.sin(NextCanvas.F_SKEW_DEG);
 
 		// CellShape
 		for (let n = 0; n < 2; n++) {	// next: n=0, double next: n=1
@@ -136,38 +149,41 @@ export class NextCanvas extends BaseCanvas {
 	 * @returns {Container}
 	 */
 	private createFrameContainer(): Container {
-		const deg = NextCanvas.FRAME_SKEW_DEG;
-		const sin = Util.sin(deg);
-		const cos = Util.cos(deg);
+		const sin = Util.sin(NextCanvas.F_SKEW_DEG);
+		const cos = Util.cos(NextCanvas.F_SKEW_DEG);
+
+		// 角丸のサイズ
+		const oRad = NextCellShape.CELLSIZE / 3;
+		const iRad = oRad / 5 * 4;
 
 		// frame
-		const frame1_1 = new Shape();
-		frame1_1.graphics
+		const oFrameN = new Shape();
+		oFrameN.graphics
 			.f("#E0E0E0")
-			.rr(0.5, 0.5, 70 / cos, 100 + 70 * sin, 12.5);	//x: 20(pad)+30+20(pad), y: 20(pad)+60+20(pad)
-		frame1_1.skewY = deg;
+			.rr(0.5, 0.5, NextCanvas.F_BASE_X / cos, NextCanvas.F_BASE_Y + NextCanvas.F_BASE_X * sin, oRad);
+		oFrameN.skewY = NextCanvas.F_SKEW_DEG;
 
-		const frame1_2 = new Shape();
-		frame1_2.graphics
+		const oFrameD = new Shape();
+		oFrameD.graphics
 			.f("#E0E0E0")
-			.rr(30.5, 70.5, 70 / cos, 100 + 70 * sin, 12.5);	//x: 20(pad)+30+20(pad), y: 20(pad)+60+20(pad)
-		frame1_2.skewY = deg;
+			.rr(NextCanvas.F_X_SHIFT + 0.5, NextCanvas.F_Y_SHIFT + 0.5, NextCanvas.F_BASE_X / cos, NextCanvas.F_BASE_Y + NextCanvas.F_BASE_X * sin, oRad);
+		oFrameD.skewY = NextCanvas.F_SKEW_DEG;
 
-		const frame2_1 = new Shape();
-		frame2_1.graphics
+		const iFrameN = new Shape();
+		iFrameN.graphics
 			.f("#00A1F2")
-			.rr(5.5, 5.5, 60 / cos, 90 + 60 * sin, 10);	//x: 20(pad)+30+20(pad), y: 20(pad)+60+20(pad)
-		frame2_1.skewY = deg;
+			.rr(NextCanvas.F_O_PAD + 0.5, NextCanvas.F_O_PAD + 0.5, (NextCanvas.F_BASE_X - NextCanvas.F_O_PAD * 2) / cos, (NextCanvas.F_BASE_Y - NextCanvas.F_O_PAD * 2) + (NextCanvas.F_BASE_X - NextCanvas.F_O_PAD * 2) * sin, iRad);
+		iFrameN.skewY = NextCanvas.F_SKEW_DEG;
 
-		const frame2_2 = new Shape();
-		frame2_2.graphics
+		const iFrameD = new Shape();
+		iFrameD.graphics
 			.f("#00A1F2")
-			.rr(35.5, 75.5, 60 / cos, 90 + 60 * sin, 10);	//x: 20(pad)+30+20(pad), y: 20(pad)+60+20(pad)
-		frame2_2.skewY = deg;
+			.rr(NextCanvas.F_X_SHIFT + NextCanvas.F_O_PAD + 0.5, NextCanvas.F_Y_SHIFT + NextCanvas.F_O_PAD + 0.5, (NextCanvas.F_BASE_X - NextCanvas.F_O_PAD * 2) / cos, (NextCanvas.F_BASE_Y - NextCanvas.F_O_PAD * 2) + (NextCanvas.F_BASE_X - NextCanvas.F_O_PAD * 2) * sin, iRad);
+		iFrameD.skewY = NextCanvas.F_SKEW_DEG;
 		
 		const frameContainer = new Container();
-		frameContainer.addChild(frame1_1, frame1_2);
-		frameContainer.addChild(frame2_1, frame2_2);
+		frameContainer.addChild(oFrameN, oFrameD);
+		frameContainer.addChild(iFrameN, iFrameD);
 		
 		return frameContainer;
 	}

@@ -40,8 +40,10 @@ export class FieldCanvas extends BaseCanvas {
 		super(canvasId, true);
 		this._stage.enableMouseOver();
 
-		$("#" + canvasId).attr("width", 1 + FieldCanvas.F_BASE_X);
-		$("#" + canvasId).attr("height", 1 + FieldCanvas.F_BASE_Y + FieldCanvas.F_BASE_X * Util.sin(FieldCanvas.F_SKEW_DEG) * 2);
+		const w = FieldCanvas.F_BASE_X;
+		const h = FieldCanvas.F_BASE_Y + FieldCanvas.F_BASE_X * Util.sin(FieldCanvas.F_SKEW_DEG) * 2;
+		$("#" + canvasId).attr("width", 1 + Math.ceil(w));
+		$("#" + canvasId).attr("height", 1 + Math.ceil(h));
 
 		// frame
 		const frame = this.createFrameContainer();

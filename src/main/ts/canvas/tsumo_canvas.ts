@@ -31,8 +31,10 @@ export class TsumoCanvas extends BaseCanvas {
 
 		const xPad = FieldCanvas.F_O_PAD + FieldCanvas.F_I_PAD;
 
-		$("#" + canvasId).attr("width", 1 + TsumoCellShape.CELLSIZE * Field.X_SIZE + xPad * 2);
-		$("#" + canvasId).attr("height", 1 + TsumoCellShape.CELLSIZE * TsumoCanvas.Y_SIZE);
+		const w = TsumoCellShape.CELLSIZE * Field.X_SIZE + xPad * 2;
+		const h = TsumoCellShape.CELLSIZE * TsumoCanvas.Y_SIZE;
+		$("#" + canvasId).attr("width", 1 + Math.ceil(w));
+		$("#" + canvasId).attr("height", 1 + Math.ceil(h));
 
 		// Container
 		this._container = new Container();
