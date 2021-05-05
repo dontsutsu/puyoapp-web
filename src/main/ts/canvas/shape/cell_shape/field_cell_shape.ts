@@ -5,7 +5,7 @@ export class FieldCellShape extends BaseCellShape {
 	// CONSTANT
 	public static readonly BG_COLOR = "#FFFFFF";
 	public static readonly SELECT_COLOR = "#00FFFF";
-	public static readonly CELLSIZE = 35;
+	public static readonly CELLSIZE = 30;
 
 	// CLASS FIELD
 	private _ax: number;

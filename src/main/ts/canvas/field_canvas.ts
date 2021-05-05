@@ -9,13 +9,19 @@ import { EditableMode } from "../mode/editable_mode";
 import { BasePuyo } from "../game/puyo/base_puyo";
 import { Tsumo } from "../game/tsumo";
 import { FieldGuidePuyoShape } from "./shape/puyo_shape/field_guid_puyo_shape";
+import $ from "jquery";
 
 export class FieldCanvas extends BaseCanvas {
 	// CONSTANT
-	private static readonly FRAME_SKEW_DEG = 5;
 	private static readonly DROP_VEL = 50;
 	private static readonly ERASE_VEL = 500;
 	private static readonly STEP_ERASE_TIME = 300;
+	// CONSTANT（FRAME用）
+	public static readonly F_O_PAD = FieldCellShape.CELLSIZE / 6;	// 外側FRAMEのPAD
+	public static readonly F_I_PAD = FieldCanvas.F_O_PAD * 3;		// 内側FRAMEのPAD
+	private static readonly F_SKEW_DEG = 5;							// FRAMEの傾き
+	private static readonly F_BASE_X = FieldCellShape.CELLSIZE * Field.X_SIZE + (FieldCanvas.F_O_PAD + FieldCanvas.F_I_PAD) * 2;
+	private static readonly F_BASE_Y = FieldCellShape.CELLSIZE * Field.Y_SIZE + (FieldCanvas.F_O_PAD + FieldCanvas.F_I_PAD) * 2;
 
 	// CLASS FIELD
 	private _container: Container;
@@ -28,11 +34,15 @@ export class FieldCanvas extends BaseCanvas {
 
 	/**
 	 * コンストラクタ
+	 * @param {string} canvasId canvasのID 
 	 */
-	constructor() {
-		super("field", true);
+	constructor(canvasId: string) {
+		super(canvasId, true);
 		this._stage.enableMouseOver();
-		
+
+		$("#" + canvasId).attr("width", 1 + FieldCanvas.F_BASE_X);
+		$("#" + canvasId).attr("height", 1 + FieldCanvas.F_BASE_Y + FieldCanvas.F_BASE_X * Util.sin(FieldCanvas.F_SKEW_DEG) * 2);
+
 		// frame
 		const frame = this.createFrameContainer();
 		this._stage.addChild(frame);
@@ -40,8 +50,8 @@ export class FieldCanvas extends BaseCanvas {
 		// container
 		this._container = new Container();
 		this._stage.addChild(this._container);
-		this._container.x = 20;
-		this._container.y = 20 + 250 * Util.sin(FieldCanvas.FRAME_SKEW_DEG);
+		this._container.x = FieldCanvas.F_O_PAD + FieldCanvas.F_I_PAD;
+		this._container.y = FieldCanvas.F_O_PAD + FieldCanvas.F_I_PAD + FieldCanvas.F_BASE_X * Util.sin(FieldCanvas.F_SKEW_DEG);
 
 		// score
 		const scoreStr = "0".padStart(9, "0");
@@ -308,29 +318,32 @@ export class FieldCanvas extends BaseCanvas {
 	 */
 	private createFrameContainer(): Container {
 		// 傾けた分の計算
-		const deg = FieldCanvas.FRAME_SKEW_DEG;
-		const sin = Util.sin(deg);
-		const cos = Util.cos(deg);
-		const y = 250 * sin;
+		const sin = Util.sin(FieldCanvas.F_SKEW_DEG);
+		const cos = Util.cos(FieldCanvas.F_SKEW_DEG);
+		const y = FieldCanvas.F_BASE_X * sin;
+		
+		// 角丸のサイズ
+		const oRad = FieldCellShape.CELLSIZE / 3;
+		const iRad = oRad / 5 * 4;
 
 		// frame
-		const outsideFrame = new Shape();
-		outsideFrame.graphics
+		const oFrame = new Shape();
+		oFrame.graphics
 			.f("#E0E0E0")
-			.rr(0.5, 0.5, 250 / cos, 495 + 250 * sin, 12.5);
-		outsideFrame.skewY = deg * (-1);
+			.rr(0.5, 0.5, FieldCanvas.F_BASE_X / cos, FieldCanvas.F_BASE_Y + FieldCanvas.F_BASE_X * sin, oRad);
+		oFrame.skewY = FieldCanvas.F_SKEW_DEG * (-1);
 
-		const insideFrame = new Shape();
-		insideFrame.graphics
+		const iFrame = new Shape();
+		iFrame.graphics
 			.f("#00A1F2")
-			.rr(5.5, 5.5, 240 / cos, 485 + 240 * sin, 10);
-		insideFrame.skewY = deg * (-1);
+			.rr(FieldCanvas.F_O_PAD + 0.5, FieldCanvas.F_O_PAD + 0.5, (FieldCanvas.F_BASE_X - FieldCanvas.F_O_PAD * 2) / cos, (FieldCanvas.F_BASE_Y - FieldCanvas.F_O_PAD * 2) + (FieldCanvas.F_BASE_X - FieldCanvas.F_O_PAD * 2) * sin, iRad);
+		iFrame.skewY = FieldCanvas.F_SKEW_DEG * (-1);
 
-		const frameContainer = new Container();
-		frameContainer.addChild(outsideFrame, insideFrame);
-		frameContainer.y = y;
+		const container = new Container();
+		container.addChild(oFrame, iFrame);
+		container.y = y;
 		
-		return frameContainer;
+		return container;
 	}
 
 	/**

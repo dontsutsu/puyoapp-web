@@ -5,8 +5,10 @@ import { Field } from "../game/field";
 import { Tsumo } from "../game/tsumo";
 import { Util } from "../util/util";
 import { BaseCanvas } from "./base_canvas";
+import { FieldCanvas } from "./field_canvas";
 import { TsumoCellShape } from "./shape/cell_shape/tsumo_cell_shape";
 import { TsumoPuyoShape } from "./shape/puyo_shape/tsumo_puyo_shape";
+import $ from "jquery";
 
 export class TsumoCanvas extends BaseCanvas {
 	// CONSTANT
@@ -22,14 +24,20 @@ export class TsumoCanvas extends BaseCanvas {
 
 	/**
 	 * コンストラクタ
+	 * @param {string} canvasId canvasのID 
 	 */
-	constructor() {
-		super("tsumo", true);
+	constructor(canvasId: string) {
+		super(canvasId, true);
+
+		const xPad = FieldCanvas.F_O_PAD + FieldCanvas.F_I_PAD;
+
+		$("#" + canvasId).attr("width", 1 + TsumoCellShape.CELLSIZE * Field.X_SIZE + xPad * 2);
+		$("#" + canvasId).attr("height", 1 + TsumoCellShape.CELLSIZE * TsumoCanvas.Y_SIZE);
 
 		// Container
 		this._container = new Container();
 		this._stage.addChild(this._container);
-		this._container.x = 20;
+		this._container.x = xPad;
 		
 		// CellShape
 		for (let x = 0; x < Field.X_SIZE; x++) {

@@ -36,7 +36,7 @@ export class NoticeCanvas extends BaseCanvas {
 
 			noticePuyo.x = NoticeCanvas.SHAPE_SIZE * i + 0.5;
 			noticePuyo.y = 0.5;
-			NoticeCanvas.DICT[i].graphic(noticePuyo);
+			// NoticeCanvas.DICT[i].graphic(noticePuyo);
 
 			this._noticePuyoList.push(noticePuyo);
 		}

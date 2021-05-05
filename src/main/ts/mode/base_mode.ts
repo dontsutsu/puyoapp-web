@@ -20,9 +20,9 @@ export abstract class BaseMode {
 		// createjsで使用するアニメーションのフレームレートを設定しておく
 		Ticker.timingMode = Ticker.RAF;
 
-		this._fieldCanvas = new FieldCanvas();
-		this._tsumoCanvas = new TsumoCanvas();
-		this._nextCanvas = new NextCanvas();
+		this._fieldCanvas = new FieldCanvas("field");
+		this._tsumoCanvas = new TsumoCanvas("tsumo");
+		this._nextCanvas = new NextCanvas("next");
 		this._puyopuyo = new Puyopuyo(this._fieldCanvas, this._tsumoCanvas, this._nextCanvas);
 		this._timelineList = new TimelineList;
 	}

@@ -20,9 +20,10 @@ export class NextCanvas extends BaseCanvas {
 
 	/**
 	 * コンストラクタ
+	 * @param {string} canvasId canvasのID 
 	 */
-	constructor() {
-		super("next", true);
+	constructor(canvasId: string) {
+		super(canvasId, true);
 
 		// frame
 		const frame = this.createFrameContainer();
