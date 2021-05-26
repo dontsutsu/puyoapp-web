@@ -25,13 +25,15 @@ export class NextCanvas extends BaseCanvas {
 	private _nextChildPuyoShape!: NextPuyoShape;
 	private _doubleNextAxisPuyoShape!: NextPuyoShape;
 	private _doubleNextChildPuyoShape!: NextPuyoShape;
+	private _isModel: boolean;
 
 	/**
 	 * コンストラクタ
 	 * @param {string} canvasId canvasのID 
 	 */
-	constructor(canvasId: string) {
+	constructor(canvasId: string, isModel: boolean = false) {
 		super(canvasId, true);
+		this._isModel = isModel;
 
 		const w = NextCanvas.F_X_SHIFT + NextCanvas.F_BASE_X;
 		const h = NextCanvas.F_Y_SHIFT + (NextCanvas.F_BASE_Y + NextCanvas.F_BASE_X * Util.sin(NextCanvas.F_SKEW_DEG) * 2);
@@ -48,6 +50,12 @@ export class NextCanvas extends BaseCanvas {
 		this._container.x = NextCanvas.F_O_PAD + NextCanvas.F_I_PAD;
 		this._container.y = NextCanvas.F_O_PAD + NextCanvas.F_I_PAD + NextCanvas.F_BASE_X * Util.sin(NextCanvas.F_SKEW_DEG);
 
+		// 手本（2p）の場合、stage左右反転
+		if (this._isModel) {
+			this._stage.scaleX = -1;
+			this._stage.x = w;
+		}
+
 		// CellShape
 		for (let n = 0; n < 2; n++) {	// next: n=0, double next: n=1
 			for (let t = 0; t < 2; t++) {	// child: t=0, axis: t=1
@@ -63,6 +71,11 @@ export class NextCanvas extends BaseCanvas {
 	 * @param {Tsumo} doubleNext 
 	 */
 	public init(next: Tsumo, doubleNext: Tsumo): void {
+		if (this._nextAxisPuyoShape != undefined) this._container.removeChild(this._nextAxisPuyoShape);
+		if (this._nextChildPuyoShape != undefined) this._container.removeChild(this._nextChildPuyoShape);
+		if (this._doubleNextAxisPuyoShape != undefined) this._container.removeChild(this._doubleNextAxisPuyoShape);
+		if (this._doubleNextChildPuyoShape != undefined) this._container.removeChild(this._doubleNextChildPuyoShape);
+
 		this._nextAxisPuyoShape = new NextPuyoShape(0, 1, next.axisColor);
 		this._nextChildPuyoShape = new NextPuyoShape(0, 0, next.childColor);
 		this._doubleNextAxisPuyoShape = new NextPuyoShape(1, 1, doubleNext.axisColor);
@@ -136,19 +149,12 @@ export class NextCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
-	 * @param {Tsumo} next 
-	 * @param {Tsumo} doubleNext 
-	 */
-	public set(next: Tsumo, doubleNext: Tsumo): void {
-		this._container.removeChild(this._nextAxisPuyoShape, this._nextChildPuyoShape, this._doubleNextAxisPuyoShape, this._doubleNextChildPuyoShape);
-		this.init(next, doubleNext);
-	}
-
-	/**
 	 * @returns {Container}
 	 */
 	private createFrameContainer(): Container {
+		const oFrameColor = "#E0E0E0";
+		const iFrameColor = this._isModel ? "#F57777" : "#40B0FF";
+
 		const sin = Util.sin(NextCanvas.F_SKEW_DEG);
 		const cos = Util.cos(NextCanvas.F_SKEW_DEG);
 
@@ -159,25 +165,25 @@ export class NextCanvas extends BaseCanvas {
 		// frame
 		const oFrameN = new Shape();
 		oFrameN.graphics
-			.f("#E0E0E0")
+			.f(oFrameColor)
 			.rr(0.5, 0.5, NextCanvas.F_BASE_X / cos, NextCanvas.F_BASE_Y + NextCanvas.F_BASE_X * sin, oRad);
 		oFrameN.skewY = NextCanvas.F_SKEW_DEG;
 
 		const oFrameD = new Shape();
 		oFrameD.graphics
-			.f("#E0E0E0")
+			.f(oFrameColor)
 			.rr(NextCanvas.F_X_SHIFT + 0.5, NextCanvas.F_Y_SHIFT + 0.5, NextCanvas.F_BASE_X / cos, NextCanvas.F_BASE_Y + NextCanvas.F_BASE_X * sin, oRad);
 		oFrameD.skewY = NextCanvas.F_SKEW_DEG;
 
 		const iFrameN = new Shape();
 		iFrameN.graphics
-			.f("#00A1F2")
+			.f(iFrameColor)
 			.rr(NextCanvas.F_O_PAD + 0.5, NextCanvas.F_O_PAD + 0.5, (NextCanvas.F_BASE_X - NextCanvas.F_O_PAD * 2) / cos, (NextCanvas.F_BASE_Y - NextCanvas.F_O_PAD * 2) + (NextCanvas.F_BASE_X - NextCanvas.F_O_PAD * 2) * sin, iRad);
 		iFrameN.skewY = NextCanvas.F_SKEW_DEG;
 
 		const iFrameD = new Shape();
 		iFrameD.graphics
-			.f("#00A1F2")
+			.f(iFrameColor)
 			.rr(NextCanvas.F_X_SHIFT + NextCanvas.F_O_PAD + 0.5, NextCanvas.F_Y_SHIFT + NextCanvas.F_O_PAD + 0.5, (NextCanvas.F_BASE_X - NextCanvas.F_O_PAD * 2) / cos, (NextCanvas.F_BASE_Y - NextCanvas.F_O_PAD * 2) + (NextCanvas.F_BASE_X - NextCanvas.F_O_PAD * 2) * sin, iRad);
 		iFrameD.skewY = NextCanvas.F_SKEW_DEG;
 		

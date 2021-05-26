@@ -72,9 +72,18 @@ export class Puyopuyo {
 	/**
 	 * とこぷよ開始時の初期化処理を行います。
 	 */
-	public initTokopuyo(): void {
+	public initTokopuyo(tsumoList?: Tsumo[]): void {
+		// フィールドを初期化
 		this._field.reset();
-		this._tsumos.reset();
+
+		// ツモ初期化
+		if (tsumoList == undefined) {
+			this._tsumos.reset();	// 引数で指定がなければランダムに設定
+		} else {
+			this._tsumos.set(tsumoList);	// 引数で指定があればそれを設定
+		}
+
+		// ガイド表示
 		this._field.setGuide(this._tsumos.current);
 	}
 
@@ -132,9 +141,10 @@ export class Puyopuyo {
 
 	/**
 	 * ツモを1つ戻します。
+	 * @param {boolean} isMemorized 戻したツモの位置を記憶しておくかどうか
 	 */
-	public backTsumo(): void {
-		return this._tsumos.back();
+	public backTsumo(isMemorized: boolean): void {
+		return this._tsumos.back(isMemorized);
 	}
 
 	/**

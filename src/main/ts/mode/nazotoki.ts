@@ -15,7 +15,7 @@ $(() => {
 export class Nazotoki extends EditableMode {
 	// CLASS FIELD
 	private _tsumoListCanvas: TsumoListCanvas;
-	private _correctTsumoList: Tsumo[][];
+	private _answerList: Tsumo[][];
 
 	/**
 	 * コンストラクタ
@@ -23,7 +23,7 @@ export class Nazotoki extends EditableMode {
 	constructor() {
 		super();
 		this._tsumoListCanvas = new TsumoListCanvas();
-		this._correctTsumoList = [];
+		this._answerList = [];
 
 		$("#nazoType").val("1");
 		this.nazoSwitch("1");
@@ -35,15 +35,15 @@ export class Nazotoki extends EditableMode {
 			this.nazoSwitch((e.currentTarget as HTMLInputElement).value);
 		});
 
-		$("#search").on("click", () => {
-			this.search();
+		$("#findAnswer").on("click", () => {
+			this.findNazopuyoAnswer();
 		});
 
-		$("#play").on("click", () => {
+		$("#playAnswer").on("click", () => {
 			// 正答リストがないときは何もしない
-			if (this._correctTsumoList.length == 0) return;
+			if (this._answerList.length == 0) return;
 
-			this._timelineList = this.playCorrect();
+			this._timelineList = this.playAnswer();
 			this._timelineList.play();
 		});
 	}
@@ -123,7 +123,7 @@ export class Nazotoki extends EditableMode {
 	/**
 	 * なぞぷよの解答を検索します。
 	 */
-	 private search(): void {
+	 private findNazopuyoAnswer(): void {
 		if (!this._tsumoListCanvas.check()) {
 			alert("ツモの設定が不正です。");
 			return;
@@ -131,10 +131,10 @@ export class Nazotoki extends EditableMode {
 
 		Util.dispLoading("検索中です...");
 
-		this.searchAjax()
-			.done((data) => {
-				this._correctTsumoList = this.convertSearchAjaxData(data);
-				const len = this._correctTsumoList.length;
+		this.findNazopuyoAnswerAjax()
+			.done((data: FindNazopuyoAnswerInterface[][]) => {
+				this._answerList = this.createTsumoListListFromAjaxData(data);
+				const len = this._answerList.length;
 
 				// ラジオボタンの表示
 				// 一旦全部オフにする
@@ -149,11 +149,11 @@ export class Nazotoki extends EditableMode {
 				// メッセージの表示
 				if (len <= 0) {
 					$("#anslistDiv").animate({height: "hide", opacity: 0}, 300);
-					$("#play").addClass("disabled");
+					$("#playAnswer").addClass("disabled");
 					Util.dispMsg("解答が見つかりませんでした。", "1");
 				} else {
 					$("#anslistDiv").animate({height: "show", opacity: 1}, 300);
-					$("#play").removeClass("disabled");
+					$("#playAnswer").removeClass("disabled");
 					if (len < 10) {
 						Util.dispMsg(len + "件の解答が見つかりました。", "0");
 					} else {
@@ -162,7 +162,7 @@ export class Nazotoki extends EditableMode {
 				}
 			})
 			.fail(() => {
-				this.clearCorrectList();
+				this.clearAnswerList();
 				Util.dispMsg("サーバーとの通信に失敗しました。", "2");
 			})
 			.always(() => {
@@ -173,17 +173,17 @@ export class Nazotoki extends EditableMode {
 	/**
 	 * なぞぷよ正答リストをクリアします。
 	 */
-	private clearCorrectList(): void {
-		this._correctTsumoList.length = 0;
+	private clearAnswerList(): void {
+		this._answerList.length = 0;
 		$("#anslistDiv input[type='radio']").prop("disabled", true);
-		$("#play").addClass("disabled");
+		$("#playAnswer").addClass("disabled");
 	}
 
 	/**
 	 * 検索時のajax通信
 	 * @returns {JQuery.jqXHR<any>}
 	 */
-	private searchAjax(): JQuery.jqXHR<any> {
+	private findNazopuyoAnswerAjax(): JQuery.jqXHR<any> {
 		const fieldStr = this._puyopuyo.getFieldString();
 		const tsumoListStr = this._tsumoListCanvas.getTsumoListString();
 		const nazoType = $("#nazoType").val() as string;
@@ -198,7 +198,7 @@ export class Nazotoki extends EditableMode {
 
 		return $.ajax({
 			type: "POST",
-			url: "/search",
+			url: "/findNazopuyoAnswer",
 			data: JSON.stringify(data),
 			contentType: "application/json",
 			dataType: "json"
@@ -206,38 +206,37 @@ export class Nazotoki extends EditableMode {
 	}
 
 	/**
-	 * searchAjaxのdataを変換します。
+	 * ajaxのdataからツモの配列を生成します。
 	 * @param data 
 	 * @returns {Tsumo[][]}
 	 */
-	private convertSearchAjaxData(data: any): Tsumo[][] {
-		const dataCorrectList = data.correctList;
-		const correctList: Tsumo[][] = [];
-		for (let n = 0; n < dataCorrectList.length; n++) {	// 正答数のループ
-			const dataCorrect = dataCorrectList[n];
-			const correct: Tsumo[] = [];
-			for (let i = 0; i < dataCorrect.length; i++) {
-				const dataTsumo = dataCorrect[i];
+	private createTsumoListListFromAjaxData(data: FindNazopuyoAnswerInterface[][]): Tsumo[][] {
+		const answerList: Tsumo[][] = [];
+		for (let n = 0; n < data.length; n++) {	// 正答数のループ
+			const dataAnswer = data[n];
+			const answer: Tsumo[] = [];
+			for (let i = 0; i < dataAnswer.length; i++) {
+				const dataTsumo = dataAnswer[i];
 				const tsumo = new Tsumo(dataTsumo.axisColor, dataTsumo.childColor);
 				tsumo.axisX = Number(dataTsumo.axisX);
 				tsumo.setTsumoPositionByEnumName(dataTsumo.tsumoPosition);
-				correct.push(tsumo);
+				answer.push(tsumo);
 			}
-			correctList.push(correct);
+			answerList.push(answer);
 		}
-		return correctList;
+		return answerList;
 	}
 
 	/**
 	 * 
 	 * @returns {TimelineList}
 	 */
-	private playCorrect(): TimelineList {
+	private playAnswer(): TimelineList {
 		const timelineList = new TimelineList();
 
 		// 選択しているツモリストを取得
 		const index = this.getAnsListIndex();
-		const tsumoList = this._correctTsumoList[index];
+		const tsumoList = this._answerList[index];
 
 		const length = tsumoList.length;
 
@@ -287,3 +286,9 @@ export class Nazotoki extends EditableMode {
 
 }
 
+interface FindNazopuyoAnswerInterface {
+	axisColor: string;
+	childColor: string;
+	tsumoPosition: string;
+	axisX: string;
+}

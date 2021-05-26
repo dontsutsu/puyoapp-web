@@ -10,7 +10,7 @@ export class Tsumos {
 	// CLASS FIELD
 	private _list: Tsumo[];
 	private _tsumoCanvas: TsumoCanvas;
-	private _nextCanvas: NextCanvas; 
+	private _nextCanvas: NextCanvas;
 
 	/**
 	 * コンストラクタ
@@ -113,9 +113,8 @@ export class Tsumos {
 	 */
 	public set(tsumoList: Tsumo[]): void {
 		this._list.length = 0;
-		for (let i = 0; i < tsumoList.length; i++) {
-			const tsumo = tsumoList[i];
-			this._list.push(new Tsumo(tsumo.axisColor, tsumo.childColor));
+		for (const tsumo of tsumoList) {
+			this._list.push(tsumo);
 		}
 		this._tsumoCanvas.init(this._list[0]);
 		this._nextCanvas.init(this._list[1], this._list[2]);
@@ -123,18 +122,19 @@ export class Tsumos {
 
 	/**
 	 * ツモを1つ戻します。
+	 * @param {boolean} isMemorized 戻したツモの位置を記憶しておくかどうか
 	 */
-	public back(): void {
-		// backのときは現在のツモの位置をリセットしておく
-		this._list[0].resetPosition();
+	public back(isMemorized: boolean): void {
+		// 現在のツモ位置を保持しない場合はリセット
+		if (!isMemorized) this._list[0].resetPosition();
 
 		const tail = this._list.pop();
 		if (tail == undefined) throw Error();
 		
 		this._list.unshift(tail);
 
-		this._tsumoCanvas.set(this._list[0]);
-		this._nextCanvas.set(this._list[1], this._list[2]);
+		this._tsumoCanvas.init(this._list[0]);
+		this._nextCanvas.init(this._list[1], this._list[2]);
 	}
 
 	/**
@@ -143,7 +143,7 @@ export class Tsumos {
 	 */
 	private initList(): void {
 		const colorList = [BasePuyo.GREEN, BasePuyo.RED, BasePuyo.BLUE, BasePuyo.YELLOW, BasePuyo.PURPLE];
-		const removeIndex = Math.random() * colorList.length | 0;
+		const removeIndex = Util.getRandomNumber(colorList.length);
 		let workList: string[] = [];
 
 		// 64*4色の配列作成
@@ -155,7 +155,7 @@ export class Tsumos {
 			}
 		}
 
-		// シャッフル、初手3ツモ（0～5）が3色以内になるように
+		// シャッフル、初手2ツモ（0～3）が3色以内になるように
 		do {
 			workList = Util.shuffle(workList);
 		} while (this.isInitTsumoFourColor(workList));

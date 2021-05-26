@@ -55,6 +55,9 @@ export class TsumoCanvas extends BaseCanvas {
 	 * @param {Tsumo} tsumo 
 	 */
 	public init(tsumo: Tsumo): void {
+		if (this._axisPuyoShape != undefined) this._container.removeChild(this._axisPuyoShape);
+		if (this._childPuyoShape != undefined) this._container.removeChild(this._childPuyoShape);
+
 		this._axisPuyoShape = new TsumoPuyoShape(tsumo.axisX, tsumo.axisY, tsumo.axisColor);
 		this._childPuyoShape = new TsumoPuyoShape(tsumo.childX, tsumo.childY, tsumo.childColor);
 		this._container.addChild(this._axisPuyoShape, this._childPuyoShape);
@@ -191,15 +194,5 @@ export class TsumoCanvas extends BaseCanvas {
 			.call(() => { this._container.removeChild(oldChildPuyo); });
 		
 		return [axisTween, childTween];
-	}
-
-	/**
-	 * @param {Tsumo} tsumo
-	 */
-	public set(tsumo: Tsumo): void {
-		// 現在のshapeをremove
-		this._container.removeChild(this._axisPuyoShape, this._childPuyoShape);
-
-		this.init(tsumo);
 	}
 }

@@ -9,24 +9,36 @@
 </head>
 <body>
 	<!-- 1列目 -->
-	<div class="row" id="first-row">
-		<canvas id="tsumo" width="251" height="106"></canvas>
-		<canvas id="field" width="251" height="540"></canvas>
+	<div class="row" id="player_field">
+		<canvas id="tsumo" class="tsumo"></canvas>
+		<canvas id="field" class="field"></canvas>
 	</div>
 
 	<!-- 2列目 -->
-	<div class="row" id="second-row">
-		<canvas id="next" width="101" height="185"></canvas>
-		<canvas id="notice" width="271" height="56"></canvas>
+	<div class="row" id="player_next">
+		<canvas id="next" class="next"></canvas>
+		<!--/* <canvas id="notice" width="271" height="56"></canvas> */-->
 	</div>
 
 	<!-- 3列目 -->
-	<div class="row" id="third-row">
+	<div class="row" id="model_next" th:if="${mode=='dodai'}">
+		<canvas id="modelNext" class="next"></canvas>
+	</div>
+
+	<!-- 4列目 -->
+	<div class="row" id="model_field" th:if="${mode=='dodai'}">
+		<canvas id="modelTsumo" class="tsumo"></canvas>
+		<canvas id="modelField" class="field"></canvas>
+	</div>
+
+	<!-- 5列目 -->
+	<div class="row" id="setting">
 		<!-- mode switch -->
 		<div id="mode">
 			<a href="editor">editor</a>
 			<a href="tokopuyo">tokopuyo</a>
 			<a href="nazotoki">nazotoki</a>
+			<a href="dodai">dodai</a>
 		</div>
 
 		<div id="option">
@@ -67,8 +79,8 @@
 		</div>
 
 		<div id="nazotokiButtonDiv" class="buttonDiv" th:if="${mode=='nazotoki'}">
-			<div id="search" class="button">こたえ検索</div>
-			<div id="play" class="button disabled">こたえ再生</div>
+			<div id="findAnswer" class="button">こたえ検索</div>
+			<div id="playAnswer" class="button disabled">こたえ再生</div>
 		</div>
 
 		<div id="editorButtonDiv" class="buttonDiv" th:if="${mode=='editor'}">
@@ -92,6 +104,29 @@
 					<td><input type="radio" name="ansradio" id="ans9" value="9" disabled="disabled" /><label for="ans9">9</label></td>
 					<td><input type="radio" name="ansradio" id="ans10" value="10" disabled="disabled" /><label for="ans10">10</label></td>
 				</tr>
+			</table>
+		</div>
+
+		<div th:if="${mode=='dodai'}">
+			<span class="subject">プレイヤーをえらんでね</span><br>
+			<select id="player">
+				<option value=""></option>
+				<option th:each="player : ${players}"
+						th:value="${player.playerId}"
+						th:text="${player.playerName}">
+				</option>
+			</select>
+
+			<table id="dodaiList">
+				<thead>
+					<tr>
+						<th></th>
+						<th>日付</th>
+						<th>詳細</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
 			</table>
 		</div>
 	</div>

@@ -1,9 +1,12 @@
-package com.dontsutsu.puyoapp.application.controller;
+package com.dontsutsu.puyoapp.application.controller.tokopuyo;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * @author f-akamatsu
+ */
 @Controller
 public class TokopuyoController {
 

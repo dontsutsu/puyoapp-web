@@ -24,6 +24,6 @@ export abstract class BaseMode {
 		this._tsumoCanvas = new TsumoCanvas("tsumo");
 		this._nextCanvas = new NextCanvas("next");
 		this._puyopuyo = new Puyopuyo(this._fieldCanvas, this._tsumoCanvas, this._nextCanvas);
-		this._timelineList = new TimelineList;
+		this._timelineList = new TimelineList();
 	}
 }

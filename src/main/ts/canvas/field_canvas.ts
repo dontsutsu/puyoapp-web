@@ -31,14 +31,16 @@ export class FieldCanvas extends BaseCanvas {
 	private _scoreOutline: Text;
 	private _axisGuide: FieldGuidePuyoShape;
 	private _childGuide: FieldGuidePuyoShape;
+	private _isModel: boolean;
 
 	/**
 	 * コンストラクタ
 	 * @param {string} canvasId canvasのID 
 	 */
-	constructor(canvasId: string) {
+	constructor(canvasId: string, isModel: boolean = false) {
 		super(canvasId, true);
 		this._stage.enableMouseOver();
+		this._isModel = isModel;
 
 		const w = FieldCanvas.F_BASE_X;
 		const h = FieldCanvas.F_BASE_Y + FieldCanvas.F_BASE_X * Util.sin(FieldCanvas.F_SKEW_DEG) * 2;
@@ -91,7 +93,8 @@ export class FieldCanvas extends BaseCanvas {
 		// guide
 		this._axisGuide = new FieldGuidePuyoShape();
 		this._childGuide = new FieldGuidePuyoShape();
-		this._container.addChild(this._axisGuide, this._childGuide);
+		// モデル（2p）の場合はguideをcontainerに乗せず、表示されないようにしておく
+		if (!this._isModel) this._container.addChild(this._axisGuide, this._childGuide);
 
 		// PuyoShape
 		this._puyoShapeArray = [];
@@ -319,10 +322,14 @@ export class FieldCanvas extends BaseCanvas {
 	 * @returns {Container}
 	 */
 	private createFrameContainer(): Container {
+		const oFrameColor = "#E0E0E0";
+		const iFrameColor = this._isModel ? "#F57777" : "#40B0FF";
+		const skew = FieldCanvas.F_SKEW_DEG * (this._isModel ? 1 : -1);
+
 		// 傾けた分の計算
 		const sin = Util.sin(FieldCanvas.F_SKEW_DEG);
 		const cos = Util.cos(FieldCanvas.F_SKEW_DEG);
-		const y = FieldCanvas.F_BASE_X * sin;
+		const y = this._isModel ? 0 : FieldCanvas.F_BASE_X * sin;
 		
 		// 角丸のサイズ
 		const oRad = FieldCellShape.CELLSIZE / 3;
@@ -331,20 +338,20 @@ export class FieldCanvas extends BaseCanvas {
 		// frame
 		const oFrame = new Shape();
 		oFrame.graphics
-			.f("#E0E0E0")
+			.f(oFrameColor)
 			.rr(0.5, 0.5, FieldCanvas.F_BASE_X / cos, FieldCanvas.F_BASE_Y + FieldCanvas.F_BASE_X * sin, oRad);
-		oFrame.skewY = FieldCanvas.F_SKEW_DEG * (-1);
+		oFrame.skewY = skew;
 
 		const iFrame = new Shape();
 		iFrame.graphics
-			.f("#00A1F2")
+			.f(iFrameColor)
 			.rr(FieldCanvas.F_O_PAD + 0.5, FieldCanvas.F_O_PAD + 0.5, (FieldCanvas.F_BASE_X - FieldCanvas.F_O_PAD * 2) / cos, (FieldCanvas.F_BASE_Y - FieldCanvas.F_O_PAD * 2) + (FieldCanvas.F_BASE_X - FieldCanvas.F_O_PAD * 2) * sin, iRad);
-		iFrame.skewY = FieldCanvas.F_SKEW_DEG * (-1);
+		iFrame.skewY = skew;
 
 		const container = new Container();
 		container.addChild(oFrame, iFrame);
 		container.y = y;
-		
+
 		return container;
 	}
 

@@ -41,3 +41,6 @@ node_modules/
 
 ### bundle.js ###
 /src/main/resources/static/js/*.js
+
+### ###
+/src/main/resources/application.properties

@@ -1,13 +1,14 @@
 export class EnumTsumoPosition {
 	// CONSTANT
 	private static VALUES = new Array<EnumTsumoPosition>();
-	public static readonly TOP    = new EnumTsumoPosition("TOP"   , 0,  0,  1);
-	public static readonly RIGHT  = new EnumTsumoPosition("RIGHT" , 1,  1,  0);
-	public static readonly BOTTOM = new EnumTsumoPosition("BOTTOM", 2,  0, -1);
-	public static readonly LEFT   = new EnumTsumoPosition("LEFT"  , 3, -1,  0);
+	public static readonly TOP    = new EnumTsumoPosition("TOP"   , "T", 0,  0,  1);
+	public static readonly RIGHT  = new EnumTsumoPosition("RIGHT" , "R", 1,  1,  0);
+	public static readonly BOTTOM = new EnumTsumoPosition("BOTTOM", "B", 2,  0, -1);
+	public static readonly LEFT   = new EnumTsumoPosition("LEFT"  , "L", 3, -1,  0);
 
 	// CLASS FIELD
 	private _name: string;
+	private _value: string;
 	private _index: number;
 	private _childRelativeX: number;
 	private _childRelativeY: number;
@@ -19,8 +20,9 @@ export class EnumTsumoPosition {
 	 * @param {number} childRelativeX 
 	 * @param {number} childRelativeY 
 	 */
-	private constructor(name: string, index: number, childRelativeX: number, childRelativeY: number) {
+	private constructor(name: string, value: string, index: number, childRelativeX: number, childRelativeY: number) {
 		this._name = name;
+		this._value = value;
 		this._index = index;
 		this._childRelativeX = childRelativeX;
 		this._childRelativeY = childRelativeY;
@@ -61,9 +63,24 @@ export class EnumTsumoPosition {
 		return rtn;
 	}
 
+	/**
+	 * valueからEnumTsumoPositionを取得します。
+	 * @param {string} value value
+	 * @returns {EnumTsumoPosition}
+	 */
+	public static fromValue(value: string): EnumTsumoPosition {
+		const rtn = EnumTsumoPosition.VALUES.find(position => position._value == value);
+		if (rtn == undefined) throw Error("illegal argument");
+		return rtn;
+	}
+
 	// ACCESSOR
 	get name(): string {
 		return this._name;
+	}
+
+	get value(): string {
+		return this._value;
 	}
 
 	get index(): number {

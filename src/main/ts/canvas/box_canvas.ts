@@ -39,7 +39,7 @@ export class BoxCanvas extends BaseCanvas {
 					const x = cellShape.ax;
 					const y = cellShape.ay;
 
-					if ((x + y * 5) > BoxCanvas.KEY_ORDER.length - 1) {
+					if ((x + y * BoxCanvas.X_SIZE) > BoxCanvas.KEY_ORDER.length - 1) {
 						return;
 					}
 
@@ -95,7 +95,7 @@ export class BoxCanvas extends BaseCanvas {
 	 * @param {number} y y座標
 	 */
 	private setSelectShape(x: number, y: number): void {
-		const i = x + y * 5;
+		const i = x + y * BoxCanvas.X_SIZE;
 		const w = 2;
 		const w2 = w / 2;
 		const color = "#FF0000";

@@ -66,6 +66,14 @@ export class Tsumo {
 	}
 
 	/**
+	 * valueからTsumoPositionを設定します。
+	 * @param {string} value TsumoPositionのvalue
+	 */
+	public setTsumoPositionByEnumValue(value: string): void {
+		this._tsumoPosition = EnumTsumoPosition.fromValue(value);
+	}
+
+	/**
 	 * ツモを初期位置に戻します。
 	 */
 	public resetPosition(): void {

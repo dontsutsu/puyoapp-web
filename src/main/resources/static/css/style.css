@@ -7,7 +7,7 @@ div.row {
 	margin: 0px 10px 0px 0px;
 }
 
-#third-row > div {
+#setting > div {
 	border: solid 1px #EEEEEE;
 	background-color: #EEEEEE;
 	padding: 4px 2px;
@@ -19,21 +19,25 @@ div.row {
 /********************
  * tsumo            *
  ********************/
-#tsumo {
+.tsumo {
 	margin: 0px 0px 10px;
+}
+
+#modelTsumo {
+	visibility: hidden;
 }
 
 /********************
  * field            *
  ********************/
-#field {
+.field {
 
 }
 
 /********************
  * next             *
  ********************/
-#next {
+.next {
 
 }
 

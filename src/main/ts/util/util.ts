@@ -33,6 +33,15 @@ export class Util {
 	}
 
 	/**
+	 * 
+	 * @param size 
+	 * @returns 
+	 */
+	public static getRandomNumber(size: number): number {
+		return Math.random() * size | 0;
+	}
+
+	/**
 	 * @returns {number} 1：アニメーション、0：ステップ
 	 */
 	public static getAnimateMode(): number {
