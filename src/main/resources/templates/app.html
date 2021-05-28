@@ -21,12 +21,12 @@
 	</div>
 
 	<!-- 3列目 -->
-	<div class="row" id="model_next" th:if="${mode=='dodai'}">
+	<div class="row" id="model_next" th:if="${mode=='early'}">
 		<canvas id="modelNext" class="next"></canvas>
 	</div>
 
 	<!-- 4列目 -->
-	<div class="row" id="model_field" th:if="${mode=='dodai'}">
+	<div class="row" id="model_field" th:if="${mode=='early'}">
 		<canvas id="modelTsumo" class="tsumo"></canvas>
 		<canvas id="modelField" class="field"></canvas>
 	</div>
@@ -38,7 +38,7 @@
 			<a href="editor">editor</a>
 			<a href="tokopuyo">tokopuyo</a>
 			<a href="nazotoki">nazotoki</a>
-			<a href="dodai">dodai</a>
+			<a href="early">early</a>
 		</div>
 
 		<div id="option">
@@ -57,9 +57,9 @@
 		<div id="boxDiv" th:if="${mode=='editor' || mode=='nazotoki'}">
 			<span class="subject">PUYOをおいてね</span><br>
 			<canvas id="box" width="176" height="71"></canvas>
-			<div id="clear" class="button">クリア</div>
-			<div id="undo" class="button">元に戻す</div>
-			<div id="redo" class="button">やり直し</div>
+			<button id="clear">クリア</button>
+			<button id="undo">元に戻す</button>
+			<button id="redo">やり直し</button>
 		</div>
 
 		<div id="nazoDiv" th:if="${mode=='nazotoki'}">
@@ -79,12 +79,12 @@
 		</div>
 
 		<div id="nazotokiButtonDiv" class="buttonDiv" th:if="${mode=='nazotoki'}">
-			<div id="findAnswer" class="button">こたえ検索</div>
-			<div id="playAnswer" class="button disabled">こたえ再生</div>
+			<button id="findAnswer">こたえ検索</button>
+			<button id="playAnswer" disabled="disabled">こたえ再生</button>
 		</div>
 
 		<div id="editorButtonDiv" class="buttonDiv" th:if="${mode=='editor'}">
-			<div id="drop" class="button">スタート</div>
+			<button id="drop">スタート</button>
 		</div>
 
 		<!-- answer list -->
@@ -107,7 +107,7 @@
 			</table>
 		</div>
 
-		<div th:if="${mode=='dodai'}">
+		<div th:if="${mode=='early'}">
 			<span class="subject">プレイヤーをえらんでね</span><br>
 			<select id="player">
 				<option value=""></option>
@@ -115,14 +115,18 @@
 						th:value="${player.playerId}"
 						th:text="${player.playerName}">
 				</option>
-			</select>
+			</select><br>
 
-			<table id="dodaiList">
+			<br>
+
+			<span class="subject">データをえらんでね</span>
+
+			<table id="earlyDataList">
 				<thead>
 					<tr>
-						<th></th>
-						<th>日付</th>
-						<th>詳細</th>
+						<th class="chooseH"></th>
+						<th class="dateH">日付 - 番号</th>
+						<th class="remarksH">詳細</th>
 					</tr>
 				</thead>
 				<tbody>

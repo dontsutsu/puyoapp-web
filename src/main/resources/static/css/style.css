@@ -12,8 +12,7 @@ div.row {
 	background-color: #EEEEEE;
 	padding: 4px 2px;
 	margin: 5px 0px;
-	width: 225px;
-	overflow: hidden;
+	width: 250px;
 }
 
 /********************
@@ -69,37 +68,11 @@ div.row {
 
 }
 
-div.button {
-	margin: 5px;
-	padding: 7px;
-	color: #555555;
-	font-weight: bold;
-	font-size: 12px;
-	border-radius: 3px;
-	border: solid 1px #888888;
-	border-bottom: solid 3px #888888;
-	float: left;
-	text-align: center;
-	user-select: none;
-}
-
-div.button:not(.disabled):active {
-	transform: translateY(2px);
-	border-bottom: solid 1px #888888;
-}
-
-div.button.disabled {
-	opacity: .5;
-}
-
 /********************
  * anslistDiv       *
  ********************/
 #anslistDiv {
 	display: none;
-	border: solid 1px #EEEEEE;
-	background-color: #EEEEEE;
-	margin: 0px 0px 10px;
 }
 
 #anslistDiv input[type="radio"] {
@@ -107,15 +80,15 @@ div.button.disabled {
 }
 
 #anslistDiv td {
-	width: 40px;
-	height: 40px;
+	width: 30px;
+	height: 30px;
 }
 
 #anslistDiv label {
 	display: block;
 	border: solid 1px #CCCCCC;
-	width: 15px;
-	height: 15px;
+	width: 10px;
+	height: 10px;
 	border-radius: 50%;
 	margin: auto auto;
 	text-align: center;
@@ -129,8 +102,8 @@ div.button.disabled {
 	background-color: #FF4C4C;
 	border: solid 1px #FF4C4C;
 	color: #FFFFFF;
-	width: 25px;
-	height: 25px;
+	width: 20px;
+	height: 20px;
 	transition: all 300ms 0s ease;
 	line-height: 25px;
 }
@@ -223,4 +196,65 @@ div.button.disabled {
 span.subject {
 	color: #333333;
 	font-weight: bold;
+}
+
+/********************
+ * tooltip          *
+ ********************/
+.remarks {
+	color: #0000FF;
+	text-decoration: underline;
+}
+
+.remarks:hover {
+	cursor: pointer;
+}
+
+.tooltip {
+	position: absolute;
+	width: 150px;
+	padding: 10px;
+	border-radius: 5px;
+	background: #505050;
+	color: #FFFFFF;
+	top: -10px;
+	left: 40px;
+	text-align: left;
+}
+
+#earlyDataList td,th {
+	border: 1px #808080 solid;
+	padding: 5px;
+}
+
+#earlyDataList td {
+	position: relative;
+	text-align: center;
+}
+
+#earlyDataList th {
+	background: #AAAAAA;
+}
+
+table#earlyDataList {
+	margin: 4px 0px;
+	border-collapse: collapse;
+	border-spacing: 0;
+	background: #FFFFFF;
+}
+
+.chooseH {
+	width: 45px;
+}
+
+.dateH {
+	width: 140px;
+}
+
+.remarksH {
+	width: 40px;
+}
+
+select#player {
+	margin: 4px 0px;
 }

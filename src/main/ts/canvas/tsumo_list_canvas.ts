@@ -26,7 +26,7 @@ export class TsumoListCanvas extends BaseCanvas {
 		for (let y = 0; y < TsumoListCanvas.Y_SIZE; y++) {
 			for (let x = 0; x < TsumoListCanvas.X_SIZE; x++) {
 				const num = x + y * TsumoListCanvas.X_SIZE + 1;
-				const numShape = new Text(String(num), "bold 14px BIZ UDPGothic", "#888888");
+				const numShape = new Text(String(num), "bold 12px BIZ UDPGothic", "#888888");
 				const xy = TsumoListCellShape.getXandY(x, y, 0);
 				numShape.x = xy.x + (TsumoListCellShape.CELLSIZE / 2);
 				numShape.y = xy.y - (TsumoListCellShape.CELLSIZE / 2);
@@ -79,7 +79,7 @@ export class TsumoListCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
+	 * マウスイベントを設定します。
 	 * @param {Nazotoki} nazotoki 
 	 */
 	public setMouseEvent(nazotoki: Nazotoki): void {
@@ -106,10 +106,10 @@ export class TsumoListCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
+	 * index、typeで指定したツモリストのぷよを変更します。
 	 * @param {number} index 
-	 * @param {number} type 
-	 * @param {string} color 
+	 * @param {number} type "0"：子ぷよ、"1"：軸ぷよ
+	 * @param {string} color 色
 	 */
 	public changeColor(index: number, type: number, color: string): void {
 		this._colorArray[index][type] = color;
@@ -117,7 +117,8 @@ export class TsumoListCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * @returns {string}
+	 * ツモリストを表す文字列を取得します。
+	 * @returns {string} ツモリスト（文字列）
 	 */
 	public getTsumoListString(): string {
 		let str = "";
@@ -129,7 +130,8 @@ export class TsumoListCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * @returns {boolean}
+	 * 入力されているツモリストが問題ないかチェックします。
+	 * @returns {boolean} true：OK / false：NG
 	 */
 	public check(): boolean {
 		let noneFlg = false;
@@ -163,8 +165,8 @@ export class TsumoListCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
-	 * @param {string} tsumoListStr 
+	 * ツモリストを表す文字列から画面のツモリストを設定します。
+	 * @param {string} tsumoListStr ツモリスト（文字列）
 	 */
 	public setTsumoList(tsumoListStr: string): void {
 		for (let i = 0; i < tsumoListStr.length; i += 2) {

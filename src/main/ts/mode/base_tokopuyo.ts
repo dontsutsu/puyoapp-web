@@ -80,8 +80,8 @@ export abstract class BaseTokopuyo extends BaseMode {
 	}
 
 	/**
-	 * 
-	 * @param {number} vec 
+	 * ツモを動かします。
+	 * @param {number} vec 動かす距離と方向（ex　右に1：+1、左に2：-2）
 	 */
 	private moveTsumo(vec: number): void {
 		this._timelineList = this._puyopuyo.moveTsumo(vec);
@@ -91,8 +91,8 @@ export abstract class BaseTokopuyo extends BaseMode {
 	}
 
 	/**
-	 * 
-	 * @param {boolean} clockwise 
+	 * ツモを回転します。
+	 * @param {boolean} clockwise true：時計周り / false：反時計周り
 	 */
 	private rotateTsumo(clockwise: boolean): void {
 		this._timelineList = this._puyopuyo.rotateTsumo(clockwise);
@@ -102,7 +102,7 @@ export abstract class BaseTokopuyo extends BaseMode {
 	}
 
 	/**
-	 * 
+	 * ツモをフィールドに落とします。
 	 */
 	private drop(): void {
 		// UNDO用
@@ -119,8 +119,7 @@ export abstract class BaseTokopuyo extends BaseMode {
 	}
 
 	/**
-	 * 
-	 * @returns 
+	 * ツモを一手戻します。
 	 */
 	private undo(): void {
 		const undo = this._undoStack.pop();
@@ -133,9 +132,19 @@ export abstract class BaseTokopuyo extends BaseMode {
 		this._puyopuyo.setGuide();
 	}
 
+	/**
+	 * 継承クラス個別の操作可能チェックです。
+	 * @returns {boolean} true：操作可能 / false：操作不可
+	 */
 	protected abstract individualOperatableCheck(): boolean;
 
+	/**
+	 * 継承クラス個別の落下処理です。
+	 */
 	protected abstract individualDrop(): void;
 
+	/**
+	 * 継承クラス個別のUNDO処理です。
+	 */
 	protected abstract individualUndo(): void;
 }

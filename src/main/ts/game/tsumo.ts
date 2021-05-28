@@ -1,16 +1,16 @@
 import { Field } from "./field";
 import { TsumoPuyo } from "./puyo/tsumo_puyo";
-import { EnumTsumoPosition } from "./enum_tsumo_position";
+import { EnumTsumoChildPosition } from "./enum_tsumo_child_position";
 
 export class Tsumo {
 	// CONSTANT
 	public static readonly INI_AXIS_X = 2;
-	private static readonly INI_POSITION = EnumTsumoPosition.TOP;
+	private static readonly INI_CHILD_POSITION = EnumTsumoChildPosition.TOP;
 
 	// CLASS FIELD
 	private _axisPuyo: TsumoPuyo;	// 軸ぷよ
 	private _childPuyo: TsumoPuyo;	// 子ぷよ
-	private _tsumoPosition: EnumTsumoPosition;
+	private _childPosition: EnumTsumoChildPosition;
 	private _axisX: number;
 
 	/**
@@ -21,7 +21,7 @@ export class Tsumo {
 	constructor(axisColor: string, childColor: string) {
 		this._axisPuyo = new TsumoPuyo(axisColor);
 		this._childPuyo = new TsumoPuyo(childColor);
-		this._tsumoPosition = Tsumo.INI_POSITION;
+		this._childPosition = Tsumo.INI_CHILD_POSITION;
 		this._axisX = Tsumo.INI_AXIS_X;
 	}
 
@@ -33,13 +33,13 @@ export class Tsumo {
 		let toX = this._axisX + vec;
 
 		// 左端check
-		const leftEnd = this._tsumoPosition == EnumTsumoPosition.LEFT ? 1 : 0;
+		const leftEnd = this._childPosition == EnumTsumoChildPosition.LEFT ? 1 : 0;
 		if (toX < leftEnd) {
 			toX = leftEnd;
 		}
 
 		// 右端check
-		const rightEnd = this._tsumoPosition == EnumTsumoPosition.RIGHT ? Field.X_SIZE - 2 : Field.X_SIZE - 1;
+		const rightEnd = this._childPosition == EnumTsumoChildPosition.RIGHT ? Field.X_SIZE - 2 : Field.X_SIZE - 1;
 		if (toX > rightEnd) {
 			toX = rightEnd;
 		}
@@ -52,32 +52,32 @@ export class Tsumo {
 	 * @param {boolean} clockwise true：時計周り / false：反時計周り
 	 */
 	public rotate(clockwise: boolean): void {
-		this._tsumoPosition = this._tsumoPosition.getRotatedEnum(clockwise);
-		if (this._axisX == Field.X_SIZE - 1 && this._tsumoPosition == EnumTsumoPosition.RIGHT) this._axisX = Field.X_SIZE - 2;
-		if (this._axisX == 0 && this._tsumoPosition == EnumTsumoPosition.LEFT) this._axisX = 1;
+		this._childPosition = this._childPosition.getRotatedEnum(clockwise);
+		if (this._axisX == Field.X_SIZE - 1 && this._childPosition == EnumTsumoChildPosition.RIGHT) this._axisX = Field.X_SIZE - 2;
+		if (this._axisX == 0 && this._childPosition == EnumTsumoChildPosition.LEFT) this._axisX = 1;
 	}
 
 	/**
-	 * nameからTsumoPositionを設定します。
-	 * @param {string} name TsumoPositionのname
+	 * nameからchildPositionを設定します。
+	 * @param {string} name EnumTsumoChildPositionのname
 	 */
-	public setTsumoPositionByEnumName(name: string): void {
-		this._tsumoPosition = EnumTsumoPosition.fromName(name);
+	public setChildPositionByEnumName(name: string): void {
+		this._childPosition = EnumTsumoChildPosition.fromName(name);
 	}
 
 	/**
-	 * valueからTsumoPositionを設定します。
-	 * @param {string} value TsumoPositionのvalue
+	 * valueからchildPositionを設定します。
+	 * @param {string} value EnumTsumoChildPositionのvalue
 	 */
-	public setTsumoPositionByEnumValue(value: string): void {
-		this._tsumoPosition = EnumTsumoPosition.fromValue(value);
+	public setChildPositionByEnumValue(value: string): void {
+		this._childPosition = EnumTsumoChildPosition.fromValue(value);
 	}
 
 	/**
 	 * ツモを初期位置に戻します。
 	 */
-	public resetPosition(): void {
-		this._tsumoPosition = Tsumo.INI_POSITION;
+	public resetChildPosition(): void {
+		this._childPosition = Tsumo.INI_CHILD_POSITION;
 		this._axisX = Tsumo.INI_AXIS_X;
 	}
 
@@ -103,19 +103,19 @@ export class Tsumo {
 	}
 
 	get childX(): number {
-		return this._axisX + this._tsumoPosition.childRelativeX;
+		return this._axisX + this._childPosition.childRelativeX;
 	}
 
 	get childY(): number {
-		return 1 + this._tsumoPosition.childRelativeY;
+		return 1 + this._childPosition.childRelativeY;
 	}
 
 	get childColor(): string {
 		return this._childPuyo.color;
 	}
 	
-	get tsumoPosition(): EnumTsumoPosition {
-		return this._tsumoPosition;
+	get tsumoChildPosition(): EnumTsumoChildPosition {
+		return this._childPosition;
 	}
 
 	set axisX(axisX: number) {

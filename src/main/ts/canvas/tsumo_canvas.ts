@@ -1,6 +1,6 @@
 import { Container } from "@createjs/easeljs";
 import { Tween, Ease } from "@createjs/tweenjs";
-import { EnumTsumoPosition } from "../game/enum_tsumo_position";
+import { EnumTsumoChildPosition } from "../game/enum_tsumo_child_position";
 import { Field } from "../game/field";
 import { Tsumo } from "../game/tsumo";
 import { Util } from "../util/util";
@@ -51,7 +51,7 @@ export class TsumoCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
+	 * 初期化します。
 	 * @param {Tsumo} tsumo 
 	 */
 	public init(tsumo: Tsumo): void {
@@ -64,13 +64,13 @@ export class TsumoCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
-	 * @param {number} fromAX 
-	 * @param {number} toAX
-	 * @param {EnumTsumoPosition} position 
+	 * ツモを動かすTweenを取得します。
+	 * @param {number} fromAX 軸ぷよの移動元x座標
+	 * @param {number} toAX 軸ぷよの移動先x座標
+	 * @param {EnumTsumoChildPosition} position  
 	 * @returns {Tween[]}
 	 */
-	public getMoveTween(fromAX: number, toAX: number, position: EnumTsumoPosition): Tween[] {
+	public getMoveTween(fromAX: number, toAX: number, position: EnumTsumoChildPosition): Tween[] {
 		const val = Util.getAnimateMode();
 		const diffAX = toAX - fromAX;
 
@@ -92,14 +92,14 @@ export class TsumoCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
-	 * @param {number} fromAxisAX 
-	 * @param {number} toAxisAX 
-	 * @param {EnumTsumoPosition} beforePosition 
-	 * @param {EnumTsumoPosition} afterPosition 
+	 * ツモを回転するTweenを取得します。
+	 * @param {number} fromAxisAX 軸ぷよの移動元x座標
+	 * @param {number} toAxisAX 軸ぷよの移動先x座標
+	 * @param {EnumTsumoChildPosition} beforePosition 回転前のEnumTsumoPosition
+	 * @param {EnumTsumoChildPosition} afterPosition 回転後のEnumTsumoPosition
 	 * @returns {Tween[]}
 	 */
-	public getRotateTween(fromAxisAX: number, toAxisAX: number, beforePosition: EnumTsumoPosition, afterPosition: EnumTsumoPosition): Tween[] {
+	public getRotateTween(fromAxisAX: number, toAxisAX: number, beforePosition: EnumTsumoChildPosition, afterPosition: EnumTsumoChildPosition): Tween[] {
 		const val = Util.getAnimateMode();
 		
 		// axis
@@ -112,7 +112,7 @@ export class TsumoCanvas extends BaseCanvas {
 		// child(X)
 		const fromChildX = TsumoCellShape.CELLSIZE * (fromAxisAX + beforePosition.childRelativeX);
 		const toChildX = TsumoCellShape.CELLSIZE * (toAxisAX + afterPosition.childRelativeX);
-		const easeX = (beforePosition == EnumTsumoPosition.TOP || beforePosition == EnumTsumoPosition.BOTTOM) ? Ease.sineOut : Ease.sineIn;
+		const easeX = (beforePosition == EnumTsumoChildPosition.TOP || beforePosition == EnumTsumoChildPosition.BOTTOM) ? Ease.sineOut : Ease.sineIn;
 		const childXTween = Tween.get(this._childPuyoShape)
 			.to({x: fromChildX})
 			.to({x: toChildX}, TsumoCanvas.ROTATE_VEL * val, easeX);
@@ -120,7 +120,7 @@ export class TsumoCanvas extends BaseCanvas {
 		//child(Y)
 		const fromChildY = TsumoCellShape.CELLSIZE * TsumoCanvas.convertY(1 + beforePosition.childRelativeY);
 		const toChildY = TsumoCellShape.CELLSIZE * TsumoCanvas.convertY(1 + afterPosition.childRelativeY);
-		const easeY = (beforePosition == EnumTsumoPosition.TOP || beforePosition == EnumTsumoPosition.BOTTOM) ? Ease.sineIn : Ease.sineOut;
+		const easeY = (beforePosition == EnumTsumoChildPosition.TOP || beforePosition == EnumTsumoChildPosition.BOTTOM) ? Ease.sineIn : Ease.sineOut;
 		const childYTween = Tween.get(this._childPuyoShape)
 			.to({y: fromChildY})
 			.to({y: toChildY}, TsumoCanvas.ROTATE_VEL * val, easeY);
@@ -130,18 +130,19 @@ export class TsumoCanvas extends BaseCanvas {
 
 	/**
 	 * ロジック上のy方向とcanvas上のy方向が異なるため、yの値を変換します。
-	 * @param {number} y
-	 * @returns {number} 
+	 * @param {number} y ロジック上のy座標
+	 * @returns {number} canvas上のy座標
 	 */
 	public static convertY(y: number): number {
 		return TsumoCanvas.Y_SIZE - 1 - y;
 	}
 
 	/**
-	 * @param {EnumTsumoPosition} beforePosition
+	 * ツモを落とすTweenを取得します。
+	 * @param {EnumTsumoChildPosition} beforePosition
 	 * @returns {Tween[]}
 	 */
-	public getDropTween(beforePosition: EnumTsumoPosition): Tween[] {
+	public getDropTween(beforePosition: EnumTsumoChildPosition): Tween[] {
 		const val = Util.getAnimateMode();
 
 		// axis
@@ -162,8 +163,8 @@ export class TsumoCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
-	 * @param {Tsumo} tsumo
+	 * ツモを進めるアニメーションを取得します。
+	 * @param {Tsumo} tsumo 次のツモ
 	 * @returns {Tween[]} 
 	 */
 	public advance(tsumo: Tsumo): Tween[] {

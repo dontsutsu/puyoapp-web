@@ -6,7 +6,7 @@ import lombok.Data;
  * @author f-akamatsu
  */
 @Data
-public class Tsumo {
+public class EarlyDataTsumo {
 	Integer playerId;
 	String date;
 	Integer seq;

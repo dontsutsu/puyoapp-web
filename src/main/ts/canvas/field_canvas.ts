@@ -36,6 +36,7 @@ export class FieldCanvas extends BaseCanvas {
 	/**
 	 * コンストラクタ
 	 * @param {string} canvasId canvasのID 
+	 * @param {boolean} isModel
 	 */
 	constructor(canvasId: string, isModel: boolean = false) {
 		super(canvasId, true);
@@ -259,8 +260,8 @@ export class FieldCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
-	 * @param {number} score 
+	 * スコアに表示するTweenを取得します。
+	 * @param {number} score スコア
 	 * @returns {Tween[]}
 	 */
 	public getDropScoreTween(score: number): Tween[] {
@@ -268,7 +269,7 @@ export class FieldCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
+	 * スコアをセットします。
 	 * @param {number} score スコア
 	 */
 	public setScore(score: number): void {
@@ -276,10 +277,10 @@ export class FieldCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
-	 * @param tsumo 
-	 * @param axisToY 
-	 * @param childToY 
+	 * ガイドをセットします。
+	 * @param {Tsumo} tsumo 
+	 * @param {number} axisToY 
+	 * @param {number} childToY 
 	 */
 	public setGuide(tsumo: Tsumo, axisToY: number, childToY: number): void {
 		this._axisGuide.update(tsumo.axisX, axisToY, tsumo.axisColor);
@@ -287,7 +288,7 @@ export class FieldCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
+	 * ガイドを非表示にします。
 	 */
 	public hideGuide(): void {
 		this._axisGuide.visible = false;
@@ -319,6 +320,7 @@ export class FieldCanvas extends BaseCanvas {
 	}
 
 	/**
+	 * フレームを生成します。
 	 * @returns {Container}
 	 */
 	private createFrameContainer(): Container {
@@ -388,8 +390,8 @@ export class FieldCanvas extends BaseCanvas {
 
 	/**
 	 * ロジック上のy方向とcanvas上のy方向が異なるため、yの値を変換します。
-	 * @param {number} y 
-	 * @returns {number}
+	 * @param {number} y ロジック上のy座標
+	 * @returns {number} canvas上のy座標
 	 */
 	public static convertY(y: number): number {
 		return Field.Y_SIZE - 1 - y;

@@ -1,4 +1,4 @@
-package com.dontsutsu.puyoapp.application.resource.dodai;
+package com.dontsutsu.puyoapp.application.resource.early;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import lombok.Data;
  * @author f-akamatsu
  */
 @Data
-public class FindTsumoRequestBean {
+public class FindEarlyDataTsumoRequestBean {
 	private String playerId;
 	private String date;
 	private String seq;

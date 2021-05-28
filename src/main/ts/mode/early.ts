@@ -7,12 +7,13 @@ import { TsumoCanvas } from "../canvas/tsumo_canvas";
 import { NextCanvas } from "../canvas/next_canvas";
 import { Puyopuyo } from "../game/puyopuyo";
 import { TimelineList } from "../canvas/timeline/timeline_list";
+import { Constant } from "../util/constant";
 
 $(() => {
-	new Dodai();
+	new Early();
 });
 
-export class Dodai extends BaseTokopuyo {
+export class Early extends BaseTokopuyo {
 	// CLASS FIELD
 	private _modelFieldCanvas: FieldCanvas;
 	private _modelTsumoCanvas: TsumoCanvas;
@@ -21,6 +22,8 @@ export class Dodai extends BaseTokopuyo {
 
 	private _modelUndoStack: {field: string, score: number}[];
 	private _modelTimeLineList: TimelineList;
+
+	private _limit: number;
 
 	/**
 	 * コンストラクタ
@@ -35,21 +38,32 @@ export class Dodai extends BaseTokopuyo {
 		this._modelUndoStack = [];
 		this._modelTimeLineList = new TimelineList();
 
+		this._limit = -1;
+
 		// event
 		$("#player").on("change", (e) => {
 			const playerId = (e.currentTarget as HTMLInputElement).value;
-			this.findDodai(playerId);
+			this.findEarlyData(playerId);
 		});
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected individualOperatableCheck(): boolean {
+		// limit=-1のときはデータが選択されていない状態なのでfalse
+		if (this._limit == -1) return false;
+
 		if (this._modelTimeLineList.isAnimation) return false;
-		//
-		if (this._undoStack.length >= 10) return false;
+		// 手数上限の場合false
+		if (this._undoStack.length >= this._limit) return false;
 
 		return true;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected individualDrop(): void {
 		// UNDO用
 		const field = this._modelPuyopuyo.getFieldString();
@@ -62,6 +76,9 @@ export class Dodai extends BaseTokopuyo {
 		this._modelTimeLineList.play();
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	protected individualUndo(): void {
 		const undo = this._modelUndoStack.pop();
 
@@ -73,11 +90,11 @@ export class Dodai extends BaseTokopuyo {
 	}
 
 	/**
-	 * 
-	 * @param playerId 
+	 * player_idからearly_dataを検索し、テーブルを表示します。
+	 * @param playerId player.player_id
 	 */
-	private findDodai(playerId: string): void {
-		const $tbody = $("table#dodaiList tbody");
+	private findEarlyData(playerId: string): void {
+		const $tbody = $("table#earlyDataList tbody");
 		// tbodyの要素全削除
 		$tbody.empty();
 
@@ -86,16 +103,16 @@ export class Dodai extends BaseTokopuyo {
 		}
 
 		// ロード画面
-		Util.dispLoading("検索中です...");
+		Util.dispLoading(Constant.AJAX_CONNECTING_MSG);
 
 		$.ajax({
 			type: "POST",
-			url: "/findDodai",
+			url: "/findEarlyData",
 			data: JSON.stringify( { playerId: playerId } ),
 			contentType: "application/json",
 			dataType: "json"
 		})
-		.done((dataList: FindDodaiInterface[]) => {
+		.done((dataList: FindEarlyDataInterface[]) => {
 			for (const data of dataList) {
 				// 1列目
 				const $td1 = $("<td></td>");
@@ -107,7 +124,7 @@ export class Dodai extends BaseTokopuyo {
 					const playerId = $row.siblings(".playerId").val() as string;
 					const date = $row.siblings(".date").val() as string;
 					const seq = $row.siblings(".seq").val() as string;
-					this.findTsumo(playerId, date, seq);
+					this.findEarlyDataTsumo(playerId, date, seq);
 				});
 
 				// 2列目 日付+連番
@@ -115,20 +132,30 @@ export class Dodai extends BaseTokopuyo {
 				const txt = data.date.substr(0, 4) + "/" + data.date.substr(4, 2) + "/" + data.date.substr(6, 2) + " - " + data.seq;
 				$td2.text(txt);
 
-				// 3列目 TODO 備考をツールチップで
-				const $td3 = $("<td></td>").text(data.remarks);
-				const $tr = $("<tr></tr>");
+				// 3列目
+				const $td3 = $("<td></td>");
+				const $span = $("<sapn></sapn>", { "class": "remarks" }).text("?");
+				$span.on("mouseover", (e) => {
+					$(e.currentTarget).siblings(".tooltip").fadeIn("fast");
+				});
+				$span.on("mouseout", (e) => {
+					$(e.currentTarget).siblings(".tooltip").fadeOut("fast");
+				});
+				const $p = $("<p></p>", { "class": "tooltip" }).text(data.remarks).hide();
+				$td3.append($span, $p);
 
+				// hidden
 				const $playerId = $("<input></input>", { type: "hidden", class: "playerId", value: data.playerId });
 				const $date = $("<input></input>", { type: "hidden", class: "date", value: data.date });
 				const $seq = $("<input></input>", { type: "hidden", class: "seq", value: data.seq });
 
+				const $tr = $("<tr></tr>");
 				$tr.append($td1, $td2, $td3, $playerId, $date, $seq);
 				$tbody.append($tr);
 			}
 		})
 		.fail(() => {
-			Util.dispMsg("サーバーとの通信に失敗しました。", "2");
+			Util.dispMsg(Constant.AJAX_ERROR_MSG, "2");
 		})
 		.always(() => {
 			Util.removeLoading();
@@ -136,23 +163,27 @@ export class Dodai extends BaseTokopuyo {
 	}
 
 	/**
-	 * 
-	 * @param playerId 
-	 * @param date 
-	 * @param seq 
+	 * player_id、date、seqからtsumoデータを検索し、取得したデータをぷよぷよにセットします。
+	 * @param playerId early_data.player_id（PK1）
+	 * @param date early_data.date（PK2）
+	 * @param seq early_data.seq（PK3）
 	 */
-	private findTsumo(playerId: string, date: string, seq: string): void {
+	private findEarlyDataTsumo(playerId: string, date: string, seq: string): void {
 		// ロード画面
-		Util.dispLoading("検索中です...");
+		Util.dispLoading(Constant.AJAX_CONNECTING_MSG);
 
 		$.ajax({
 			type: "POST",
-			url: "/findTsumo",
+			url: "/findEarlyDataTsumo",
 			data: JSON.stringify( { playerId: playerId, date: date, seq: seq } ),
 			contentType: "application/json",
 			dataType: "json"
 		})
-		.done((dataList: FindTsumoInterface[]) => {
+		.done((dataList: FindEarlyDataTsumoInterface[]) => {
+			// 取得したデータ-3を上限にする（ツモ、ネクスト、ダブネクが見える状態で終わるように）
+			// 12手（4段分）を想定しているので、DBには15手分登録しておく
+			this._limit = dataList.length - 3;
+
 			// ツモリストを生成
 			const playerTsumoList = this.createTsumoListFromAjaxData(dataList, false);
 			const modelTsumoList = this.createTsumoListFromAjaxData(dataList, true);
@@ -163,7 +194,7 @@ export class Dodai extends BaseTokopuyo {
 			this._undoStack.length = 0;
 			this._modelUndoStack.length = 0;
 		}).fail(() => {
-			Util.dispMsg("サーバーとの通信に失敗しました。", "2");
+			Util.dispMsg(Constant.AJAX_ERROR_MSG, "2");
 		})
 		.always(() => {
 			Util.removeLoading();
@@ -171,18 +202,18 @@ export class Dodai extends BaseTokopuyo {
 	}
 
 	/**
-	 * 
-	 * @param dataList 
-	 * @param isModel 
-	 * @returns 
+	 * findEarlyDataTsumoのAjaxで取得したデータをツモリストに変換します。
+	 * @param {FindEarlyDataTsumoInterface[]} dataList findEarlyDataTsumoで取得したデータ
+	 * @param {boolean} isModel 作成するツモリストがモデル（2p）用か
+	 * @returns {Tsumo[]} ツモリスト
 	 */
-	private createTsumoListFromAjaxData(dataList: FindTsumoInterface[], isModel: boolean): Tsumo[] {
+	private createTsumoListFromAjaxData(dataList: FindEarlyDataTsumoInterface[], isModel: boolean): Tsumo[] {
 		const tsumoList: Tsumo[] = [];
 		for (const data of dataList) {
 			const tsumo = new Tsumo(data.axisColor, data.childColor);
 			if (isModel) {
 				tsumo.axisX = Number(data.axisX);
-				tsumo.setTsumoPositionByEnumValue(data.childPos);
+				tsumo.setChildPositionByEnumValue(data.childPos);
 			}
 			tsumoList.push(tsumo);
 		}
@@ -190,14 +221,20 @@ export class Dodai extends BaseTokopuyo {
 	}
 }
 
-interface FindDodaiInterface {
+/**
+ * Ajax（findindEarlyData）の取得データInterface
+ */
+interface FindEarlyDataInterface {
 	playerId: string;
 	date: string;
 	seq: string;
 	remarks: string;
 }
 
-interface FindTsumoInterface {
+/**
+ * Ajax（findTsumo）の取得データInterface
+ */
+interface FindEarlyDataTsumoInterface {
 	tsumoNo: string;
 	axisColor: string;
 	childColor: string;

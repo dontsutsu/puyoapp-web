@@ -4,9 +4,9 @@ export class Coordinate {
 	private _y: number;
 	
 	/**
-	 * 
-	 * @param {number} x 
-	 * @param {number} y 
+	 * constructor
+	 * @param {number} x x座標 
+	 * @param {number} y y座標
 	 */
 	constructor(x: number, y: number) {
 		this._x = x;

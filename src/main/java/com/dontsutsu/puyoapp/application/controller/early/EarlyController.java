@@ -1,4 +1,4 @@
-package com.dontsutsu.puyoapp.application.controller.dodai;
+package com.dontsutsu.puyoapp.application.controller.early;
 
 import java.util.List;
 
@@ -14,16 +14,16 @@ import com.dontsutsu.puyoapp.domain.service.PlayerService;
  * @author f-akamatsu
  */
 @Controller
-public class DodaiController {
+public class EarlyController {
 
 	@Autowired
 	private PlayerService playerService;
 
-	@RequestMapping(value="/dodai")
-	private String dodai(Model m) {
+	@RequestMapping(value="/early")
+	private String early(Model m) {
 		List<Player> players = playerService.findAll();
 		m.addAttribute("players", players);
-		m.addAttribute("mode", "dodai");
+		m.addAttribute("mode", "early");
 		return "app";
 	}
 }

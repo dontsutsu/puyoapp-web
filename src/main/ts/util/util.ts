@@ -67,7 +67,7 @@ export class Util {
 	/**
 	 * ダイアログを表示します。
 	 * @param {string} msg メッセージ
-	 * @param {string} [level] エラーレベル "0"：info、"1"：warning、"2"：error （デフォルトは"1"）
+	 * @param {string} level エラーレベル "0"：info、"1"：warning、"2"：error （デフォルトは"1"）
 	 */
 	public static dispMsg(msg: string, level: string = "1"): void {
 		const dispTime = 3000;

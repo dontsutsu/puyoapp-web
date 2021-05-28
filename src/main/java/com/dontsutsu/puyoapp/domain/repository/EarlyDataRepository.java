@@ -10,33 +10,28 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
-import com.dontsutsu.puyoapp.domain.entity.Tsumo;
+import com.dontsutsu.puyoapp.domain.entity.EarlyData;
 
 /**
  * @author f-akamatsu
  */
 @Repository
-public class TsumoRepository {
+public class EarlyDataRepository {
 
 	@Autowired
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
-	public List<Tsumo> findByDodaiKey(Integer playerId, String date, Integer seq) {
+	public List<EarlyData> findByPlayerId(Integer playerId) {
 		String sql = "SELECT * "
-					+ "FROM tsumo "
+					+ "FROM early_data "
 					+ "WHERE player_id = :playerId "
-					+ "  AND date = :date "
-					+ "  AND seq = :seq "
-					+ "ORDER BY tsumo_no ";
-		SqlParameterSource param = new MapSqlParameterSource()
-				.addValue("playerId", playerId)
-				.addValue("date", date)
-				.addValue("seq", seq);
+					+ "ORDER BY date DESC, seq ASC ";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("playerId", playerId);
 		try {
 			return jdbcTemplate.query(
 					sql,
 					param,
-					new BeanPropertyRowMapper<Tsumo>(Tsumo.class)
+					new BeanPropertyRowMapper<EarlyData>(EarlyData.class)
 					);
 		} catch (EmptyResultDataAccessException e) {
 			return null;

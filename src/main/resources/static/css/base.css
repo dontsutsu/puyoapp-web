@@ -1,4 +1,4 @@
-html {
-  font-size: 14px;
+html, button, select {
+  font-size: 12px;
   font-family: "BIZ UDPGothic";
 }

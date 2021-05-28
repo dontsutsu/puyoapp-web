@@ -5,7 +5,7 @@ module.exports = {
         editor: path.resolve(__dirname, "src", "main", "ts", "mode", "editor.ts"),
         tokopuyo: path.resolve(__dirname, "src", "main", "ts", "mode", "tokopuyo.ts"),
         nazotoki: path.resolve(__dirname, "src", "main", "ts", "mode", "nazotoki.ts"),
-        dodai: path.resolve(__dirname, "src", "main", "ts", "mode", "dodai.ts")
+        early: path.resolve(__dirname, "src", "main", "ts", "mode", "early.ts")
     },
     output: {
         path: path.resolve(__dirname, "src", "main", "resources", "static", "js"),

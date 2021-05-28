@@ -5,8 +5,9 @@ import { Util } from "../util/util";
 import { Tsumo } from "../game/tsumo";
 import { TimelineList } from "../canvas/timeline/timeline_list";
 import { BasePuyo } from "../game/puyo/base_puyo";
-import { EnumTsumoPosition } from "../game/enum_tsumo_position";
+import { EnumTsumoChildPosition } from "../game/enum_tsumo_child_position";
 import { Field } from "../game/field";
+import { Constant } from "../util/constant";
 
 $(() => {
 	new Nazotoki();
@@ -129,7 +130,7 @@ export class Nazotoki extends EditableMode {
 			return;
 		}
 
-		Util.dispLoading("検索中です...");
+		Util.dispLoading(Constant.AJAX_CONNECTING_MSG);
 
 		this.findNazopuyoAnswerAjax()
 			.done((data: FindNazopuyoAnswerInterface[][]) => {
@@ -149,11 +150,11 @@ export class Nazotoki extends EditableMode {
 				// メッセージの表示
 				if (len <= 0) {
 					$("#anslistDiv").animate({height: "hide", opacity: 0}, 300);
-					$("#playAnswer").addClass("disabled");
+					$("#playAnswer").prop("disabled", true);
 					Util.dispMsg("解答が見つかりませんでした。", "1");
 				} else {
 					$("#anslistDiv").animate({height: "show", opacity: 1}, 300);
-					$("#playAnswer").removeClass("disabled");
+					$("#playAnswer").prop("disabled", false);
 					if (len < 10) {
 						Util.dispMsg(len + "件の解答が見つかりました。", "0");
 					} else {
@@ -163,7 +164,7 @@ export class Nazotoki extends EditableMode {
 			})
 			.fail(() => {
 				this.clearAnswerList();
-				Util.dispMsg("サーバーとの通信に失敗しました。", "2");
+				Util.dispMsg(Constant.AJAX_ERROR_MSG, "2");
 			})
 			.always(() => {
 				Util.removeLoading();
@@ -176,7 +177,7 @@ export class Nazotoki extends EditableMode {
 	private clearAnswerList(): void {
 		this._answerList.length = 0;
 		$("#anslistDiv input[type='radio']").prop("disabled", true);
-		$("#playAnswer").addClass("disabled");
+		$("#playAnswer").prop("disabled", true);
 	}
 
 	/**
@@ -219,7 +220,7 @@ export class Nazotoki extends EditableMode {
 				const dataTsumo = dataAnswer[i];
 				const tsumo = new Tsumo(dataTsumo.axisColor, dataTsumo.childColor);
 				tsumo.axisX = Number(dataTsumo.axisX);
-				tsumo.setTsumoPositionByEnumName(dataTsumo.tsumoPosition);
+				tsumo.setChildPositionByEnumName(dataTsumo.tsumoPosition);
 				answer.push(tsumo);
 			}
 			answerList.push(answer);
@@ -249,14 +250,14 @@ export class Nazotoki extends EditableMode {
 			const tsumo = tsumoList[i];
 
 			// rotate
-			const pos = tsumo.tsumoPosition;
-			if (pos == EnumTsumoPosition.RIGHT) {
+			const pos = tsumo.tsumoChildPosition;
+			if (pos == EnumTsumoChildPosition.RIGHT) {
 				const rotateTlList = this._puyopuyo.rotateTsumo(true);
 				timelineList.add(rotateTlList);
-			} else if (pos == EnumTsumoPosition.LEFT) {
+			} else if (pos == EnumTsumoChildPosition.LEFT) {
 				const rotateTlList = this._puyopuyo.rotateTsumo(false);
 				timelineList.add(rotateTlList);
-			} else if (pos == EnumTsumoPosition.BOTTOM) {
+			} else if (pos == EnumTsumoChildPosition.BOTTOM) {
 				const rotateTlList1 = this._puyopuyo.rotateTsumo(true);
 				const rotateTlList2 = this._puyopuyo.rotateTsumo(true);
 				timelineList.add(rotateTlList1, rotateTlList2);

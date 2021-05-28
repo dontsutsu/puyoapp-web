@@ -36,7 +36,7 @@ export class Tsumos {
 		// アニメーション
 		const timelineList = new TimelineList();
 		const timeline = new Timeline({paused: true});
-		const tweenList = this._tsumoCanvas.getMoveTween(fromX, toX, this._list[0].tsumoPosition);
+		const tweenList = this._tsumoCanvas.getMoveTween(fromX, toX, this._list[0].tsumoChildPosition);
 		timeline.addTween(...tweenList);
 		timelineList.push(timeline);
 		return timelineList;
@@ -49,10 +49,10 @@ export class Tsumos {
 	 */
 	public rotateCurrentTsumo(clockwise: boolean): TimelineList {
 		const fromX = this._list[0].axisX;
-		const beforePosition = this._list[0].tsumoPosition;
+		const beforePosition = this._list[0].tsumoChildPosition;
 		this._list[0].rotate(clockwise);
 		const toX = this._list[0].axisX;
-		const afterPosition = this._list[0].tsumoPosition;
+		const afterPosition = this._list[0].tsumoChildPosition;
 
 		// アニメーション
 		const timelineList = new TimelineList();
@@ -71,7 +71,7 @@ export class Tsumos {
 		// アニメーション
 		const timelineList = new TimelineList();
 		const timeline = new Timeline({paused: true});
-		const tsumoPosition = this._list[0].tsumoPosition;
+		const tsumoPosition = this._list[0].tsumoChildPosition;
 		const tweenList = this._tsumoCanvas.getDropTween(tsumoPosition);		
 		timeline.addTween(...tweenList);
 		timelineList.push(timeline);
@@ -126,7 +126,7 @@ export class Tsumos {
 	 */
 	public back(isMemorized: boolean): void {
 		// 現在のツモ位置を保持しない場合はリセット
-		if (!isMemorized) this._list[0].resetPosition();
+		if (!isMemorized) this._list[0].resetChildPosition();
 
 		const tail = this._list.pop();
 		if (tail == undefined) throw Error();

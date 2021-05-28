@@ -13,7 +13,7 @@ export class PuyoConnect {
 	}
 
 	/**
-	 * 連結数を増加します。
+	 * 連結数を1増やします。
 	 */
 	public increment(): void {
 		this._size += 1;

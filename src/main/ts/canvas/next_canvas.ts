@@ -30,6 +30,7 @@ export class NextCanvas extends BaseCanvas {
 	/**
 	 * コンストラクタ
 	 * @param {string} canvasId canvasのID 
+	 * @param {boolean} isModel
 	 */
 	constructor(canvasId: string, isModel: boolean = false) {
 		super(canvasId, true);
@@ -66,9 +67,9 @@ export class NextCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
-	 * @param {Tsumo} next 
-	 * @param {Tsumo} doubleNext 
+	 * 初期化します。
+	 * @param {Tsumo} next ネクスト
+	 * @param {Tsumo} doubleNext ダブネク
 	 */
 	public init(next: Tsumo, doubleNext: Tsumo): void {
 		if (this._nextAxisPuyoShape != undefined) this._container.removeChild(this._nextAxisPuyoShape);
@@ -84,9 +85,9 @@ export class NextCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
-	 * @param {Tsumo} tsumo 
-	 * @returns {Tween[]}
+	 * ツモをひとつ進めます。
+	 * @param {Tsumo} tsumo 次にダブネクとなるツモ
+	 * @returns {Tween[]} 
 	 */
 	public advance(tsumo: Tsumo): Tween[] {
 		const val = Util.getAnimateMode();
@@ -149,6 +150,7 @@ export class NextCanvas extends BaseCanvas {
 	}
 
 	/**
+	 * フレームを生成します。
 	 * @returns {Container}
 	 */
 	private createFrameContainer(): Container {

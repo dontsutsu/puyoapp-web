@@ -1,10 +1,10 @@
-export class EnumTsumoPosition {
+export class EnumTsumoChildPosition {
 	// CONSTANT
-	private static VALUES = new Array<EnumTsumoPosition>();
-	public static readonly TOP    = new EnumTsumoPosition("TOP"   , "T", 0,  0,  1);
-	public static readonly RIGHT  = new EnumTsumoPosition("RIGHT" , "R", 1,  1,  0);
-	public static readonly BOTTOM = new EnumTsumoPosition("BOTTOM", "B", 2,  0, -1);
-	public static readonly LEFT   = new EnumTsumoPosition("LEFT"  , "L", 3, -1,  0);
+	private static VALUES = new Array<EnumTsumoChildPosition>();
+	public static readonly TOP    = new EnumTsumoChildPosition("TOP"   , "T", 0,  0,  1);
+	public static readonly RIGHT  = new EnumTsumoChildPosition("RIGHT" , "R", 1,  1,  0);
+	public static readonly BOTTOM = new EnumTsumoChildPosition("BOTTOM", "B", 2,  0, -1);
+	public static readonly LEFT   = new EnumTsumoChildPosition("LEFT"  , "L", 3, -1,  0);
 
 	// CLASS FIELD
 	private _name: string;
@@ -27,27 +27,27 @@ export class EnumTsumoPosition {
 		this._childRelativeX = childRelativeX;
 		this._childRelativeY = childRelativeY;
 
-		EnumTsumoPosition.VALUES.push(this);
+		EnumTsumoChildPosition.VALUES.push(this);
 	}
 
 	/**
 	 * 回転後のEnumTsumoPositionを取得します。
 	 * @param {boolean} clockwise true：時計周り / false：反時計周り
-	 * @returns {EnumTsumoPosition}
+	 * @returns {EnumTsumoChildPosition}
 	 */
-	public getRotatedEnum(clockwise: boolean): EnumTsumoPosition {
+	public getRotatedEnum(clockwise: boolean): EnumTsumoChildPosition {
 		const addIndex = clockwise ? 1 : -1;
 		const index = (this._index + addIndex + 4) % 4;
-		return EnumTsumoPosition.fromIndex(index);
+		return EnumTsumoChildPosition.fromIndex(index);
 	}
 
 	/**
 	 * indexからEnumTsumoPositionを取得します。
 	 * @param {number} index index
-	 * @returns {EnumTsumoPosition}
+	 * @returns {EnumTsumoChildPosition}
 	 */
-	private static fromIndex(index: number): EnumTsumoPosition {
-		const rtn = EnumTsumoPosition.VALUES.find(position => position._index == index);
+	private static fromIndex(index: number): EnumTsumoChildPosition {
+		const rtn = EnumTsumoChildPosition.VALUES.find(position => position._index == index);
 		if (rtn == undefined) throw Error("illegal argument");
 		return rtn;
 	}
@@ -55,10 +55,10 @@ export class EnumTsumoPosition {
 	/**
 	 * nameからEnumTsumoPositionを取得します。
 	 * @param {string} name name
-	 * @returns {EnumTsumoPosition}
+	 * @returns {EnumTsumoChildPosition}
 	 */
-	public static fromName(name: string): EnumTsumoPosition {
-		const rtn = EnumTsumoPosition.VALUES.find(position => position._name == name);
+	public static fromName(name: string): EnumTsumoChildPosition {
+		const rtn = EnumTsumoChildPosition.VALUES.find(position => position._name == name);
 		if (rtn == undefined) throw Error("illegal argument");
 		return rtn;
 	}
@@ -66,10 +66,10 @@ export class EnumTsumoPosition {
 	/**
 	 * valueからEnumTsumoPositionを取得します。
 	 * @param {string} value value
-	 * @returns {EnumTsumoPosition}
+	 * @returns {EnumTsumoChildPosition}
 	 */
-	public static fromValue(value: string): EnumTsumoPosition {
-		const rtn = EnumTsumoPosition.VALUES.find(position => position._value == value);
+	public static fromValue(value: string): EnumTsumoChildPosition {
+		const rtn = EnumTsumoChildPosition.VALUES.find(position => position._value == value);
 		if (rtn == undefined) throw Error("illegal argument");
 		return rtn;
 	}

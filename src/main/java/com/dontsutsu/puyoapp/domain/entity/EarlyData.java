@@ -6,7 +6,7 @@ import lombok.Data;
  * @author f-akamatsu
  */
 @Data
-public class Dodai {
+public class EarlyData {
 	private Integer playerId;
 	private String date;
 	private Integer seq;

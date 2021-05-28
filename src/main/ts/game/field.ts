@@ -2,7 +2,7 @@ import { Timeline } from "@createjs/tweenjs";
 import { FieldCanvas } from "../canvas/field_canvas";
 import { NoticeCanvas } from "../canvas/notice_canvas";
 import { TimelineList } from "../canvas/timeline/timeline_list";
-import { EnumTsumoPosition } from "./enum_tsumo_position";
+import { EnumTsumoChildPosition } from "./enum_tsumo_child_position";
 import { BasePuyo } from "./puyo/base_puyo";
 import { FieldPuyo } from "./puyo/field_puyo";
 import { PuyoConnect } from "./puyo/puyo_connect";
@@ -191,14 +191,14 @@ export class Field {
 	}
 
 	/**
-	 * 
+	 * ガイドを非表示にします。
 	 */
 	public hideGuide(): void {
 		this._fieldCanvas.hideGuide();
 	}
 
 	/**
-	 * 
+	 * ガイドをセットします。
 	 * @param {Tsumo} tsumo 
 	 */
 	public setGuide(tsumo: Tsumo): void {
@@ -451,10 +451,10 @@ export class Field {
 		let axisToY: number;
 		let childToY: number;
 
-		if (tsumo.tsumoPosition == EnumTsumoPosition.BOTTOM) {
+		if (tsumo.tsumoChildPosition == EnumTsumoChildPosition.BOTTOM) {
 			childToY = this.getDropPuyoToY(tsumo.childX);
 			axisToY = childToY + 1;
-		} else if (tsumo.tsumoPosition == EnumTsumoPosition.TOP) {
+		} else if (tsumo.tsumoChildPosition == EnumTsumoChildPosition.TOP) {
 			axisToY = this.getDropPuyoToY(tsumo.axisX);
 			childToY = axisToY + 1;
 		} else {
