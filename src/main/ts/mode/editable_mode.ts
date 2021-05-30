@@ -30,6 +30,13 @@ export abstract class EditableMode extends BaseMode {
 		$("#redo").on("click", () => {
 			this.redo();
 		});
+
+		$("#clear").on("click", () => {
+			const confirm = window.confirm("クリアしますか？");
+			if (!confirm) return;
+
+			this.clear();
+		});
 	}
 
 	/**
@@ -96,6 +103,11 @@ export abstract class EditableMode extends BaseMode {
 	 * @param {string} state 状態
 	 */
 	protected abstract setState(state: string): void;
+
+	/**
+	 * 
+	 */
+	protected abstract clear(): void;
 
 	/**
 	 * UNDO用の履歴を残します。

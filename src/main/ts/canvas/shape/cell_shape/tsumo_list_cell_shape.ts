@@ -6,7 +6,7 @@ import { BaseCellShape } from "./base_cell_shape";
  */
 export class TsumoListCellShape extends BaseCellShape {
 	// CONSTANT
-	public static readonly CELLSIZE = 30;
+	public static readonly CELLSIZE = 26;
 	public static readonly PADDING = 10;
 	public static readonly BG_COLOR = "#FFFFFF";
 	public static readonly TSUMO_LIST_BORDER_COLOR = "#DDDDDD";
@@ -37,7 +37,7 @@ export class TsumoListCellShape extends BaseCellShape {
 	 * @param {number} type 0：子ぷよ、1：軸ぷよ
 	 * @returns {{x: number, y: number}}
 	 */
-	static getXandY(ax: number, ay: number, type: number): { x: number, y: number } {
+	public static getXandY(ax: number, ay: number, type: number): { x: number, y: number } {
 		const x = (TsumoListCellShape.CELLSIZE + TsumoListCellShape.PADDING) * ax;
 		const y = TsumoListCellShape.CELLSIZE * (type + 1) + TsumoListCellShape.CELLSIZE * 3 * ay + TsumoListCellShape.Y_ADJUST;
 		return { x: x, y: y };

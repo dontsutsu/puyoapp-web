@@ -18,6 +18,8 @@ export class Field {
 	private static readonly CONNECT_BONUS = [0, 2, 3, 4, 5, 6, 7, 10];
 	private static readonly COLOR_BONUS = [0, 3, 6, 12, 24];
 
+	public static readonly NULL_STRING = BasePuyo.NONE.repeat(Field.X_SIZE * Field.Y_SIZE);
+
 	// CLASS FIELD
 	private _fieldArray: FieldPuyo[][];
 	private _fieldCanvas: FieldCanvas;
@@ -123,6 +125,7 @@ export class Field {
 				this.changeFieldPuyo(x, y, BasePuyo.NONE);
 			}
 		}
+		this.setScore(0);
 	}
 
 	/**

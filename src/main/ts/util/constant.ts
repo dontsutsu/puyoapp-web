@@ -1,3 +1,5 @@
+import { Field } from "../game/field";
+
 /**
  * 定数管理クラス
  */

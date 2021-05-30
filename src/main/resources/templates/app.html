@@ -8,37 +8,40 @@
 <title>Puyo</title>
 </head>
 <body>
-	<!-- 1列目 -->
+	<!--/* hidden */-->
+	<input type="hidden" id="lastField" th:if="${mode=='editor'}" th:value="${lastField}">
+
+	<!--/* 1列目 */-->
 	<div class="row" id="player_field">
 		<canvas id="tsumo" class="tsumo"></canvas>
 		<canvas id="field" class="field"></canvas>
 	</div>
 
-	<!-- 2列目 -->
+	<!--/* 2列目 */-->
 	<div class="row" id="player_next">
 		<canvas id="next" class="next"></canvas>
 		<!--/* <canvas id="notice" width="271" height="56"></canvas> */-->
 	</div>
 
-	<!-- 3列目 -->
+	<!--/* 3列目 */-->
 	<div class="row" id="model_next" th:if="${mode=='early'}">
 		<canvas id="modelNext" class="next"></canvas>
 	</div>
 
-	<!-- 4列目 -->
+	<!--/* 4列目 */-->
 	<div class="row" id="model_field" th:if="${mode=='early'}">
 		<canvas id="modelTsumo" class="tsumo"></canvas>
 		<canvas id="modelField" class="field"></canvas>
 	</div>
 
-	<!-- 5列目 -->
+	<!--/* 5列目 */-->
 	<div class="row" id="setting">
 		<!-- mode switch -->
 		<div id="mode">
-			<a href="editor">editor</a>
-			<a href="tokopuyo">tokopuyo</a>
-			<a href="nazotoki">nazotoki</a>
-			<a href="early">early</a>
+			<a class="modeLink" href="editor">editor</a>
+			<a class="modeLink" href="tokopuyo">tokopuyo</a>
+			<a class="modeLink" href="nazotoki">nazotoki</a>
+			<a class="modeLink" href="early">early</a>
 		</div>
 
 		<div id="option">
@@ -51,12 +54,12 @@
 
 		<div id="tsumoListDiv" th:if="${mode=='nazotoki'}">
 			<span class="subject">NEXTをきめてね</span><br>
-			<canvas id="tsumoList" width="191" height="181"></canvas>
+			<canvas id="tsumoList"></canvas>
 		</div>
 
 		<div id="boxDiv" th:if="${mode=='editor' || mode=='nazotoki'}">
 			<span class="subject">PUYOをおいてね</span><br>
-			<canvas id="box" width="176" height="71"></canvas>
+			<canvas id="box"></canvas>
 			<button id="clear">クリア</button>
 			<button id="undo">元に戻す</button>
 			<button id="redo">やり直し</button>

@@ -224,15 +224,16 @@ span.subject {
 
 #earlyDataList td,th {
 	border: 1px #808080 solid;
-	padding: 5px;
 }
 
 #earlyDataList td {
+	padding: 2px;
 	position: relative;
 	text-align: center;
 }
 
 #earlyDataList th {
+	padding: 5px;
 	background: #AAAAAA;
 }
 

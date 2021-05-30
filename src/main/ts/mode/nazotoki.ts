@@ -82,6 +82,15 @@ export class Nazotoki extends EditableMode {
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	protected clear(): void {
+		this._puyopuyo.clearField();
+		this._tsumoListCanvas.clear();
+		this.clearAnswerList();
+	}
+
+	/**
 	 * 
 	 * @param nazoType なぞぷよの種類
 	 */
@@ -149,8 +158,7 @@ export class Nazotoki extends EditableMode {
 
 				// メッセージの表示
 				if (len <= 0) {
-					$("#anslistDiv").animate({height: "hide", opacity: 0}, 300);
-					$("#playAnswer").prop("disabled", true);
+					this.clearAnswerList();
 					Util.dispMsg("解答が見つかりませんでした。", "1");
 				} else {
 					$("#anslistDiv").animate({height: "show", opacity: 1}, 300);
@@ -177,6 +185,7 @@ export class Nazotoki extends EditableMode {
 	private clearAnswerList(): void {
 		this._answerList.length = 0;
 		$("#anslistDiv input[type='radio']").prop("disabled", true);
+		$("#anslistDiv").animate({height: "hide", opacity: 0}, 300);
 		$("#playAnswer").prop("disabled", true);
 	}
 

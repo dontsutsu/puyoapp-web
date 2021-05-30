@@ -163,7 +163,7 @@ export class Early extends BaseTokopuyo {
 	}
 
 	/**
-	 * player_id、date、seqからtsumoデータを検索し、取得したデータをぷよぷよにセットします。
+	 * player_id、date、seqからearly_data_tsumoを検索し、取得したツモデータを画面にセットします。
 	 * @param playerId early_data.player_id（PK1）
 	 * @param date early_data.date（PK2）
 	 * @param seq early_data.seq（PK3）

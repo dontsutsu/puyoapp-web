@@ -3,6 +3,7 @@ import { BasePuyo } from "../game/puyo/base_puyo";
 import { BaseCanvas } from "./base_canvas";
 import { BoxCellShape } from "./shape/cell_shape/box_cell_shape";
 import { BoxPuyoShape } from "./shape/puyo_shape/box_puyo_shape";
+import $ from "jquery";
 
 export class BoxCanvas extends BaseCanvas {
 	// CONSTANT
@@ -18,6 +19,7 @@ export class BoxCanvas extends BaseCanvas {
 	private static readonly KESU_PADDING = 2;
 	private static readonly X_SIZE = 5;
 	private static readonly Y_SIZE = 2;
+	private static readonly CANVAS_ID = "box";
 
 	// CLASS FIELD
 	private _selectShape: Shape;
@@ -27,7 +29,11 @@ export class BoxCanvas extends BaseCanvas {
 	 * コンストラクタ
 	 */
 	constructor() {
-		super("box", false);
+		super(BoxCanvas.CANVAS_ID, false);
+		const w = BoxCellShape.CELLSIZE * BoxCanvas.X_SIZE;
+		const h = BoxCellShape.CELLSIZE * BoxCanvas.Y_SIZE;
+		$("#" + BoxCanvas.CANVAS_ID).attr("width", 1 + Math.ceil(w));
+		$("#" + BoxCanvas.CANVAS_ID).attr("height", 1 + Math.ceil(h));
 
 		// CellShape
 		for (let y = 0; y < BoxCanvas.Y_SIZE; y++) {

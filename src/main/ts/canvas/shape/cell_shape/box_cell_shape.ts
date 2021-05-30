@@ -6,7 +6,7 @@ export class BoxCellShape extends BaseCellShape {
 	public static readonly ENABLED_COLOR = "#FFFFFF";
 	public static readonly DISABLED_COLOR = "#666666";
 	public static readonly BOX_BORDER_COLOR = "#CCCCCC";
-	public static readonly CELLSIZE = 35;
+	public static readonly CELLSIZE = 33;
 
 	// CLASS FIELD
 	private _ax: number;

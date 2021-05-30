@@ -4,11 +4,13 @@ import { Nazotoki } from "../mode/nazotoki";
 import { BaseCanvas } from "./base_canvas";
 import { TsumoListCellShape } from "./shape/cell_shape/tsumo_list_cell_shape";
 import { TsumoListPuyoShape } from "./shape/puyo_shape/tsumo_list_puyo_shape";
+import $ from "jquery";
 
 export class TsumoListCanvas extends BaseCanvas {
 	// CONSTANT
 	public static readonly X_SIZE = 5;
 	public static readonly Y_SIZE = 2;
+	private static readonly CANVAS_ID = "tsumoList";
 
 	// CLASS FIELD
 	private _cellShapeArray: TsumoListCellShape[][];
@@ -19,8 +21,14 @@ export class TsumoListCanvas extends BaseCanvas {
 	 * コンストラクタ
 	 */
 	constructor() {
-		super("tsumoList", false);
+		super(TsumoListCanvas.CANVAS_ID, false);
 		this._stage.enableMouseOver();
+
+		const { x, y } = TsumoListCellShape.getXandY(TsumoListCanvas.X_SIZE - 1, TsumoListCanvas.Y_SIZE - 1, 1);
+		const w = x + TsumoListCellShape.CELLSIZE;
+		const h = y + TsumoListCellShape.CELLSIZE;
+		$("#" + TsumoListCanvas.CANVAS_ID).attr("width", 1 + Math.ceil(w));
+		$("#" + TsumoListCanvas.CANVAS_ID).attr("height", 1 + Math.ceil(h));
 
 		// number
 		for (let y = 0; y < TsumoListCanvas.Y_SIZE; y++) {
@@ -176,6 +184,18 @@ export class TsumoListCanvas extends BaseCanvas {
 
 			this.changeColor(index, 1, axisColor);
 			this.changeColor(index, 0, childColor);
+		}
+		this._stage.update();
+	}
+
+	/**
+	 * クリアします。
+	 */
+	public clear(): void {
+		for (let i = 0; i < TsumoListCanvas.X_SIZE * TsumoListCanvas.Y_SIZE; i++) {
+			for (let t = 0; t < 2; t++) {	// child: t=0, axis: t=1
+				this.changeColor(i, t, BasePuyo.NONE);
+			}
 		}
 		this._stage.update();
 	}

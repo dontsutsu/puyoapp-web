@@ -176,4 +176,11 @@ export class Puyopuyo {
 	public setGuide(): void {
 		this._field.setGuide(this._tsumos.current);
 	}
+
+	/**
+	 * フィールドをクリアします。
+	 */
+	public clearField(): void {
+		this._field.reset();
+	}
 }
