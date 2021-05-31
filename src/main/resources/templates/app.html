@@ -38,10 +38,10 @@
 	<div class="row" id="setting">
 		<!-- mode switch -->
 		<div id="mode">
-			<a class="modeLink" href="editor">editor</a>
-			<a class="modeLink" href="tokopuyo">tokopuyo</a>
-			<a class="modeLink" href="nazotoki">nazotoki</a>
-			<a class="modeLink" href="early">early</a>
+			<a class="modeLink" href="editor" th:if="${mode!='editor'}">editor</a><span th:if="${mode=='editor'}">editor</span>
+			<a class="modeLink" href="tokopuyo" th:if="${mode!='tokopuyo'}">tokopuyo</a><span th:if="${mode=='tokopuyo'}">tokopuyo</span>
+			<a class="modeLink" href="nazotoki" th:if="${mode!='nazotoki'}">nazotoki</a><span th:if="${mode=='nazotoki'}">nazotoki</span>
+			<a class="modeLink" href="early" th:if="${mode!='early'}">early</a><span th:if="${mode=='early'}">early</span>
 		</div>
 
 		<div id="option">
