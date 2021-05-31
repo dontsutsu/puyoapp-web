@@ -258,7 +258,7 @@ export class Nazotoki extends EditableMode {
 			if (i < length) {
 				tsumo = new Tsumo(tsumoList[i].axisColor, tsumoList[i].childColor);
 			} else {
-				tsumo = new Tsumo(BasePuyo.NONE, BasePuyo.NONE)
+				tsumo = new Tsumo(BasePuyo.NONE, BasePuyo.NONE);
 			}
 			playTsumoList.push(tsumo);
 		}
