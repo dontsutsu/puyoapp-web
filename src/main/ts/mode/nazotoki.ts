@@ -250,10 +250,19 @@ export class Nazotoki extends EditableMode {
 
 		const length = tsumoList.length;
 
-		// ツモリストセット
+		// 再生用ツモリストセット
 		// アニメーション用に後ろに空のツモを3つ追加しておく
-		for (let i = 0; i < 3; i++) tsumoList.push(new Tsumo(BasePuyo.NONE, BasePuyo.NONE));
-		this._puyopuyo.setTsumoList(tsumoList);
+		const playTsumoList: Tsumo[] = [];
+		for (let i = 0; i < length + 3; i++) {
+			let tsumo: Tsumo;
+			if (i < length) {
+				tsumo = new Tsumo(tsumoList[i].axisColor, tsumoList[i].childColor);
+			} else {
+				tsumo = new Tsumo(BasePuyo.NONE, BasePuyo.NONE)
+			}
+			playTsumoList.push(tsumo);
+		}
+		this._puyopuyo.setTsumoList(playTsumoList);
 		
 		for (let i = 0; i < length; i++) {
 			const tsumo = tsumoList[i];
