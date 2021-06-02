@@ -68,13 +68,13 @@ export class BoxCanvas extends BaseCanvas {
 
 					// 「けす」の文字
 					if (color == BasePuyo.NONE) {
-						const keShape = new Text("け", "bold 16px BIZ UDPGothic", "#4242FF");
+						const keShape = new Text("け", "bold 15px BIZ UDPGothic", "#4242FF");
 						keShape.x = BoxCellShape.CELLSIZE * x + BoxCanvas.KESU_PADDING;
 						keShape.y = BoxCellShape.CELLSIZE * y + BoxCanvas.KESU_PADDING;
 						keShape.textAlign = "start";
 						keShape.textBaseline = "top";
 
-						const suShape = new Text("す", "bold 16px BIZ UDPGothic", "#4242FF");
+						const suShape = new Text("す", "bold 15px BIZ UDPGothic", "#4242FF");
 						suShape.x = BoxCellShape.CELLSIZE * (x + 1) - BoxCanvas.KESU_PADDING;
 						suShape.y = BoxCellShape.CELLSIZE * (y + 1) - BoxCanvas.KESU_PADDING;
 						suShape.textAlign = "end";

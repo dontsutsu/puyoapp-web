@@ -1,5 +1,5 @@
 import { Container, Shadow, Shape, Text } from "@createjs/easeljs";
-import { Tween } from "@createjs/tweenjs";
+import { Tween, Timeline } from "@createjs/tweenjs";
 import { BaseCanvas } from "./base_canvas";
 import { Field } from "../game/field";
 import { FieldCellShape } from "./shape/cell_shape/field_cell_shape";
@@ -10,6 +10,7 @@ import { BasePuyo } from "../game/puyo/base_puyo";
 import { Tsumo } from "../game/tsumo";
 import { FieldGuidePuyoShape } from "./shape/puyo_shape/field_guid_puyo_shape";
 import $ from "jquery";
+import { TimelineList } from "./timeline/timeline_list";
 
 export class FieldCanvas extends BaseCanvas {
 	// CONSTANT
@@ -32,6 +33,7 @@ export class FieldCanvas extends BaseCanvas {
 	private _axisGuide: FieldGuidePuyoShape;
 	private _childGuide: FieldGuidePuyoShape;
 	private _isModel: boolean;
+	private _isEditable: boolean;
 
 	/**
 	 * コンストラクタ
@@ -42,6 +44,7 @@ export class FieldCanvas extends BaseCanvas {
 		super(canvasId, true);
 		this._stage.enableMouseOver();
 		this._isModel = isModel;
+		this._isEditable = true;
 
 		const w = FieldCanvas.F_BASE_X;
 		const h = FieldCanvas.F_BASE_Y + FieldCanvas.F_BASE_X * Util.sin(FieldCanvas.F_SKEW_DEG) * 2;
@@ -118,12 +121,14 @@ export class FieldCanvas extends BaseCanvas {
 		for (const yarray of this._cellShapeArray) {
 			for (const cellShape of yarray) {
 				cellShape.addEventListener("mousedown", () => {
+					if (!this._isEditable) return;
 					const x = cellShape.ax;
 					const y = cellShape.ay;
 					eMode.changeFieldPuyo(x, y);
 				});
 
 				cellShape.addEventListener("mouseover", () => {
+					if (!this._isEditable) return;
 					cellShape.mouseover();
 				});
 
@@ -404,5 +409,19 @@ export class FieldCanvas extends BaseCanvas {
 	 */
 	public static formatScore(score: number): string {
 		return (score + "").padStart(9, "0");
+	}
+
+	public static createStopTlList(): TimelineList {
+		const stopTlList = new TimelineList();
+		const stopTl = new Timeline({paused: true});
+		const stopTwn = Tween.get(new Shape()).wait(FieldCanvas.STEP_ERASE_TIME);
+		stopTl.addTween(stopTwn);
+		stopTlList.push(stopTl);
+		return stopTlList;
+	}
+
+	// accessor
+	set isEditable(isEditable: boolean) {
+		this._isEditable = isEditable;
 	}
 }

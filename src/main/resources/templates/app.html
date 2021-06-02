@@ -8,6 +8,14 @@
 <title>Puyo</title>
 </head>
 <body>
+	<!--/* header */-->
+	<header>
+		<a class="modeLink" href="editor" th:if="${mode!='editor'}">エディター</a><span th:if="${mode=='editor'}">エディター</span>
+		<a class="modeLink" href="tokopuyo" th:if="${mode!='tokopuyo'}">とこぷよ</a><span th:if="${mode=='tokopuyo'}">とこぷよ</span>
+		<a class="modeLink" href="nazotoki" th:if="${mode!='nazotoki'}">なぞとき</a><span th:if="${mode=='nazotoki'}">なぞとき</span>
+		<a class="modeLink" href="early" th:if="${mode!='early'}">序盤練習</a><span th:if="${mode=='early'}">序盤練習</span>
+	</header>
+
 	<!--/* hidden */-->
 	<input type="hidden" id="lastField" th:if="${mode=='editor'}" th:value="${lastField}">
 
@@ -36,15 +44,9 @@
 
 	<!--/* 5列目 */-->
 	<div class="row" id="setting">
-		<!-- mode switch -->
-		<div id="mode">
-			<a class="modeLink" href="editor" th:if="${mode!='editor'}">editor</a><span th:if="${mode=='editor'}">editor</span>
-			<a class="modeLink" href="tokopuyo" th:if="${mode!='tokopuyo'}">tokopuyo</a><span th:if="${mode=='tokopuyo'}">tokopuyo</span>
-			<a class="modeLink" href="nazotoki" th:if="${mode!='nazotoki'}">nazotoki</a><span th:if="${mode=='nazotoki'}">nazotoki</span>
-			<a class="modeLink" href="early" th:if="${mode!='early'}">early</a><span th:if="${mode=='early'}">early</span>
-		</div>
-
+		<!--/* 全モード共通 */-->
 		<div id="option">
+			<span class="subject">アニメーションの設定</span>
 			<input type="range" id="speed" value="5" min="1" max="9" step="1">
 			<span id="speedVal">5</span>
 			<br>
@@ -52,21 +54,28 @@
 			<input type="radio" name="animation" id="step" value="0" checked><label for="step">step</label>
 		</div>
 
-		<div id="tsumoListDiv" th:if="${mode=='nazotoki'}">
-			<span class="subject">NEXTをきめてね</span><br>
-			<canvas id="tsumoList"></canvas>
-		</div>
-
+		<!--/* エディター、なぞとき共通 */-->
 		<div id="boxDiv" th:if="${mode=='editor' || mode=='nazotoki'}">
-			<span class="subject">PUYOをおいてね</span><br>
+			<span class="subject">PUYOを置いてね</span><br>
 			<canvas id="box"></canvas>
 			<button id="clear">クリア</button>
 			<button id="undo">元に戻す</button>
 			<button id="redo">やり直し</button>
 		</div>
 
+		<!--/* エディター */-->
+		<div id="editorButtonDiv" class="buttonDiv" th:if="${mode=='editor'}">
+			<button id="drop">スタート</button>
+		</div>
+
+		<!--/* なぞとき */-->
 		<div id="nazoDiv" th:if="${mode=='nazotoki'}">
-			<span class="subject">おだいをきめてね</span><br>
+			<span class="subject">NEXTを決めてね</span><br>
+			<canvas id="tsumoList"></canvas>
+
+			<hr>
+
+			<span class="subject">お題を決めてね</span><br>
 			<div id="nazo">
 				<select id="nazoType">
 					<option value="1">XX連鎖するべし</option>
@@ -79,19 +88,20 @@
 				<select id="nazoRequire">
 				</select>
 			</div>
-		</div>
 
-		<div id="nazotokiButtonDiv" class="buttonDiv" th:if="${mode=='nazotoki'}">
+			<hr>
+
 			<button id="findAnswer">こたえ検索</button>
-			<button id="playAnswer" disabled="disabled">こたえ再生</button>
 		</div>
 
-		<div id="editorButtonDiv" class="buttonDiv" th:if="${mode=='editor'}">
-			<button id="drop">スタート</button>
-		</div>
-
-		<!-- answer list -->
 		<div id="anslistDiv" th:if="${mode=='nazotoki'}">
+			<span class="subject">お題</span>
+			<canvas id="miniTsumoList"></canvas>
+			<span id="question"></span>
+
+			<hr>
+
+			<span class="subject">再生するこたえをえらんでね</span><br>
 			<table>
 				<tr>
 					<td><input type="radio" name="ansradio" id="ans1" value="1" disabled="disabled" /><label for="ans1">1</label></td>
@@ -108,10 +118,14 @@
 					<td><input type="radio" name="ansradio" id="ans10" value="10" disabled="disabled" /><label for="ans10">10</label></td>
 				</tr>
 			</table>
+
+			<button id="playAnswer">こたえ再生</button>
+			<button id="back">もどる</button>
 		</div>
 
+		<!--/* 序盤練習 */-->
 		<div th:if="${mode=='early'}">
-			<span class="subject">プレイヤーをえらんでね</span><br>
+			<span class="subject">プレイヤーを選んでね</span><br>
 			<select id="player">
 				<option value=""></option>
 				<option th:each="player : ${players}"
@@ -120,9 +134,9 @@
 				</option>
 			</select><br>
 
-			<br>
+			<hr>
 
-			<span class="subject">データをえらんでね</span>
+			<span class="subject">データを選んでね</span>
 
 			<table id="earlyDataList">
 				<thead>

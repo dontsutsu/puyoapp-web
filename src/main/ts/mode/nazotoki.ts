@@ -8,6 +8,8 @@ import { BasePuyo } from "../game/puyo/base_puyo";
 import { EnumTsumoChildPosition } from "../game/enum_tsumo_child_position";
 import { Field } from "../game/field";
 import { Constant } from "../util/constant";
+import { FieldCanvas } from "../canvas/field_canvas";
+import { MiniTsumoListCanvas } from "../canvas/mini_tsumo_list_canvas";
 
 $(() => {
 	new Nazotoki();
@@ -16,7 +18,9 @@ $(() => {
 export class Nazotoki extends EditableMode {
 	// CLASS FIELD
 	private _tsumoListCanvas: TsumoListCanvas;
+	private _miniTsumoListCanvas: MiniTsumoListCanvas;
 	private _answerList: Tsumo[][];
+	private _mode: string;
 
 	/**
 	 * コンストラクタ
@@ -24,7 +28,9 @@ export class Nazotoki extends EditableMode {
 	constructor() {
 		super();
 		this._tsumoListCanvas = new TsumoListCanvas();
+		this._miniTsumoListCanvas = new MiniTsumoListCanvas();
 		this._answerList = [];
+		this._mode = "edit";
 
 		$("#nazoType").val("1");
 		this.nazoSwitch("1");
@@ -44,8 +50,14 @@ export class Nazotoki extends EditableMode {
 			// 正答リストがないときは何もしない
 			if (this._answerList.length == 0) return;
 
-			this._timelineList = this.playAnswer();
-			this._timelineList.play();
+			// 再生中は不可
+			if (this._timelineList.isAnimation) return false;
+
+			this.playAnswer();
+		});
+
+		$("#back").on("click", () => {
+			this.changeEditMode();
 		});
 	}
 
@@ -88,10 +100,11 @@ export class Nazotoki extends EditableMode {
 		this._puyopuyo.clearField();
 		this._tsumoListCanvas.clear();
 		this.clearAnswerList();
+		this.changeEditMode();
 	}
 
 	/**
-	 * 
+	 *
 	 * @param nazoType なぞぷよの種類
 	 */
 	private nazoSwitch(nazoType: string): void {
@@ -143,26 +156,28 @@ export class Nazotoki extends EditableMode {
 
 		this.findNazopuyoAnswerAjax()
 			.done((data: FindNazopuyoAnswerInterface[][]) => {
+				// 一旦こたえリストクリア
+				this.clearAnswerList();
+
+				// こたえリストセット
 				this._answerList = this.createTsumoListListFromAjaxData(data);
 				const len = this._answerList.length;
 
 				// ラジオボタンの表示
-				// 一旦全部オフにする
-				$("#anslistDiv input[type='radio']").prop("disabled", true);
 				// 正答数の分だけオン
 				for (let i = 0; i < len; i++) {
 					$("#ans" + (i + 1)).prop("disabled", false);
-
 					if (i == 0) $("#ans" + (i + 1)).prop("checked", true);
 				}
 
 				// メッセージの表示
 				if (len <= 0) {
-					this.clearAnswerList();
+					// こたえなし
+					this.changeEditMode();
 					Util.dispMsg("解答が見つかりませんでした。", "1");
 				} else {
-					$("#anslistDiv").animate({height: "show", opacity: 1}, 300);
-					$("#playAnswer").prop("disabled", false);
+					// こたえあり
+					this.changePlayMode();
 					if (len < 10) {
 						Util.dispMsg(len + "件の解答が見つかりました。", "0");
 					} else {
@@ -171,7 +186,8 @@ export class Nazotoki extends EditableMode {
 				}
 			})
 			.fail(() => {
-				this.clearAnswerList();
+				// 通信エラー
+				this.changeEditMode();
 				Util.dispMsg(Constant.AJAX_ERROR_MSG, "2");
 			})
 			.always(() => {
@@ -185,8 +201,6 @@ export class Nazotoki extends EditableMode {
 	private clearAnswerList(): void {
 		this._answerList.length = 0;
 		$("#anslistDiv input[type='radio']").prop("disabled", true);
-		$("#anslistDiv").animate({height: "hide", opacity: 0}, 300);
-		$("#playAnswer").prop("disabled", true);
 	}
 
 	/**
@@ -217,7 +231,7 @@ export class Nazotoki extends EditableMode {
 
 	/**
 	 * ajaxのdataからツモの配列を生成します。
-	 * @param data 
+	 * @param data
 	 * @returns {Tsumo[][]}
 	 */
 	private createTsumoListListFromAjaxData(data: FindNazopuyoAnswerInterface[][]): Tsumo[][] {
@@ -238,11 +252,13 @@ export class Nazotoki extends EditableMode {
 	}
 
 	/**
-	 * 
-	 * @returns {TimelineList}
+	 *
 	 */
-	private playAnswer(): TimelineList {
+	private playAnswer(): void {
 		const timelineList = new TimelineList();
+
+		// 再生前のフィールドの状態を保持しておく
+		const oldField = this._puyopuyo.getFieldString();
 
 		// 選択しているツモリストを取得
 		const index = this.getAnsListIndex();
@@ -263,7 +279,7 @@ export class Nazotoki extends EditableMode {
 			playTsumoList.push(tsumo);
 		}
 		this._puyopuyo.setTsumoList(playTsumoList);
-		
+
 		for (let i = 0; i < length; i++) {
 			const tsumo = tsumoList[i];
 
@@ -290,19 +306,65 @@ export class Nazotoki extends EditableMode {
 			const dropTlList = this._puyopuyo.dropTsumoToField();
 			const advanceTsumoTlList = this._puyopuyo.advanceTsumo();
 			timelineList.add(dropTlList, advanceTsumoTlList);
+
+			// STEPの場合止める
+			if (Util.getAnimateMode() == 0) {
+				const stopTlList = FieldCanvas.createStopTlList();
+				timelineList.add(stopTlList);
+			}
 		}
 
-		return timelineList;
+		this._timelineList = timelineList;
+
+		// 前処理、後処理
+		const before = () => {
+			this._fieldCanvas.isEditable = false;
+			this._tsumoListCanvas.isEditable = false;
+		};
+		const after = () => {
+			if (this._mode == "edit") this._fieldCanvas.isEditable = true;
+			if (this._mode == "edit") this._tsumoListCanvas.isEditable = true;
+			this._puyopuyo.setField(oldField);
+			this._puyopuyo.setScore(0);
+		};
+
+		// 再生
+		this._timelineList.play(before, after);
 	}
 
 	/**
-	 * 
-	 * @returns 
+	 *
+	 * @returns
 	 */
 	private getAnsListIndex(): number {
 		return Number($("#anslistDiv input[type='radio']:checked").val()) - 1;
 	}
 
+	private changeEditMode(): void {
+		this._mode = "edit";
+		$("#nazoDiv").animate({height: "show", opacity: 1}, 300);
+		$("#anslistDiv").animate({height: "hide", opacity: 0}, 300);
+		this._fieldCanvas.isEditable = true;
+		this._tsumoListCanvas.isEditable = true;
+	}
+
+	private changePlayMode(): void {
+		this._mode = "play";
+		this.setNazoInfo();
+		$("#nazoDiv").animate({height: "hide", opacity: 0}, 300);
+		$("#anslistDiv").animate({height: "show", opacity: 1}, 300);
+		this._fieldCanvas.isEditable = false;	// フィールド変更不可
+		this._tsumoListCanvas.isEditable = false;
+	}
+
+	private setNazoInfo(): void {
+		const tsumoListStr = this._tsumoListCanvas.getTsumoListString();
+		this._miniTsumoListCanvas.setTsumoList(tsumoListStr);
+
+		const q = $("#nazoType option:selected").text();
+		const req = $("#nazoRequire option:selected").text();
+		$("#question").text(q.replace("XX", req));
+	}
 }
 
 interface FindNazopuyoAnswerInterface {

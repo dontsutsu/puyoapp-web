@@ -20,7 +20,10 @@ export class Editor extends EditableMode {
 			this.doWithRecordHistory(() => {
 				this._timelineList = this._puyopuyo.dropFieldPuyo();
 			});
-			this._timelineList.play();
+
+			const before = () => { this._fieldCanvas.isEditable = false; };
+			const after = () => { this._fieldCanvas.isEditable = true; };
+			this._timelineList.play(before, after);
 		});
 
 		// 直前のフィールド取得

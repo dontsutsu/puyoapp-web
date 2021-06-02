@@ -2,3 +2,11 @@ html, button, select {
   font-size: 12px;
   font-family: "BIZ UDPGothic";
 }
+
+html {
+	background-color: #FFFFFF;
+}
+
+body {
+	margin: 0;
+}

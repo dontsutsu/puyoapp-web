@@ -10,12 +10,14 @@ export class TsumoListCanvas extends BaseCanvas {
 	// CONSTANT
 	public static readonly X_SIZE = 5;
 	public static readonly Y_SIZE = 2;
+	public static readonly I_SIZE = TsumoListCanvas.X_SIZE * TsumoListCanvas.Y_SIZE;
 	private static readonly CANVAS_ID = "tsumoList";
 
 	// CLASS FIELD
 	private _cellShapeArray: TsumoListCellShape[][];
 	private _puyoShapeArray: TsumoListPuyoShape[][];
 	private _colorArray: string[][];
+	private _isEditable: boolean;
 
 	/**
 	 * コンストラクタ
@@ -23,6 +25,7 @@ export class TsumoListCanvas extends BaseCanvas {
 	constructor() {
 		super(TsumoListCanvas.CANVAS_ID, false);
 		this._stage.enableMouseOver();
+		this._isEditable = true;
 
 		const { x, y } = TsumoListCellShape.getXandY(TsumoListCanvas.X_SIZE - 1, TsumoListCanvas.Y_SIZE - 1, 1);
 		const w = x + TsumoListCellShape.CELLSIZE;
@@ -94,6 +97,7 @@ export class TsumoListCanvas extends BaseCanvas {
 		for (const indexArray of this._cellShapeArray) {
 			for (const cellShape of indexArray) {
 				cellShape.addEventListener("mousedown", () => {
+					if (!this._isEditable) return;
 					const index = cellShape.index;
 					const type = cellShape.type;
 					nazotoki.changeTsumoListPuyo(index, type);
@@ -101,6 +105,7 @@ export class TsumoListCanvas extends BaseCanvas {
 				});
 
 				cellShape.addEventListener("mouseover", () => {
+					if (!this._isEditable) return;
 					cellShape.mouseover();
 					this._stage.update();
 				});
@@ -192,11 +197,16 @@ export class TsumoListCanvas extends BaseCanvas {
 	 * クリアします。
 	 */
 	public clear(): void {
-		for (let i = 0; i < TsumoListCanvas.X_SIZE * TsumoListCanvas.Y_SIZE; i++) {
+		for (let i = 0; i < TsumoListCanvas.I_SIZE; i++) {
 			for (let t = 0; t < 2; t++) {	// child: t=0, axis: t=1
 				this.changeColor(i, t, BasePuyo.NONE);
 			}
 		}
 		this._stage.update();
+	}
+
+	// accessor
+	set isEditable(isEditable: boolean) {
+		this._isEditable = isEditable;
 	}
 }

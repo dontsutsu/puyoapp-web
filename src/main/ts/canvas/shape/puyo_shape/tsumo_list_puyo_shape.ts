@@ -8,7 +8,7 @@ export class TsumoListPuyoShape extends BasePuyoShape {
 	 * @param {number} ax 
 	 * @param {number} ay 
 	 * @param {number} type
-	 * @param {string} [color] 
+	 * @param {string} color
 	 */
 	constructor(ax: number, ay: number, type: number, color: string = BasePuyo.NONE) {
 		const {x, y} = TsumoListCellShape.getXandY(ax, ay, type);
