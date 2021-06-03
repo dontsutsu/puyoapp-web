@@ -6,7 +6,7 @@ import { BasePuyo } from "../../../game/puyo/base_puyo";
  */
 export class BasePuyoShape extends Shape {
 	// CONSTANT
-	private static readonly PUYO_DICT = [
+	private static readonly PUYO_DICT: PuyoShapeDictionary[] = [
 		  { color: BasePuyo.GREEN , bgColor: "#68EE26", alpha: 1, borderColor: "#236F1A" }
 		, { color: BasePuyo.RED   , bgColor: "#F34A49", alpha: 1, borderColor: "#852D20" }
 		, { color: BasePuyo.BLUE  , bgColor: "#0C8EF9", alpha: 1, borderColor: "#254AB2" }
@@ -28,7 +28,7 @@ export class BasePuyoShape extends Shape {
 	 * @param {string} color 色
 	 * @param {number} radius 半径
 	 */
-	constructor(x: number, y:number, color: string, radius: number) {
+	constructor(x: number, y: number, color: string, radius: number) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -63,7 +63,7 @@ export class BasePuyoShape extends Shape {
 		const dict = BasePuyoShape.getDictionary(eraseColor);
 		const r = this.radius;
 		const t = r * BasePuyoShape.THICKNESS_RATIO;
-		
+
 		this.graphics
 			.c()
 			.s(dict.bgColor)	// borderに本来のbgColor使用
@@ -74,11 +74,11 @@ export class BasePuyoShape extends Shape {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param {string} color
-	 * @returns {{ color: string, bgColor: string, alpha: number, borderColor: string }}
+	 * @returns {PuyoShapeDictionary}
 	 */
-	public static getDictionary(color: string): { color: string, bgColor: string, alpha: number, borderColor: string } {
+	private static getDictionary(color: string): PuyoShapeDictionary {
 		const dict = BasePuyoShape.PUYO_DICT.find(dict => dict.color == color);
 		if (dict == undefined) throw Error("illegal argument");
 		return dict;
@@ -96,4 +96,11 @@ export class BasePuyoShape extends Shape {
 	get radius(): number {
 		return this._radius;
 	}
+}
+
+interface PuyoShapeDictionary {
+	color: string;
+	bgColor: string;
+	alpha: number;
+	borderColor: string;
 }
