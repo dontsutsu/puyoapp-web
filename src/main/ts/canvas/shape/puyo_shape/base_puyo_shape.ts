@@ -20,6 +20,7 @@ export class BasePuyoShape extends Shape {
 	// CLASS FIELD
 	private _color: string;
 	private _radius: number;
+	private _thickness: number;
 
 	/**
 	 * コンストラクタ
@@ -34,6 +35,7 @@ export class BasePuyoShape extends Shape {
 		this.y = y;
 		this._color = color;
 		this._radius = radius;
+		this._thickness = radius * BasePuyoShape.THICKNESS_RATIO;
 		this.setGraphics(color);
 	}
 
@@ -44,7 +46,7 @@ export class BasePuyoShape extends Shape {
 	public setGraphics(color: string): void {
 		const dict = BasePuyoShape.getDictionary(color);
 		const r = this._radius;
-		const t = r * BasePuyoShape.THICKNESS_RATIO;
+		const t = this._thickness;
 
 		this.graphics
 			.c()
@@ -62,7 +64,7 @@ export class BasePuyoShape extends Shape {
 	public setStepEraseGraphics(eraseColor: string): void {
 		const dict = BasePuyoShape.getDictionary(eraseColor);
 		const r = this.radius;
-		const t = r * BasePuyoShape.THICKNESS_RATIO;
+		const t = this._thickness;
 
 		this.graphics
 			.c()
@@ -74,9 +76,9 @@ export class BasePuyoShape extends Shape {
 	}
 
 	/**
-	 *
-	 * @param {string} color
-	 * @returns {PuyoShapeDictionary}
+	 * 辞書（描画に必要な情報）を取得
+	 * @param {string} color 色
+	 * @returns {PuyoShapeDictionary} 辞書
 	 */
 	private static getDictionary(color: string): PuyoShapeDictionary {
 		const dict = BasePuyoShape.PUYO_DICT.find(dict => dict.color == color);
@@ -98,6 +100,9 @@ export class BasePuyoShape extends Shape {
 	}
 }
 
+/**
+ * 辞書
+ */
 interface PuyoShapeDictionary {
 	color: string;
 	bgColor: string;
