@@ -34,10 +34,9 @@ export class BoxCanvas extends BaseCanvas {
 	 */
 	constructor() {
 		super(BoxCanvas.CANVAS_ID, false);
-		const w = BoxCellShape.CELLSIZE * BoxCanvas.X_SIZE;
-		const h = BoxCellShape.CELLSIZE * BoxCanvas.Y_SIZE;
-		$("#" + BoxCanvas.CANVAS_ID).attr("width", 1 + Math.ceil(w));
-		$("#" + BoxCanvas.CANVAS_ID).attr("height", 1 + Math.ceil(h));
+		const endCoord = BoxCanvas.convertCoordinate(new Coordinate(BoxCanvas.X_SIZE, BoxCanvas.Y_SIZE));
+		$("#" + BoxCanvas.CANVAS_ID).attr("width", 1 + Math.ceil(endCoord.x));
+		$("#" + BoxCanvas.CANVAS_ID).attr("height", 1 + Math.ceil(endCoord.y));
 
 		// CellShape
 		for (let y = 0; y < BoxCanvas.Y_SIZE; y++) {
