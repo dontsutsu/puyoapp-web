@@ -20,24 +20,24 @@
 	<input type="hidden" id="lastField" th:if="${mode=='editor'}" th:value="${lastField}">
 
 	<!--/* 1列目 */-->
-	<div class="row" id="player_field">
+	<div class="row" id="playerTsumoFieldArea">
 		<canvas id="tsumo" class="tsumo"></canvas>
 		<canvas id="field" class="field"></canvas>
 	</div>
 
 	<!--/* 2列目 */-->
-	<div class="row" id="player_next">
+	<div class="row" id="playerNextArea">
 		<canvas id="next" class="next"></canvas>
 		<!--/* <canvas id="notice" width="271" height="56"></canvas> */-->
 	</div>
 
 	<!--/* 3列目 */-->
-	<div class="row" id="model_next" th:if="${mode=='early'}">
+	<div class="row" id="modelNextArea" th:if="${mode=='early'}">
 		<canvas id="modelNext" class="next"></canvas>
 	</div>
 
 	<!--/* 4列目 */-->
-	<div class="row" id="model_field" th:if="${mode=='early'}">
+	<div class="row" id="modelTsumoFieldArea" th:if="${mode=='early'}">
 		<canvas id="modelTsumo" class="tsumo"></canvas>
 		<canvas id="modelField" class="field"></canvas>
 	</div>
@@ -55,7 +55,7 @@
 		</div>
 
 		<!--/* エディター、なぞとき共通 */-->
-		<div id="boxDiv" th:if="${mode=='editor' || mode=='nazotoki'}">
+		<div id="oitene" th:if="${mode=='editor' || mode=='nazotoki'}">
 			<span class="subject">PUYOを置いてね</span><br>
 			<canvas id="box"></canvas>
 			<button id="clear">クリア</button>
@@ -64,12 +64,12 @@
 		</div>
 
 		<!--/* エディター */-->
-		<div id="editorButtonDiv" class="buttonDiv" th:if="${mode=='editor'}">
+		<div th:if="${mode=='editor'}">
 			<button id="drop">スタート</button>
 		</div>
 
 		<!--/* なぞとき */-->
-		<div id="nazoDiv" th:if="${mode=='nazotoki'}">
+		<div id="nazoInfo" th:if="${mode=='nazotoki'}">
 			<span class="subject">NEXTを決めてね</span><br>
 			<canvas id="tsumoList"></canvas>
 
@@ -94,7 +94,7 @@
 			<button id="findAnswer">こたえ検索</button>
 		</div>
 
-		<div id="anslistDiv" th:if="${mode=='nazotoki'}">
+		<div id="nazoAnswer" th:if="${mode=='nazotoki'}">
 			<span class="subject">お題</span>
 			<canvas id="miniTsumoList"></canvas>
 			<span id="question"></span>

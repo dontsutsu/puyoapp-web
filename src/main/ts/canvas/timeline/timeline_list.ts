@@ -40,6 +40,8 @@ export class TimelineList {
 
 	/**
 	 * 
+	 * @param before 
+	 * @param after 
 	 */
 	public play(before?: () => void, after?: () => void): void {
 		if (this._timelineList.length == 0) return;
@@ -64,6 +66,31 @@ export class TimelineList {
 		if (before != undefined) before();
 		
 		this._timelineList[0].gotoAndPlay(0);
+	}
+
+	/**
+	 * アニメーションを終了時点までスキップします。
+	 */
+	public skipToEnd(): void {
+		// 再生中でない場合は処理しない
+		if (!this._isAnimation) return;
+
+		for (let i = 0; i < this._timelineList.length; i++) {
+			const timeline = this._timelineList[i];
+
+			// 一時停止
+			timeline.paused = true;
+
+			// completeのリスナー削除　※最後のtimelineについては後処理があるのでremoveしない
+			if (i < this._timelineList.length - 1) timeline.removeAllEventListeners("complete");
+			
+			// アニメーション時間取得
+			timeline.updateDuration();
+			const d = timeline.duration;
+
+			// 終了時点から再生
+			timeline.gotoAndPlay(d);
+		}
 	}
 
 	// ACCESSOR

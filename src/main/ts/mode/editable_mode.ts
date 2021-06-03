@@ -65,6 +65,7 @@ export abstract class EditableMode extends BaseMode {
 	protected undo(): void {
 		const undo = this._undoStack.pop();
 		if (undo != undefined) {
+			this._timelineList.skipToEnd();
 			this._redoStack.push(this.getState());
 			this.setState(undo);
 		}
@@ -76,6 +77,7 @@ export abstract class EditableMode extends BaseMode {
 	protected redo(): void {
 		const redo = this._redoStack.pop();
 		if (redo != undefined) {
+			this._timelineList.skipToEnd();
 			this._undoStack.push(this.getState());
 			this.setState(redo);
 		}

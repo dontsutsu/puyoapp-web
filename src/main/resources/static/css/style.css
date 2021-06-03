@@ -25,11 +25,11 @@ div.row {
 	margin: 0px 10px 0px 0px;
 }
 
-#player_field {
+#playerTsumoFieldArea {
 	margin: 0px 0px 0px 20px;
 }
 
-#model_next {
+#modelNextArea {
 	margin: 0px 0px 0px 20px;
 }
 
@@ -95,40 +95,33 @@ span.subject {
 }
 
 /********************
- * nazoDiv          *
+ * nazoInfo         *
  ********************/
 #nazo {
 	margin: 10px;
 }
 
 /********************
- * buttonDiv        *
- ********************/
-.buttonDiv {
-
-}
-
-/********************
- * anslistDiv       *
+ * nazoAnswer       *
  ********************/
 #miniTsumoList {
 	margin: 10px;
 }
 
-#anslistDiv {
+#nazoAnswer {
 	display: none;
 }
 
-#anslistDiv input[type="radio"] {
+#nazoAnswer input[type="radio"] {
 	display: none;
 }
 
-#anslistDiv td {
+#nazoAnswer td {
 	width: 30px;
 	height: 30px;
 }
 
-#anslistDiv label {
+#nazoAnswer label {
 	display: block;
 	border: solid 1px #CCCCCC;
 	width: 10px;
@@ -142,7 +135,7 @@ span.subject {
 	transition: all 300ms 0s ease;
 }
 
-#anslistDiv input[type="radio"]:checked + label {
+#nazoAnswer input[type="radio"]:checked + label {
 	background-color: #FF4C4C;
 	border: solid 1px #FF4C4C;
 	color: #FFFFFF;
@@ -152,7 +145,7 @@ span.subject {
 	line-height: 20px;
 }
 
-#anslistDiv input[type="radio"]:disabled + label {
+#nazoAnswer input[type="radio"]:disabled + label {
 	background-color: rgba(0,0,0,0);
 	color: rgba(0,0,0,0);
 	border: none;

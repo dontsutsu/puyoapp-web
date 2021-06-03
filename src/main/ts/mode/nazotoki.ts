@@ -20,7 +20,6 @@ export class Nazotoki extends EditableMode {
 	private _tsumoListCanvas: TsumoListCanvas;
 	private _miniTsumoListCanvas: MiniTsumoListCanvas;
 	private _answerList: Tsumo[][];
-	private _mode: string;
 
 	/**
 	 * コンストラクタ
@@ -30,7 +29,6 @@ export class Nazotoki extends EditableMode {
 		this._tsumoListCanvas = new TsumoListCanvas();
 		this._miniTsumoListCanvas = new MiniTsumoListCanvas();
 		this._answerList = [];
-		this._mode = "edit";
 
 		$("#nazoType").val("1");
 		this.nazoSwitch("1");
@@ -68,6 +66,12 @@ export class Nazotoki extends EditableMode {
 	 */
 	public changeTsumoListPuyo(index: number, type: number): void {
 		const color = this.getSelectColor();
+		if (color != BasePuyo.GREEN
+			&& color != BasePuyo.RED
+			&& color != BasePuyo.BLUE
+			&& color != BasePuyo.YELLOW
+			&& color != BasePuyo.PURPLE
+			&& color != BasePuyo.NONE) return;
 		this.doWithRecordHistory(() => {
 			this._tsumoListCanvas.changeColor(index, type, color);
 		});
@@ -200,7 +204,7 @@ export class Nazotoki extends EditableMode {
 	 */
 	private clearAnswerList(): void {
 		this._answerList.length = 0;
-		$("#anslistDiv input[type='radio']").prop("disabled", true);
+		$("#nazoAnswer input[type='radio']").prop("disabled", true);
 	}
 
 	/**
@@ -252,7 +256,7 @@ export class Nazotoki extends EditableMode {
 	}
 
 	/**
-	 *
+	 * こたえを再生する
 	 */
 	private playAnswer(): void {
 		const timelineList = new TimelineList();
@@ -280,10 +284,11 @@ export class Nazotoki extends EditableMode {
 		}
 		this._puyopuyo.setTsumoList(playTsumoList);
 
+		// ツモリスト分処理を行い、アニメーションをセットする
 		for (let i = 0; i < length; i++) {
 			const tsumo = tsumoList[i];
 
-			// rotate
+			// 1. rotate
 			const pos = tsumo.tsumoChildPosition;
 			if (pos == EnumTsumoChildPosition.RIGHT) {
 				const rotateTlList = this._puyopuyo.rotateTsumo(true);
@@ -297,17 +302,17 @@ export class Nazotoki extends EditableMode {
 				timelineList.add(rotateTlList1, rotateTlList2);
 			}
 
-			// move
+			// 2. move
 			const vec = tsumo.axisX - Tsumo.INI_AXIS_X;
 			const moveTlList = this._puyopuyo.moveTsumo(vec);
 			timelineList.add(moveTlList);
 
-			// drop
+			// 3. drop
 			const dropTlList = this._puyopuyo.dropTsumoToField();
 			const advanceTsumoTlList = this._puyopuyo.advanceTsumo();
 			timelineList.add(dropTlList, advanceTsumoTlList);
 
-			// STEPの場合止める
+			// 4. STEPの場合止める
 			if (Util.getAnimateMode() == 0) {
 				const stopTlList = FieldCanvas.createStopTlList();
 				timelineList.add(stopTlList);
@@ -317,13 +322,8 @@ export class Nazotoki extends EditableMode {
 		this._timelineList = timelineList;
 
 		// 前処理、後処理
-		const before = () => {
-			this._fieldCanvas.isEditable = false;
-			this._tsumoListCanvas.isEditable = false;
-		};
+		const before = () => { };
 		const after = () => {
-			if (this._mode == "edit") this._fieldCanvas.isEditable = true;
-			if (this._mode == "edit") this._tsumoListCanvas.isEditable = true;
 			this._puyopuyo.setField(oldField);
 			this._puyopuyo.setScore(0);
 		};
@@ -333,30 +333,42 @@ export class Nazotoki extends EditableMode {
 	}
 
 	/**
-	 *
+	 * 現在選択しているこたえのindexを取得
 	 * @returns
 	 */
 	private getAnsListIndex(): number {
-		return Number($("#anslistDiv input[type='radio']:checked").val()) - 1;
+		return Number($("#nazoAnswer input[type='radio']:checked").val()) - 1;
 	}
 
+	/**
+	 * 編集モードに切り替える
+	 */
 	private changeEditMode(): void {
-		this._mode = "edit";
-		$("#nazoDiv").animate({height: "show", opacity: 1}, 300);
-		$("#anslistDiv").animate({height: "hide", opacity: 0}, 300);
+		$("#undo").prop("disabled", false);
+		$("#redo").prop("disabled", false);
+		$("#nazoInfo").animate({height: "show", opacity: 1}, 300);
+		$("#nazoAnswer").animate({height: "hide", opacity: 0}, 300);
 		this._fieldCanvas.isEditable = true;
 		this._tsumoListCanvas.isEditable = true;
+		this._timelineList.skipToEnd();
 	}
 
+	/**
+	 * 再生モードに切り替える
+	 */
 	private changePlayMode(): void {
-		this._mode = "play";
+		$("#undo").prop("disabled", true);
+		$("#redo").prop("disabled", true);
 		this.setNazoInfo();
-		$("#nazoDiv").animate({height: "hide", opacity: 0}, 300);
-		$("#anslistDiv").animate({height: "show", opacity: 1}, 300);
+		$("#nazoInfo").animate({height: "hide", opacity: 0}, 300);
+		$("#nazoAnswer").animate({height: "show", opacity: 1}, 300);
 		this._fieldCanvas.isEditable = false;	// フィールド変更不可
 		this._tsumoListCanvas.isEditable = false;
 	}
 
+	/**
+	 * 再生モードで表示する、なぞぷよ情報を設定
+	 */
 	private setNazoInfo(): void {
 		const tsumoListStr = this._tsumoListCanvas.getTsumoListString();
 		this._miniTsumoListCanvas.setTsumoList(tsumoListStr);

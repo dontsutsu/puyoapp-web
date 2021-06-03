@@ -54,6 +54,7 @@ export class Editor extends EditableMode {
 	 * @inheritdoc
 	 */
 	protected clear(): void {
+		this._timelineList.skipToEnd();
 		this._puyopuyo.clearField();
 	}
 }
