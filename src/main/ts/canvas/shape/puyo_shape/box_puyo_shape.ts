@@ -1,21 +1,22 @@
-import { BoxCellShape } from "../cell_shape/box_cell_shape";
 import { BasePuyoShape } from "./base_puyo_shape";
-
+import { BoxCanvas } from "../../box_canvas";
+import { BoxCellShape } from "../cell_shape/box_cell_shape";
+import { Coordinate } from "../../../util/coordinate";
 
 /**
  * Boxぷよ
  */
 export class BoxPuyoShape extends BasePuyoShape {
+	// constant
+	private static readonly RADIUS = BoxCellShape.CELLSIZE / 2;
+
 	/**
-	 * コンストラクタ
-	 * @param {number} ax x座標
-	 * @param {number} ay y座標
+	 * constructor
+	 * @param {Coordinate} coord boxの座標
 	 * @param {string} color 色
 	 */
-	constructor(ax: number, ay: number, color: string) {
-		const x = BoxCellShape.CELLSIZE * ax;
-		const y = BoxCellShape.CELLSIZE * ay;
-		const radius = BoxCellShape.CELLSIZE / 2;
-		super(x, y, color, radius);
+	constructor(coord: Coordinate, color: string) {
+		const screenCoord = BoxCanvas.convertCoordinate(coord);
+		super(screenCoord.x, screenCoord.y, color, BoxPuyoShape.RADIUS);
 	}
 }

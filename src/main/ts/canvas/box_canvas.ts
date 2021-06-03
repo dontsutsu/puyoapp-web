@@ -1,12 +1,14 @@
-import { Shape, Text } from "@createjs/easeljs";
-import { BasePuyo } from "../game/puyo/base_puyo";
 import { BaseCanvas } from "./base_canvas";
-import { BoxCellShape } from "./shape/cell_shape/box_cell_shape";
 import { BoxPuyoShape } from "./shape/puyo_shape/box_puyo_shape";
+import { BasePuyo } from "../game/puyo/base_puyo";
+import { BoxCellShape } from "./shape/cell_shape/box_cell_shape";
+import { Coordinate } from "../util/coordinate";
+
+import { Shape, Text } from "@createjs/easeljs";
 import $ from "jquery";
 
 export class BoxCanvas extends BaseCanvas {
-	// CONSTANT
+	// constant
 	public static readonly KEY_ORDER = [
 		BasePuyo.GREEN
 		, BasePuyo.RED
@@ -17,16 +19,18 @@ export class BoxCanvas extends BaseCanvas {
 		, BasePuyo.NONE
 	];
 	private static readonly KESU_PADDING = 2;
+	private static readonly KESU_FONT = "bold 15px BIZ UDPGothic";
+	private static readonly KESU_COLOR = "#4242FF";
 	private static readonly X_SIZE = 5;
 	private static readonly Y_SIZE = 2;
 	private static readonly CANVAS_ID = "box";
 
-	// CLASS FIELD
+	// property
 	private _selectShape: Shape;
 	private _selectColor!: string;	// constructorでsetSelectShapeを呼んでいるので初期化チェックしない
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 */
 	constructor() {
 		super(BoxCanvas.CANVAS_ID, false);
@@ -38,18 +42,16 @@ export class BoxCanvas extends BaseCanvas {
 		// CellShape
 		for (let y = 0; y < BoxCanvas.Y_SIZE; y++) {
 			for (let x = 0; x < BoxCanvas.X_SIZE; x++) {
-				const index = x + BoxCanvas.X_SIZE * y;
-				const cellShape = new BoxCellShape(x, y, index);
+				const coord = new Coordinate(x, y);
+				const cellShape = new BoxCellShape(coord);
 				this._stage.addChild(cellShape);
 				cellShape.addEventListener("mousedown", () => {
-					const x = cellShape.ax;
-					const y = cellShape.ay;
-
-					if ((x + y * BoxCanvas.X_SIZE) > BoxCanvas.KEY_ORDER.length - 1) {
+					const index = BoxCanvas.getIndex(coord);
+					if (index > BoxCanvas.KEY_ORDER.length - 1) {
 						return;
 					}
 
-					this.setSelectShape(x, y);
+					this.setSelectShape(coord);
 					this._stage.update();
 				});
 			}
@@ -58,23 +60,24 @@ export class BoxCanvas extends BaseCanvas {
 		// PuyoShape
 		for (let y = 0; y < BoxCanvas.Y_SIZE; y++) {
 			for (let x = 0; x < BoxCanvas.X_SIZE; x++) {
-				const i = x + BoxCanvas.X_SIZE * y;
+				const coord = new Coordinate(x, y);
+				const i = BoxCanvas.getIndex(coord);
 
 				if (i < BoxCanvas.KEY_ORDER.length) {
 					const color = BoxCanvas.KEY_ORDER[i];
 
-					const puyoShape = new BoxPuyoShape(x, y, color);
+					const puyoShape = new BoxPuyoShape(coord, color);
 					this._stage.addChild(puyoShape);
 
 					// 「けす」の文字
 					if (color == BasePuyo.NONE) {
-						const keShape = new Text("け", "bold 15px BIZ UDPGothic", "#4242FF");
+						const keShape = new Text("け", BoxCanvas.KESU_FONT, BoxCanvas.KESU_COLOR);
 						keShape.x = BoxCellShape.CELLSIZE * x + BoxCanvas.KESU_PADDING;
 						keShape.y = BoxCellShape.CELLSIZE * y + BoxCanvas.KESU_PADDING;
 						keShape.textAlign = "start";
 						keShape.textBaseline = "top";
 
-						const suShape = new Text("す", "bold 15px BIZ UDPGothic", "#4242FF");
+						const suShape = new Text("す", BoxCanvas.KESU_FONT, BoxCanvas.KESU_COLOR);
 						suShape.x = BoxCellShape.CELLSIZE * (x + 1) - BoxCanvas.KESU_PADDING;
 						suShape.y = BoxCellShape.CELLSIZE * (y + 1) - BoxCanvas.KESU_PADDING;
 						suShape.textAlign = "end";
@@ -89,7 +92,7 @@ export class BoxCanvas extends BaseCanvas {
 		// 選択色初期値
 		this._selectShape = new Shape();
 		this._stage.addChild(this._selectShape);
-		this.setSelectShape(0, 0);
+		this.setSelectShape(new Coordinate(0, 0));
 
 		this._stage.update();
 	}
@@ -100,8 +103,8 @@ export class BoxCanvas extends BaseCanvas {
 	 * @param {number} x x座標
 	 * @param {number} y y座標
 	 */
-	private setSelectShape(x: number, y: number): void {
-		const i = x + y * BoxCanvas.X_SIZE;
+	private setSelectShape(coord: Coordinate): void {
+		const i = BoxCanvas.getIndex(coord);
 		const w = 2;
 		const w2 = w / 2;
 		const color = "#FF0000";
@@ -110,13 +113,32 @@ export class BoxCanvas extends BaseCanvas {
 			.c()
 			.s(color)
 			.ss(w)
-			.dr(x * BoxCellShape.CELLSIZE + w2 + 0.5, y * BoxCellShape.CELLSIZE + w2 + 0.5, BoxCellShape.CELLSIZE - w, BoxCellShape.CELLSIZE - w);
+			.dr(coord.x * BoxCellShape.CELLSIZE + w2 + 0.5, coord.y * BoxCellShape.CELLSIZE + w2 + 0.5, BoxCellShape.CELLSIZE - w, BoxCellShape.CELLSIZE - w);
 
 		this._selectColor = BoxCanvas.KEY_ORDER[i];
 	}
 
-	// ACCESSOR
+	// accessor
 	get selectColor(): string {
 		return this._selectColor;
+	}
+
+	// static method
+	/**
+	 * boxの座標を画面上の座標に変換
+	 * @param {Coordinate} coord boxの座標
+	 * @returns {Coordinate} 画面上の座標
+	 */
+	public static convertCoordinate(coord: Coordinate): Coordinate {
+		return new Coordinate(BoxCellShape.CELLSIZE * coord.x, BoxCellShape.CELLSIZE * coord.y);
+	}
+
+	/**
+	 * boxの座標からindexを取得
+	 * @param {Coordinate} coord boxの座標
+	 * @returns {number} index
+	 */
+	public static getIndex(coord: Coordinate): number {
+		return coord.x + BoxCanvas.X_SIZE * coord.y;
 	}
 }

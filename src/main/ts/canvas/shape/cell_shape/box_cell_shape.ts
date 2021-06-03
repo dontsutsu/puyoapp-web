@@ -1,39 +1,32 @@
-import { BoxCanvas } from "../../box_canvas";
 import { BaseCellShape } from "./base_cell_shape";
+import { BoxCanvas } from "../../box_canvas";
+import { Coordinate } from "../../../util/coordinate";
 
 export class BoxCellShape extends BaseCellShape {
-	// CONSTANT
+	// constant
 	public static readonly ENABLED_COLOR = "#FFFFFF";
 	public static readonly DISABLED_COLOR = "#666666";
 	public static readonly BOX_BORDER_COLOR = "#CCCCCC";
 	public static readonly CELLSIZE = 33;
 
-	// CLASS FIELD
-	private _ax: number;
-	private _ay: number;
+	// property
+	private _coord: Coordinate;
 
 	/**
-	 * コンストラクタ
-	 * @param {number} ax
-	 * @param {number} ay
-	 * @param {number} index
+	 * constructor
+	 * @param {Coordinate} coord boxの座標
 	 */
-	constructor(ax: number, ay: number, index: number) {
+	constructor(coord: Coordinate) {
+		const index = BoxCanvas.getIndex(coord);
 		const bgColor = index < BoxCanvas.KEY_ORDER.length ? BoxCellShape.ENABLED_COLOR : BoxCellShape.DISABLED_COLOR;
-		const x = BoxCellShape.CELLSIZE * ax;
-		const y = BoxCellShape.CELLSIZE * ay;
-		super(x, y, BoxCellShape.CELLSIZE, bgColor, BoxCellShape.BOX_BORDER_COLOR);
+		const screenCoord = BoxCanvas.convertCoordinate(coord);
+		super(screenCoord.x, screenCoord.y, BoxCellShape.CELLSIZE, bgColor, BoxCellShape.BOX_BORDER_COLOR);
 		
-		this._ax = ax;
-		this._ay = ay;
+		this._coord = coord;
 	}
 
-	// ACCESSOR
-	get ax(): number {
-		return this._ax;
-	}
-
-	get ay(): number {
-		return this._ay;
+	// accessor
+	get coord(): Coordinate {
+		return this._coord;
 	}
 }
