@@ -1,18 +1,21 @@
 import { BasePuyo } from "../../../game/puyo/base_puyo";
 import { BasePuyoShape } from "./base_puyo_shape";
 import { TsumoListCellShape } from "../cell_shape/tsumo_list_cell_shape";
+import { TsumoListCanvas } from "../../tsumo_list_canvas";
+import { Coordinate } from "../../../util/coordinate";
 
 export class TsumoListPuyoShape extends BasePuyoShape {
+	// constant
+	private static readonly RADIUS = TsumoListCellShape.CELLSIZE / 2;
+
 	/**
-	 * コンストラクタ
-	 * @param {number} ax 
-	 * @param {number} ay 
-	 * @param {number} type
-	 * @param {string} color
+	 * constructor
+	 * @param {Coordinate} coord ツモリストの座標 
+	 * @param {number} type 0：子ぷよ、1：軸ぷよ
+	 * @param {string} color 色
 	 */
-	constructor(ax: number, ay: number, type: number, color: string = BasePuyo.NONE) {
-		const {x, y} = TsumoListCellShape.getXandY(ax, ay, type);
-		const radius = TsumoListCellShape.CELLSIZE / 2;
-		super(x, y, color, radius);
+	constructor(coord: Coordinate, type: number, color: string = BasePuyo.NONE) {
+		const screenCoord = TsumoListCanvas.getScreenCoordinate(coord, type);
+		super(screenCoord.x, screenCoord.y, color, TsumoListPuyoShape.RADIUS);
 	}
 }

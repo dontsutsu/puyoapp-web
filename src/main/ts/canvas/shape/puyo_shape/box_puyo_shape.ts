@@ -16,7 +16,7 @@ export class BoxPuyoShape extends BasePuyoShape {
 	 * @param {string} color 色
 	 */
 	constructor(coord: Coordinate, color: string) {
-		const screenCoord = BoxCanvas.convertCoordinate(coord);
+		const screenCoord = BoxCanvas.getScreenCoordinate(coord);
 		super(screenCoord.x, screenCoord.y, color, BoxPuyoShape.RADIUS);
 	}
 }

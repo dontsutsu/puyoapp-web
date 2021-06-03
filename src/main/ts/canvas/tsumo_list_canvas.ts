@@ -5,6 +5,7 @@ import { BaseCanvas } from "./base_canvas";
 import { TsumoListCellShape } from "./shape/cell_shape/tsumo_list_cell_shape";
 import { TsumoListPuyoShape } from "./shape/puyo_shape/tsumo_list_puyo_shape";
 import $ from "jquery";
+import { Coordinate } from "../util/coordinate";
 
 export class TsumoListCanvas extends BaseCanvas {
 	// CONSTANT
@@ -12,6 +13,11 @@ export class TsumoListCanvas extends BaseCanvas {
 	public static readonly Y_SIZE = 2;
 	public static readonly I_SIZE = TsumoListCanvas.X_SIZE * TsumoListCanvas.Y_SIZE;
 	private static readonly CANVAS_ID = "tsumoList";
+	private static readonly CELL_PADDING_X = 10;
+	private static readonly CELL_ADJUST_Y = -10;
+	private static readonly TYPE_CHILD = 0;
+	private static readonly TYPE_AXIS = 1;
+	private static readonly TYPES = [TsumoListCanvas.TYPE_CHILD, TsumoListCanvas.TYPE_AXIS];
 
 	// CLASS FIELD
 	private _cellShapeArray: TsumoListCellShape[][];
@@ -27,20 +33,21 @@ export class TsumoListCanvas extends BaseCanvas {
 		this._stage.enableMouseOver();
 		this._isEditable = true;
 
-		const { x, y } = TsumoListCellShape.getXandY(TsumoListCanvas.X_SIZE - 1, TsumoListCanvas.Y_SIZE - 1, 1);
-		const w = x + TsumoListCellShape.CELLSIZE;
-		const h = y + TsumoListCellShape.CELLSIZE;
+		const endCoord = TsumoListCanvas.getScreenCoordinate(new Coordinate(TsumoListCanvas.X_SIZE - 1, TsumoListCanvas.Y_SIZE - 1), 1);
+		const w = endCoord.x + TsumoListCellShape.CELLSIZE;
+		const h = endCoord.y + TsumoListCellShape.CELLSIZE;
 		$("#" + TsumoListCanvas.CANVAS_ID).attr("width", 1 + Math.ceil(w));
 		$("#" + TsumoListCanvas.CANVAS_ID).attr("height", 1 + Math.ceil(h));
 
 		// number
 		for (let y = 0; y < TsumoListCanvas.Y_SIZE; y++) {
 			for (let x = 0; x < TsumoListCanvas.X_SIZE; x++) {
-				const num = x + y * TsumoListCanvas.X_SIZE + 1;
+				const coord = new Coordinate(x, y);
+				const num = TsumoListCanvas.getIndex(coord) + 1;
 				const numShape = new Text(String(num), "bold 12px BIZ UDPGothic", "#888888");
-				const xy = TsumoListCellShape.getXandY(x, y, 0);
-				numShape.x = xy.x + (TsumoListCellShape.CELLSIZE / 2);
-				numShape.y = xy.y - (TsumoListCellShape.CELLSIZE / 2);
+				const screenCoord = TsumoListCanvas.getScreenCoordinate(coord, TsumoListCanvas.TYPE_CHILD);
+				numShape.x = screenCoord.x + (TsumoListCellShape.CELLSIZE / 2);
+				numShape.y = screenCoord.y - (TsumoListCellShape.CELLSIZE / 2);
 				numShape.textAlign = "center";
 				this._stage.addChild(numShape);
 			}
@@ -51,8 +58,8 @@ export class TsumoListCanvas extends BaseCanvas {
 		for (let y = 0; y < TsumoListCanvas.Y_SIZE; y++) {
 			for (let x = 0; x < TsumoListCanvas.X_SIZE; x++) {
 				const indexArray: TsumoListCellShape[] = [];
-				for (let t = 0; t < 2; t++) {	// child: t=0, axis: t=1
-					const cellShape = new TsumoListCellShape(x, y, t);
+				for (const t of TsumoListCanvas.TYPES) {
+					const cellShape = new TsumoListCellShape(new Coordinate(x, y), t);
 					this._stage.addChild(cellShape);
 					indexArray.push(cellShape);
 				}
@@ -65,8 +72,8 @@ export class TsumoListCanvas extends BaseCanvas {
 		for (let y = 0; y < TsumoListCanvas.Y_SIZE; y++) {
 			for (let x = 0; x < TsumoListCanvas.X_SIZE; x++) {
 				const indexArray: TsumoListPuyoShape[] = [];
-				for (let t = 0; t < 2; t++) {	// child: t=0, axis: t=1
-					const puyoShape = new TsumoListPuyoShape(x, y, t);
+				for (const t of TsumoListCanvas.TYPES) {
+					const puyoShape = new TsumoListPuyoShape(new Coordinate(x, y), t);
 					this._stage.addChild(puyoShape);
 					indexArray.push(puyoShape);
 				}
@@ -79,7 +86,7 @@ export class TsumoListCanvas extends BaseCanvas {
 		for (let y = 0; y < TsumoListCanvas.Y_SIZE; y++) {
 			for (let x = 0; x < TsumoListCanvas.X_SIZE; x++) {
 				const indexArray: string[] = [];
-				for (let t = 0; t < 2; t++) {	// child: t=0, axis: t=1
+				for (const t of TsumoListCanvas.TYPES) {
 					indexArray.push(BasePuyo.NONE);
 				}
 				this._colorArray.push(indexArray);
@@ -120,7 +127,7 @@ export class TsumoListCanvas extends BaseCanvas {
 
 	/**
 	 * index、typeで指定したツモリストのぷよを変更します。
-	 * @param {number} index 
+	 * @param {number} index 番号
 	 * @param {number} type "0"：子ぷよ、"1"：軸ぷよ
 	 * @param {string} color 色
 	 */
@@ -137,7 +144,7 @@ export class TsumoListCanvas extends BaseCanvas {
 		let str = "";
 		for (let i = 0; i < this._colorArray.length; i++) {
 			// 軸ぷよが先、子ぷよが後
-			str += this._colorArray[i][1] + this._colorArray[i][0];
+			str += this._colorArray[i][TsumoListCanvas.TYPE_AXIS] + this._colorArray[i][TsumoListCanvas.TYPE_CHILD];
 		}
 		return str;
 	}
@@ -150,8 +157,8 @@ export class TsumoListCanvas extends BaseCanvas {
 		let noneFlg = false;
 
 		for (let i = 0; i < this._colorArray.length; i++) {
-			const axisColor = this._colorArray[i][1];
-			const childColor = this._colorArray[i][0];
+			const axisColor = this._colorArray[i][TsumoListCanvas.TYPE_AXIS];
+			const childColor = this._colorArray[i][TsumoListCanvas.TYPE_CHILD];
 
 			// 1. 1ツモ目がnone, noneの場合はエラー
 			if (i == 0 && axisColor == BasePuyo.NONE && childColor == BasePuyo.NONE) {
@@ -187,8 +194,8 @@ export class TsumoListCanvas extends BaseCanvas {
 			const axisColor = tsumoListStr.charAt(i);
 			const childColor = tsumoListStr.charAt(i + 1);
 
-			this.changeColor(index, 1, axisColor);
-			this.changeColor(index, 0, childColor);
+			this.changeColor(index, TsumoListCanvas.TYPE_AXIS, axisColor);
+			this.changeColor(index, TsumoListCanvas.TYPE_CHILD, childColor);
 		}
 		this._stage.update();
 	}
@@ -198,7 +205,7 @@ export class TsumoListCanvas extends BaseCanvas {
 	 */
 	public clear(): void {
 		for (let i = 0; i < TsumoListCanvas.I_SIZE; i++) {
-			for (let t = 0; t < 2; t++) {	// child: t=0, axis: t=1
+			for (const t of TsumoListCanvas.TYPES) {
 				this.changeColor(i, t, BasePuyo.NONE);
 			}
 		}
@@ -208,5 +215,27 @@ export class TsumoListCanvas extends BaseCanvas {
 	// accessor
 	set isEditable(isEditable: boolean) {
 		this._isEditable = isEditable;
+	}
+
+	// static method
+	/**
+	 * ツモリストの座標・ツモのタイプから画面上の座標を取得
+	 * @param {Coordinate} coord ツモリストの座標
+	 * @param {number} type 0：子ぷよ、1：軸ぷよ
+	 * @returns {Coordinate} 画面上の座標
+	 */
+	public static getScreenCoordinate(coord: Coordinate, type: number): Coordinate {
+		const x = (TsumoListCellShape.CELLSIZE + TsumoListCanvas.CELL_PADDING_X) * coord.x;
+		const y = TsumoListCellShape.CELLSIZE * (type + 1) + TsumoListCellShape.CELLSIZE * 3 * coord.y + TsumoListCanvas.CELL_ADJUST_Y;
+		return new Coordinate(x, y);
+	}
+
+	/**
+	 * ツモリストの座標からindexを取得
+	 * @param {Coordinate} coord ツモリストの座標
+	 * @returns {number} index
+	 */
+	public static getIndex(coord: Coordinate): number {
+		return coord.x + coord.y * TsumoListCanvas.X_SIZE;
 	}
 }

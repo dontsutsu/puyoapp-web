@@ -34,9 +34,11 @@ export class BoxCanvas extends BaseCanvas {
 	 */
 	constructor() {
 		super(BoxCanvas.CANVAS_ID, false);
-		const endCoord = BoxCanvas.convertCoordinate(new Coordinate(BoxCanvas.X_SIZE, BoxCanvas.Y_SIZE));
-		$("#" + BoxCanvas.CANVAS_ID).attr("width", 1 + Math.ceil(endCoord.x));
-		$("#" + BoxCanvas.CANVAS_ID).attr("height", 1 + Math.ceil(endCoord.y));
+		const endCoord = BoxCanvas.getScreenCoordinate(new Coordinate(BoxCanvas.X_SIZE - 1, BoxCanvas.Y_SIZE - 1));
+		const w = endCoord.x + BoxCellShape.CELLSIZE;
+		const h = endCoord.y + BoxCellShape.CELLSIZE;
+		$("#" + BoxCanvas.CANVAS_ID).attr("width", 1 + Math.ceil(w));
+		$("#" + BoxCanvas.CANVAS_ID).attr("height", 1 + Math.ceil(h));
 
 		// CellShape
 		for (let y = 0; y < BoxCanvas.Y_SIZE; y++) {
@@ -124,11 +126,11 @@ export class BoxCanvas extends BaseCanvas {
 
 	// static method
 	/**
-	 * boxの座標を画面上の座標に変換
+	 * boxの座標から画面上の座標を取得
 	 * @param {Coordinate} coord boxの座標
 	 * @returns {Coordinate} 画面上の座標
 	 */
-	public static convertCoordinate(coord: Coordinate): Coordinate {
+	public static getScreenCoordinate(coord: Coordinate): Coordinate {
 		return new Coordinate(BoxCellShape.CELLSIZE * coord.x, BoxCellShape.CELLSIZE * coord.y);
 	}
 

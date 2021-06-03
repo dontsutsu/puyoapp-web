@@ -19,7 +19,7 @@ export class BoxCellShape extends BaseCellShape {
 	constructor(coord: Coordinate) {
 		const index = BoxCanvas.getIndex(coord);
 		const bgColor = index < BoxCanvas.KEY_ORDER.length ? BoxCellShape.ENABLED_COLOR : BoxCellShape.DISABLED_COLOR;
-		const screenCoord = BoxCanvas.convertCoordinate(coord);
+		const screenCoord = BoxCanvas.getScreenCoordinate(coord);
 		super(screenCoord.x, screenCoord.y, BoxCellShape.CELLSIZE, bgColor, BoxCellShape.BOX_BORDER_COLOR);
 		
 		this._coord = coord;
