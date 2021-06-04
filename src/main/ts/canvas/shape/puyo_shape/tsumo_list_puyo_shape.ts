@@ -15,7 +15,7 @@ export class TsumoListPuyoShape extends BasePuyoShape {
 	 * @param {string} color 色
 	 */
 	constructor(coord: Coordinate, type: number, color: string = BasePuyo.NONE) {
-		const screenCoord = TsumoListCanvas.getScreenCoordinate(coord, type);
-		super(screenCoord.x, screenCoord.y, color, TsumoListPuyoShape.RADIUS);
+		const canvasCoord = TsumoListCanvas.getCanvasCoordinate(coord, type);
+		super(canvasCoord.x, canvasCoord.y, color, TsumoListPuyoShape.RADIUS);
 	}
 }

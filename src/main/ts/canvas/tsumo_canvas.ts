@@ -9,21 +9,22 @@ import { FieldCanvas } from "./field_canvas";
 import { TsumoCellShape } from "./shape/cell_shape/tsumo_cell_shape";
 import { TsumoPuyoShape } from "./shape/puyo_shape/tsumo_puyo_shape";
 import $ from "jquery";
+import { Coordinate } from "../util/coordinate";
 
 export class TsumoCanvas extends BaseCanvas {
-	// CONSTANT
+	// constant
 	private static readonly Y_SIZE = 3;
 	private static readonly MOVE_VEL = 80;
 	private static readonly ROTATE_VEL = 80;
 	private static readonly DROP_VEL = 50;
 
-	// CLASS FIELD
+	// property
 	private _container: Container;
 	private _axisPuyoShape!: TsumoPuyoShape;
 	private _childPuyoShape!: TsumoPuyoShape;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param {string} canvasId canvasのID 
 	 */
 	constructor(canvasId: string) {
@@ -44,7 +45,7 @@ export class TsumoCanvas extends BaseCanvas {
 		// CellShape
 		for (let x = 0; x < Field.X_SIZE; x++) {
 			for (let y = 0; y < TsumoCanvas.Y_SIZE; y++) {
-				const cellShape = new TsumoCellShape(x, y);
+				const cellShape = new TsumoCellShape(new Coordinate(x, y));
 				this._container.addChild(cellShape);
 			}
 		}
@@ -58,8 +59,8 @@ export class TsumoCanvas extends BaseCanvas {
 		if (this._axisPuyoShape != undefined) this._container.removeChild(this._axisPuyoShape);
 		if (this._childPuyoShape != undefined) this._container.removeChild(this._childPuyoShape);
 
-		this._axisPuyoShape = new TsumoPuyoShape(tsumo.axisX, tsumo.axisY, tsumo.axisColor);
-		this._childPuyoShape = new TsumoPuyoShape(tsumo.childX, tsumo.childY, tsumo.childColor);
+		this._axisPuyoShape = new TsumoPuyoShape(new Coordinate(tsumo.axisX, tsumo.axisY), tsumo.axisColor);
+		this._childPuyoShape = new TsumoPuyoShape(new Coordinate(tsumo.childX, tsumo.childY), tsumo.childColor);
 		this._container.addChild(this._axisPuyoShape, this._childPuyoShape);
 	}
 
@@ -129,15 +130,6 @@ export class TsumoCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * ロジック上のy方向とcanvas上のy方向が異なるため、yの値を変換します。
-	 * @param {number} y ロジック上のy座標
-	 * @returns {number} canvas上のy座標
-	 */
-	public static convertY(y: number): number {
-		return TsumoCanvas.Y_SIZE - 1 - y;
-	}
-
-	/**
 	 * ツモを落とすTweenを取得します。
 	 * @param {EnumTsumoChildPosition} beforePosition
 	 * @returns {Tween[]}
@@ -174,8 +166,8 @@ export class TsumoCanvas extends BaseCanvas {
 		const oldAxisPuyo = this._axisPuyoShape;
 		const oldChildPuyo = this._childPuyoShape;
 
-		this._axisPuyoShape = new TsumoPuyoShape(tsumo.axisX, tsumo.axisY + diffY, tsumo.axisColor);
-		this._childPuyoShape = new TsumoPuyoShape(tsumo.childX, tsumo.childY + diffY, tsumo.childColor);
+		this._axisPuyoShape = new TsumoPuyoShape(new Coordinate(tsumo.axisX, tsumo.axisY + diffY), tsumo.axisColor);
+		this._childPuyoShape = new TsumoPuyoShape(new Coordinate(tsumo.childX, tsumo.childY + diffY), tsumo.childColor);
 		this._container.addChild(this._axisPuyoShape, this._childPuyoShape);
 
 		// axis
@@ -195,5 +187,27 @@ export class TsumoCanvas extends BaseCanvas {
 			.call(() => { this._container.removeChild(oldChildPuyo); });
 		
 		return [axisTween, childTween];
+	}
+
+	// static method
+	/**
+	 * ツモの座標からcanvas上の座標を取得
+	 * @param {Coordinate} coord ツモの座標
+	 * @returns {Coordinate} canvas上の座標
+	 */
+	public static getCanvasCoordinate(coord: Coordinate) {
+		const canvasCoord = coord.clone()
+			.calculateY(TsumoCanvas.convertY)
+			.times(TsumoCellShape.CELLSIZE);
+		return canvasCoord;
+	}
+
+	/**
+	 * ロジック上のy方向とcanvas上のy方向が異なるため、yの値を変換します。
+	 * @param {number} y ロジック上のy座標
+	 * @returns {number} canvas上のy座標
+	 */
+	private static convertY(y: number): number {
+		return TsumoCanvas.Y_SIZE - 1 - y;
 	}
 }

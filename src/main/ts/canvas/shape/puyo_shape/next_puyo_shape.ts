@@ -1,17 +1,19 @@
 import { BasePuyoShape } from "./base_puyo_shape";
-import { NextCellShape } from "../cell_shape/next_cell_shape";
+import { NextCanvas } from "../../next_canvas";
 
 export class NextPuyoShape extends BasePuyoShape {
+	// constant
+	private static readonly RADIUS = 12;
+	public static readonly DIAMETER = NextPuyoShape.RADIUS * 2;
 
 	/**
-	 * コンストラクタ
-	 * @param {number} next 
-	 * @param {number} type 
-	 * @param {string} color 
+	 * constructor
+	 * @param {number} next 0：ネクスト、1：ダブネク
+	 * @param {number} type 0：子ぷよ、1：軸ぷよ
+	 * @param {string} color 色
 	 */
 	constructor(next: number, type: number, color: string) {
-		const {x, y} = NextCellShape.getXandY(next, type);
-		const radius = NextCellShape.CELLSIZE / 2;
-		super(x, y, color, radius);
+		const canvasCoord = NextCanvas.getCanvasCoordinate(next, type);
+		super(canvasCoord.x, canvasCoord.y, color, NextPuyoShape.RADIUS);
 	}
 }

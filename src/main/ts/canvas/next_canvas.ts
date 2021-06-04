@@ -1,25 +1,30 @@
-import { Container, Shape } from "@createjs/easeljs";
-import { Tween } from "@createjs/tweenjs";
+import { BaseCanvas } from "./base_canvas";
+import { NextPuyoShape } from "./shape/puyo_shape/next_puyo_shape";
 import { Tsumo } from "../game/tsumo";
 import { Util } from "../util/util";
-import { BaseCanvas } from "./base_canvas";
-import { NextCellShape } from "./shape/cell_shape/next_cell_shape";
-import { NextPuyoShape } from "./shape/puyo_shape/next_puyo_shape";
+import { Coordinate } from "../util/coordinate";
+
+import { Container, Shape } from "@createjs/easeljs";
+import { Tween } from "@createjs/tweenjs";
 import $ from "jquery";
 
 export class NextCanvas extends BaseCanvas {
-	// CONSTANT
+	// constant
 	private static readonly MOVE_TIME = 150;
-	// CONSTANT（FRAME用）
-	public static readonly F_X_SHIFT = NextCellShape.CELLSIZE;
-	public static readonly F_Y_SHIFT = NextCellShape.CELLSIZE / 3 * 7;
-	private static readonly F_O_PAD = NextCellShape.CELLSIZE / 6;
+	private static readonly TYPE_CHILD = 0;
+	private static readonly TYPE_AXIS = 1;
+	private static readonly NEXT = 0;
+	private static readonly DOUBLE_NEXT = 1;
+	// constant（FRAME用）
+	private static readonly F_X_SHIFT = NextPuyoShape.DIAMETER;
+	private static readonly F_Y_SHIFT = NextPuyoShape.DIAMETER / 3 * 7;
+	private static readonly F_O_PAD = NextPuyoShape.DIAMETER / 6;
 	private static readonly F_I_PAD = NextCanvas.F_O_PAD * 3;
 	private static readonly F_SKEW_DEG = 5;
-	private static readonly F_BASE_X = NextCellShape.CELLSIZE + (NextCanvas.F_O_PAD + NextCanvas.F_I_PAD) * 2;
-	private static readonly F_BASE_Y = NextCellShape.CELLSIZE * 2 + (NextCanvas.F_O_PAD + NextCanvas.F_I_PAD) * 2;
+	private static readonly F_BASE_X = NextPuyoShape.DIAMETER + (NextCanvas.F_O_PAD + NextCanvas.F_I_PAD) * 2;
+	private static readonly F_BASE_Y = NextPuyoShape.DIAMETER * 2 + (NextCanvas.F_O_PAD + NextCanvas.F_I_PAD) * 2;
 
-	// CLASS FIELD
+	// property
 	private _container: Container;
 	private _nextAxisPuyoShape!: NextPuyoShape;
 	private _nextChildPuyoShape!: NextPuyoShape;
@@ -28,7 +33,7 @@ export class NextCanvas extends BaseCanvas {
 	private _isModel: boolean;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param {string} canvasId canvasのID 
 	 * @param {boolean} isModel
 	 */
@@ -56,14 +61,6 @@ export class NextCanvas extends BaseCanvas {
 			this._stage.scaleX = -1;
 			this._stage.x = w;
 		}
-
-		// CellShape
-		for (let n = 0; n < 2; n++) {	// next: n=0, double next: n=1
-			for (let t = 0; t < 2; t++) {	// child: t=0, axis: t=1
-				const cellShape = new NextCellShape(n, t);
-				this._container.addChild(cellShape);
-			}
-		}
 	}
 
 	/**
@@ -77,10 +74,10 @@ export class NextCanvas extends BaseCanvas {
 		if (this._doubleNextAxisPuyoShape != undefined) this._container.removeChild(this._doubleNextAxisPuyoShape);
 		if (this._doubleNextChildPuyoShape != undefined) this._container.removeChild(this._doubleNextChildPuyoShape);
 
-		this._nextAxisPuyoShape = new NextPuyoShape(0, 1, next.axisColor);
-		this._nextChildPuyoShape = new NextPuyoShape(0, 0, next.childColor);
-		this._doubleNextAxisPuyoShape = new NextPuyoShape(1, 1, doubleNext.axisColor);
-		this._doubleNextChildPuyoShape = new NextPuyoShape(1, 0, doubleNext.childColor);
+		this._nextAxisPuyoShape = new NextPuyoShape(NextCanvas.NEXT, NextCanvas.TYPE_AXIS, next.axisColor);
+		this._nextChildPuyoShape = new NextPuyoShape(NextCanvas.NEXT, NextCanvas.TYPE_CHILD, next.childColor);
+		this._doubleNextAxisPuyoShape = new NextPuyoShape(NextCanvas.DOUBLE_NEXT, NextCanvas.TYPE_AXIS, doubleNext.axisColor);
+		this._doubleNextChildPuyoShape = new NextPuyoShape(NextCanvas.DOUBLE_NEXT, NextCanvas.TYPE_CHILD, doubleNext.childColor);
 		this._container.addChild(this._nextAxisPuyoShape, this._nextChildPuyoShape, this._doubleNextAxisPuyoShape, this._doubleNextChildPuyoShape);	
 	}
 
@@ -91,24 +88,24 @@ export class NextCanvas extends BaseCanvas {
 	 */
 	public advance(tsumo: Tsumo): Tween[] {
 		const val = Util.getAnimateMode();
-		const naXY = NextCellShape.getXandY(0, 1);
-		const ncXY = NextCellShape.getXandY(0, 0);
-		const dnaXY = NextCellShape.getXandY(1, 1);
-		const dncXY = NextCellShape.getXandY(1, 0);
+		const naCoord = NextCanvas.getCanvasCoordinate(NextCanvas.NEXT, NextCanvas.TYPE_AXIS);
+		const ncCoord = NextCanvas.getCanvasCoordinate(NextCanvas.NEXT, NextCanvas.TYPE_CHILD);
+		const dnaCoord = NextCanvas.getCanvasCoordinate(NextCanvas.DOUBLE_NEXT, NextCanvas.TYPE_AXIS);
+		const dncCoord = NextCanvas.getCanvasCoordinate(NextCanvas.DOUBLE_NEXT, NextCanvas.TYPE_CHILD);
 
 		// old next
 		const oldNextAxisPuyo = this._nextAxisPuyoShape;
 		const oldNextChildPuyo = this._nextChildPuyoShape;
 
-		const onaToY = naXY.y - NextCellShape.CELLSIZE * 3;
+		const onaToY = naCoord.y - NextPuyoShape.DIAMETER * 3;
 		const onaTween = Tween.get(oldNextAxisPuyo)
-			.to({y: naXY.y})
+			.to({y: naCoord.y})
 			.to({y: onaToY}, NextCanvas.MOVE_TIME * val)
 			.call(() => { this._container.removeChild(oldNextAxisPuyo); });
 
-		const oncToY = ncXY.y - NextCellShape.CELLSIZE * 3;
+		const oncToY = ncCoord.y - NextPuyoShape.DIAMETER * 3;
 		const oncTween = Tween.get(oldNextChildPuyo)
-			.to({y: ncXY.y})
+			.to({y: ncCoord.y})
 			.to({y: oncToY}, NextCanvas.MOVE_TIME * val)
 			.call(() => { this._container.removeChild(oldNextChildPuyo); });
 		
@@ -117,28 +114,28 @@ export class NextCanvas extends BaseCanvas {
 		const newNextChildPuyo = this._doubleNextChildPuyoShape;
 
 		const nnaTween = Tween.get(newNextAxisPuyo)
-			.to({x: dnaXY.x, y: dnaXY.y})
-			.to({x: naXY.x, y: naXY.y}, NextCanvas.MOVE_TIME * val);
+			.to({x: dnaCoord.x, y: dnaCoord.y})
+			.to({x: naCoord.x, y: naCoord.y}, NextCanvas.MOVE_TIME * val);
 
 		const nncTween = Tween.get(newNextChildPuyo)
-			.to({x: dncXY.x, y: dncXY.y})
-			.to({x: ncXY.x, y: ncXY.y}, NextCanvas.MOVE_TIME * val);
+			.to({x: dncCoord.x, y: dncCoord.y})
+			.to({x: ncCoord.x, y: ncCoord.y}, NextCanvas.MOVE_TIME * val);
 
 		// new doubleNext
-		const newDoubleNextAxisPuyo = new NextPuyoShape(1, 1, tsumo.axisColor);
-		const newDoubleNextChildPuyo = new NextPuyoShape(1, 0, tsumo.childColor);
+		const newDoubleNextAxisPuyo = new NextPuyoShape(NextCanvas.DOUBLE_NEXT, NextCanvas.TYPE_AXIS, tsumo.axisColor);
+		const newDoubleNextChildPuyo = new NextPuyoShape(NextCanvas.DOUBLE_NEXT, NextCanvas.TYPE_CHILD, tsumo.childColor);
 
-		const ndaFromY = dnaXY.y + NextCellShape.CELLSIZE * 3;
+		const ndaFromY = dnaCoord.y + NextPuyoShape.DIAMETER * 3;
 		newDoubleNextAxisPuyo.y = ndaFromY;
 		const ndaTween = Tween.get(newDoubleNextAxisPuyo)
 			.to({y: ndaFromY})
-			.to({y: dnaXY.y}, NextCanvas.MOVE_TIME * val);
+			.to({y: dnaCoord.y}, NextCanvas.MOVE_TIME * val);
 
-		const ndcFromY = dncXY.y + NextCellShape.CELLSIZE * 3;
+		const ndcFromY = dncCoord.y + NextPuyoShape.DIAMETER * 3;
 		newDoubleNextChildPuyo.y = ndcFromY;
 		const ndcTween = Tween.get(newDoubleNextChildPuyo)
 			.to({y: ndcFromY})
-			.to({y: dncXY.y}, NextCanvas.MOVE_TIME * val);
+			.to({y: dncCoord.y}, NextCanvas.MOVE_TIME * val);
 
 		this._container.addChild(newDoubleNextAxisPuyo, newDoubleNextChildPuyo);
 		this._nextAxisPuyoShape = newNextAxisPuyo;
@@ -161,7 +158,7 @@ export class NextCanvas extends BaseCanvas {
 		const cos = Util.cos(NextCanvas.F_SKEW_DEG);
 
 		// 角丸のサイズ
-		const oRad = NextCellShape.CELLSIZE / 3;
+		const oRad = NextPuyoShape.DIAMETER / 3;
 		const iRad = oRad / 5 * 4;
 
 		// frame
@@ -194,5 +191,18 @@ export class NextCanvas extends BaseCanvas {
 		frameContainer.addChild(iFrameN, iFrameD);
 		
 		return frameContainer;
+	}
+
+	// static method
+	/**
+	 * next、typeからcanvas上の座標を取得
+	 * @param {number} next 0：ネクスト、1：ダブネク
+	 * @param {number} type 0：子ぷよ、1：軸ぷよ
+	 * @returns {Coordinate} canvas上の座標
+	 */
+	public static getCanvasCoordinate(next: number, type: number): Coordinate {
+		const x = NextCanvas.F_X_SHIFT * next;
+		const y = NextPuyoShape.DIAMETER * type + NextCanvas.F_Y_SHIFT * next;
+		return new Coordinate(x, y);
 	}
 }

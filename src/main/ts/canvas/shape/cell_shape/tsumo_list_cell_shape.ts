@@ -21,8 +21,8 @@ export class TsumoListCellShape extends BaseCellShape {
 	 * @param {number} type 0：子ぷよ、1：軸ぷよ
 	 */
 	constructor (coord: Coordinate, type: number) {
-		const screenCoord = TsumoListCanvas.getScreenCoordinate(coord, type);
-		super(screenCoord.x, screenCoord.y, TsumoListCellShape.CELLSIZE, TsumoListCellShape.BG_COLOR, TsumoListCellShape.TSUMO_LIST_BORDER_COLOR);
+		const canvasCoord = TsumoListCanvas.getCanvasCoordinate(coord, type);
+		super(canvasCoord.x, canvasCoord.y, TsumoListCellShape.CELLSIZE, TsumoListCellShape.BG_COLOR, TsumoListCellShape.TSUMO_LIST_BORDER_COLOR);
 
 		this._type = type;
 		this._index = TsumoListCanvas.getIndex(coord);

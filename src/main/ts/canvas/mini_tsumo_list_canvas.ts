@@ -1,32 +1,38 @@
 import { BaseCanvas } from "./base_canvas";
 import { MiniTsumoListPuyoShape } from "./shape/puyo_shape/mini_tsumo_list_puyo_shape";
 import { TsumoListCanvas } from "./tsumo_list_canvas";
+import { Coordinate } from "../util/coordinate";
+
 import $ from "jquery";
 
 export class MiniTsumoListCanvas extends BaseCanvas {
-	// CONSTANT
+	// constant
 	private static readonly CANVAS_ID = "miniTsumoList";
-	
-	// CLASS FIELD
+	private static readonly PADDING_X = 4;
+	private static readonly TYPE_CHILD = 0;
+	private static readonly TYPE_AXIS = 1;
+	private static readonly TYPES = [MiniTsumoListCanvas.TYPE_CHILD, MiniTsumoListCanvas.TYPE_AXIS];
+
+	// property
 	private _puyoShapeArray: MiniTsumoListPuyoShape[][];
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 */
 	constructor() {
 		super(MiniTsumoListCanvas.CANVAS_ID, false);
 
 		this._puyoShapeArray = [];
 
-		const { x, y } = MiniTsumoListPuyoShape.getXY(TsumoListCanvas.I_SIZE, 1);
-		const w = x + MiniTsumoListPuyoShape.DIAMETER;
-		const h = y + MiniTsumoListPuyoShape.DIAMETER;
+		const canvasCoord = MiniTsumoListCanvas.getCanvasCoordinate(TsumoListCanvas.I_SIZE, 1);
+		const w = canvasCoord.x + MiniTsumoListPuyoShape.DIAMETER;
+		const h = canvasCoord.y + MiniTsumoListPuyoShape.DIAMETER;
 		$("#" + MiniTsumoListCanvas.CANVAS_ID).attr("width", 1 + Math.ceil(w));
 		$("#" + MiniTsumoListCanvas.CANVAS_ID).attr("height", 1 + Math.ceil(h));
 		
 		for (let i = 0; i < TsumoListCanvas.I_SIZE; i++) {
 			const iArray: MiniTsumoListPuyoShape[] = [];
-			for (let t = 0; t < 2; t++) {	// child: t=0, axis: t=1
+			for (const t of MiniTsumoListCanvas.TYPES) {
 				const puyoShape = new MiniTsumoListPuyoShape(i, t);
 				this._stage.addChild(puyoShape);
 				iArray.push(puyoShape);
@@ -47,11 +53,22 @@ export class MiniTsumoListCanvas extends BaseCanvas {
 			const axisColor = tsumoListStr.charAt(i);
 			const childColor = tsumoListStr.charAt(i + 1);
 
-			this._puyoShapeArray[index][1].setGraphics(axisColor);
-			this._puyoShapeArray[index][0].setGraphics(childColor);
+			this._puyoShapeArray[index][MiniTsumoListCanvas.TYPE_AXIS].setGraphics(axisColor);
+			this._puyoShapeArray[index][MiniTsumoListCanvas.TYPE_CHILD].setGraphics(childColor);
 		}
-		this._stage.update();
 		this._stage.update();
 	}
 
+	// static method
+	/**
+	 * ツモ順・ツモのタイプからcanvas上の座標を取得
+	 * @param {number} index ツモ順
+	 * @param {number} type 0：子ぷよ、1：軸ぷよ
+	 * @returns {Coordinate} canvas上の座標
+	 */
+	public static getCanvasCoordinate(index: number, type: number): Coordinate {
+		const x = (MiniTsumoListPuyoShape.DIAMETER + MiniTsumoListCanvas.PADDING_X) * index;
+		const y = MiniTsumoListPuyoShape.DIAMETER * type;
+		return new Coordinate(x, y);
+	}
 }

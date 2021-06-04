@@ -33,7 +33,7 @@ export class TsumoListCanvas extends BaseCanvas {
 		this._stage.enableMouseOver();
 		this._isEditable = true;
 
-		const endCoord = TsumoListCanvas.getScreenCoordinate(new Coordinate(TsumoListCanvas.X_SIZE - 1, TsumoListCanvas.Y_SIZE - 1), 1);
+		const endCoord = TsumoListCanvas.getCanvasCoordinate(new Coordinate(TsumoListCanvas.X_SIZE - 1, TsumoListCanvas.Y_SIZE - 1), 1);
 		const w = endCoord.x + TsumoListCellShape.CELLSIZE;
 		const h = endCoord.y + TsumoListCellShape.CELLSIZE;
 		$("#" + TsumoListCanvas.CANVAS_ID).attr("width", 1 + Math.ceil(w));
@@ -45,9 +45,9 @@ export class TsumoListCanvas extends BaseCanvas {
 				const coord = new Coordinate(x, y);
 				const num = TsumoListCanvas.getIndex(coord) + 1;
 				const numShape = new Text(String(num), "bold 12px BIZ UDPGothic", "#888888");
-				const screenCoord = TsumoListCanvas.getScreenCoordinate(coord, TsumoListCanvas.TYPE_CHILD);
-				numShape.x = screenCoord.x + (TsumoListCellShape.CELLSIZE / 2);
-				numShape.y = screenCoord.y - (TsumoListCellShape.CELLSIZE / 2);
+				const canvasCoord = TsumoListCanvas.getCanvasCoordinate(coord, TsumoListCanvas.TYPE_CHILD);
+				numShape.x = canvasCoord.x + (TsumoListCellShape.CELLSIZE / 2);
+				numShape.y = canvasCoord.y - (TsumoListCellShape.CELLSIZE / 2);
 				numShape.textAlign = "center";
 				this._stage.addChild(numShape);
 			}
@@ -219,21 +219,21 @@ export class TsumoListCanvas extends BaseCanvas {
 
 	// static method
 	/**
-	 * ツモリストの座標・ツモのタイプから画面上の座標を取得
+	 * ツモリストの座標・ツモのタイプからcanvas上の座標を取得
 	 * @param {Coordinate} coord ツモリストの座標
 	 * @param {number} type 0：子ぷよ、1：軸ぷよ
-	 * @returns {Coordinate} 画面上の座標
+	 * @returns {Coordinate} canvas上の座標
 	 */
-	public static getScreenCoordinate(coord: Coordinate, type: number): Coordinate {
+	public static getCanvasCoordinate(coord: Coordinate, type: number): Coordinate {
 		const x = (TsumoListCellShape.CELLSIZE + TsumoListCanvas.CELL_PADDING_X) * coord.x;
 		const y = TsumoListCellShape.CELLSIZE * (type + 1) + TsumoListCellShape.CELLSIZE * 3 * coord.y + TsumoListCanvas.CELL_ADJUST_Y;
 		return new Coordinate(x, y);
 	}
 
 	/**
-	 * ツモリストの座標からindexを取得
+	 * ツモリストの座標からツモ順を取得
 	 * @param {Coordinate} coord ツモリストの座標
-	 * @returns {number} index
+	 * @returns {number} ツモ順
 	 */
 	public static getIndex(coord: Coordinate): number {
 		return coord.x + coord.y * TsumoListCanvas.X_SIZE;
