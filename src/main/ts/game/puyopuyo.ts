@@ -2,6 +2,7 @@ import { FieldCanvas } from "../canvas/field_canvas";
 import { NextCanvas } from "../canvas/next_canvas";
 import { TimelineList } from "../canvas/timeline/timeline_list";
 import { TsumoCanvas } from "../canvas/tsumo_canvas";
+import { Coordinate } from "../util/coordinate";
 import { Field } from "./field";
 import { Tsumo } from "./tsumo";
 import { Tsumos } from "./tsumos";
@@ -61,12 +62,11 @@ export class Puyopuyo {
 
 	/**
 	 * フィールドの指定座標のぷよを変更します。
-	 * @param {number} x x座標
-	 * @param {number} y y座標
+	 * @param {Coordinate} coord 座標
 	 * @param {string} color 変更する色
 	 */
-	public changeFieldPuyo(x: number, y: number, color: string): void {
-		this._field.changeFieldPuyo(x, y, color);
+	public changeFieldPuyo(coord: Coordinate, color: string): void {
+		this._field.changeFieldPuyo(coord, color);
 	}
 
 	/**

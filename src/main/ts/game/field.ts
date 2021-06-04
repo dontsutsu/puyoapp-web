@@ -2,6 +2,7 @@ import { Timeline } from "@createjs/tweenjs";
 import { FieldCanvas } from "../canvas/field_canvas";
 import { NoticeCanvas } from "../canvas/notice_canvas";
 import { TimelineList } from "../canvas/timeline/timeline_list";
+import { Coordinate } from "../util/coordinate";
 import { EnumTsumoChildPosition } from "./enum_tsumo_child_position";
 import { BasePuyo } from "./puyo/base_puyo";
 import { FieldPuyo } from "./puyo/field_puyo";
@@ -9,7 +10,7 @@ import { PuyoConnect } from "./puyo/puyo_connect";
 import { Tsumo } from "./tsumo";
 
 export class Field {
-	// CONSTANT
+	// constant
 	public static readonly X_SIZE = 6;
 	public static readonly Y_SIZE = 13;
 	public static readonly DEAD_X = 2;
@@ -20,14 +21,14 @@ export class Field {
 
 	public static readonly NULL_STRING = BasePuyo.NONE.repeat(Field.X_SIZE * Field.Y_SIZE);
 
-	// CLASS FIELD
+	// property
 	private _fieldArray: FieldPuyo[][];
 	private _fieldCanvas: FieldCanvas;
 	private _noticeCanvas: NoticeCanvas;
 	private _totalScore: number;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param {FieldCanvas} fieldCanvas
 	 */
 	constructor(fieldCanvas: FieldCanvas) {
@@ -109,11 +110,11 @@ export class Field {
 	 * @param {number} y 
 	 * @param {string} color 
 	 */
-	public changeFieldPuyo(x: number, y: number, color: string): void {
-		this._fieldArray[y][x].color = color;
+	public changeFieldPuyo(coord: Coordinate, color: string): void {
+		this._fieldArray[coord.y][coord.x].color = color;
 		
 		// canvas
-		this._fieldCanvas.changeFieldPuyo(x, y, color);
+		this._fieldCanvas.changeFieldPuyo(coord, color);
 	}
 
 	/**
@@ -122,7 +123,7 @@ export class Field {
 	public reset(): void {
 		for (let y = 0; y < Field.Y_SIZE; y++) {
 			for (let x = 0; x < Field.X_SIZE; x++) {
-				this.changeFieldPuyo(x, y, BasePuyo.NONE);
+				this.changeFieldPuyo(new Coordinate(x, y), BasePuyo.NONE);
 			}
 		}
 		this.setScore(0);
@@ -151,7 +152,7 @@ export class Field {
 			const color = fieldStr.charAt(i);
 			const x = i % Field.X_SIZE;
 			const y = i / Field.X_SIZE | 0;
-			this.changeFieldPuyo(x, y, color);
+			this.changeFieldPuyo(new Coordinate(x, y), color);
 		}
 	}
 
@@ -334,7 +335,7 @@ export class Field {
 					puyo.color = BasePuyo.NONE;
 
 					// アニメーション
-					const tween = this._fieldCanvas.getErasetween(x, y, eraseColor);
+					const tween = this._fieldCanvas.getErasetween(new Coordinate(x, y), eraseColor);
 					timeline.addTween(tween);
 
 					// おじゃま消去
@@ -344,7 +345,7 @@ export class Field {
 						ojamaPuyoShape.color = BasePuyo.NONE;
 
 						// アニメーション
-						const tween = this._fieldCanvas.getErasetween(x, y + 1, BasePuyo.OJAMA);
+						const tween = this._fieldCanvas.getErasetween(new Coordinate(x, y + 1), BasePuyo.OJAMA);
 						timeline.addTween(tween);
 					}
 
@@ -354,7 +355,7 @@ export class Field {
 						ojamaPuyoShape.color = BasePuyo.NONE;
 
 						// アニメーション
-						const tween = this._fieldCanvas.getErasetween(x, y - 1, BasePuyo.OJAMA);
+						const tween = this._fieldCanvas.getErasetween(new Coordinate(x, y - 1), BasePuyo.OJAMA);
 						timeline.addTween(tween);
 					}
 
@@ -364,7 +365,7 @@ export class Field {
 						ojamaPuyoShape.color = BasePuyo.NONE;
 
 						// アニメーション
-						const tween = this._fieldCanvas.getErasetween(x + 1, y, BasePuyo.OJAMA);
+						const tween = this._fieldCanvas.getErasetween(new Coordinate(x + 1, y), BasePuyo.OJAMA);
 						timeline.addTween(tween);
 					}
 
@@ -374,7 +375,7 @@ export class Field {
 						ojamaPuyoShape.color = BasePuyo.NONE;
 
 						// アニメーション
-						const tween = this._fieldCanvas.getErasetween(x - 1, y, BasePuyo.OJAMA);
+						const tween = this._fieldCanvas.getErasetween(new Coordinate(x - 1, y), BasePuyo.OJAMA);
 						timeline.addTween(tween);
 					}
 				}

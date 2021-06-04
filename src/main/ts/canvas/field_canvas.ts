@@ -11,20 +11,21 @@ import { Tsumo } from "../game/tsumo";
 import { FieldGuidePuyoShape } from "./shape/puyo_shape/field_guid_puyo_shape";
 import $ from "jquery";
 import { TimelineList } from "./timeline/timeline_list";
+import { Coordinate } from "../util/coordinate";
 
 export class FieldCanvas extends BaseCanvas {
-	// CONSTANT
+	// constant
 	private static readonly DROP_VEL = 50;
 	private static readonly ERASE_VEL = 500;
 	private static readonly STEP_ERASE_TIME = 300;
-	// CONSTANT（FRAME用）
+	// constant（FRAME用）
 	public static readonly F_O_PAD = FieldCellShape.CELLSIZE / 6;	// 外側FRAMEのPAD
 	public static readonly F_I_PAD = FieldCanvas.F_O_PAD * 3;		// 内側FRAMEのPAD
 	private static readonly F_SKEW_DEG = 5;							// FRAMEの傾き
 	private static readonly F_BASE_X = FieldCellShape.CELLSIZE * Field.X_SIZE + (FieldCanvas.F_O_PAD + FieldCanvas.F_I_PAD) * 2;
 	private static readonly F_BASE_Y = FieldCellShape.CELLSIZE * Field.Y_SIZE + (FieldCanvas.F_O_PAD + FieldCanvas.F_I_PAD) * 2;
 
-	// CLASS FIELD
+	// property
 	private _container: Container;
 	private _cellShapeArray: FieldCellShape[][];
 	private _puyoShapeArray: FieldPuyoShape[][];
@@ -36,7 +37,7 @@ export class FieldCanvas extends BaseCanvas {
 	private _isEditable: boolean;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param {string} canvasId canvasのID 
 	 * @param {boolean} isModel
 	 */
@@ -83,7 +84,7 @@ export class FieldCanvas extends BaseCanvas {
 		for (let y = 0; y < Field.Y_SIZE; y++) {
 			const yarray = [];
 			for (let x = 0; x < Field.X_SIZE; x++) {
-				const cellShape = new FieldCellShape(x, y);
+				const cellShape = new FieldCellShape(new Coordinate(x, y));
 				yarray.push(cellShape);
 				this._container.addChild(cellShape);
 			}
@@ -105,7 +106,7 @@ export class FieldCanvas extends BaseCanvas {
 		for (let y = 0; y < Field.Y_SIZE; y++) {
 			const yarray = [];
 			for (let x = 0; x < Field.X_SIZE; x++) {
-				const puyoShape = new FieldPuyoShape(x, y);
+				const puyoShape = new FieldPuyoShape(new Coordinate(x, y));
 				yarray.push(puyoShape);
 				this._container.addChild(puyoShape);
 			}
@@ -122,9 +123,8 @@ export class FieldCanvas extends BaseCanvas {
 			for (const cellShape of yarray) {
 				cellShape.addEventListener("mousedown", () => {
 					if (!this._isEditable) return;
-					const x = cellShape.ax;
-					const y = cellShape.ay;
-					eMode.changeFieldPuyo(x, y);
+					const coord = cellShape.coord;
+					eMode.changeFieldPuyo(coord);
 				});
 
 				cellShape.addEventListener("mouseover", () => {
@@ -141,12 +141,11 @@ export class FieldCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param {number} x 
-	 * @param {number} y 
+	 * @param {Coordinate} coord
 	 * @param {string} color 
 	 */
-	public changeFieldPuyo(x: number, y: number, color: string): void {
-		this._puyoShapeArray[y][x].setGraphics(color);
+	public changeFieldPuyo(coord: Coordinate, color: string): void {
+		this._puyoShapeArray[coord.y][coord.x].setGraphics(color);
 	}
 
 	/**
@@ -161,7 +160,7 @@ export class FieldCanvas extends BaseCanvas {
 
 		const dropPuyo = this._puyoShapeArray[fromY][x];
 		const removePuyo = this._puyoShapeArray[toY][x];
-		const newPuyo = new FieldPuyoShape(x, fromY);
+		const newPuyo = new FieldPuyoShape(new Coordinate(x, fromY));
 
 		this._puyoShapeArray[toY][x] = dropPuyo;
 		this._puyoShapeArray[fromY][x] = newPuyo;
@@ -180,15 +179,14 @@ export class FieldCanvas extends BaseCanvas {
 
 	/**
 	 * 
-	 * @param {number} x 
-	 * @param {number} y 
-	 * @param {string} eraseColor
+	 * @param {Coordinate} coord 座標
+	 * @param {string} eraseColor 消す色
 	 * @returns {Tween}
 	 */
-	public getErasetween(x: number, y: number, eraseColor: string): Tween {
+	public getErasetween(coord: Coordinate, eraseColor: string): Tween {
 		const val = Util.getAnimateMode();
 
-		const erasePuyo = this._puyoShapeArray[y][x];
+		const erasePuyo = this._puyoShapeArray[coord.y][coord.x];
 
 		let tween = Tween.get(erasePuyo);
 		if (val == 1) {
@@ -222,7 +220,7 @@ export class FieldCanvas extends BaseCanvas {
 		// axis
 		if (axisToY < Field.Y_SIZE) {
 			const axisRemovePuyo = this._puyoShapeArray[axisToY][tsumo.axisX];
-			const axisNewPuyo = new FieldPuyoShape(tsumo.axisX, axisFromY, tsumo.axisColor);
+			const axisNewPuyo = new FieldPuyoShape(new Coordinate(tsumo.axisX, axisFromY), tsumo.axisColor);
 			this._container.addChild(axisNewPuyo);
 
 			this._puyoShapeArray[axisToY][tsumo.axisX] = axisNewPuyo;
@@ -238,7 +236,7 @@ export class FieldCanvas extends BaseCanvas {
 		// child
 		if (childToY < Field.Y_SIZE) {
 			const childRemovePuyo = this._puyoShapeArray[childToY][tsumo.childX];
-			const childNewPuyo = new FieldPuyoShape(tsumo.childX, childFromY, tsumo.childColor);
+			const childNewPuyo = new FieldPuyoShape(new Coordinate(tsumo.childX, childFromY), tsumo.childColor);
 			this._container.addChild(childNewPuyo);
 
 			this._puyoShapeArray[childToY][tsumo.childX] = childNewPuyo;
@@ -420,6 +418,18 @@ export class FieldCanvas extends BaseCanvas {
 		return stopTlList;
 	}
 
+	/**
+	 * ツモの座標からcanvas上の座標を取得
+	 * @param {Coordinate} coord ツモの座標
+	 * @returns {Coordinate} canvas上の座標
+	 */
+	public static getCanvasCoordinate(coord: Coordinate) {
+		const canvasCoord = coord.clone()
+			.calculateY(FieldCanvas.convertY)
+			.times(FieldCellShape.CELLSIZE);
+		return canvasCoord;
+	}
+	
 	// accessor
 	set isEditable(isEditable: boolean) {
 		this._isEditable = isEditable;

@@ -1,6 +1,7 @@
 import { BoxCanvas } from "../canvas/box_canvas";
 import { BaseMode } from "./base_mode";
 import $ from "jquery";
+import { Coordinate } from "../util/coordinate";
 
 export abstract class EditableMode extends BaseMode {
 	// CONSTANT
@@ -41,13 +42,12 @@ export abstract class EditableMode extends BaseMode {
 
 	/**
 	 * フィールドの指定座標のぷよを変更します。
-	 * @param {number} x x座標
-	 * @param {number} y y座標
+	 * @param {Coordinate} coord 座標
 	 */
-	public changeFieldPuyo(x: number, y: number): void {
+	public changeFieldPuyo(coord: Coordinate): void {
 		const color = this.getSelectColor();
 		this.doWithRecordHistory(() => {
-			this._puyopuyo.changeFieldPuyo(x, y, color);
+			this._puyopuyo.changeFieldPuyo(coord, color);
 		});
 	}
 

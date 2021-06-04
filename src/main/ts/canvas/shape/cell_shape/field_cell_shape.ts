@@ -1,28 +1,26 @@
 import { Field } from "../../../game/field";
+import { Coordinate } from "../../../util/coordinate";
+import { FieldCanvas } from "../../field_canvas";
 import { BaseCellShape } from "./base_cell_shape";
 
 export class FieldCellShape extends BaseCellShape {
-	// CONSTANT
+	// constant
 	public static readonly BG_COLOR = "#FFFFFF";
 	public static readonly SELECT_COLOR = "#00FFFF";
 	public static readonly CELLSIZE = 30;
 
-	// CLASS FIELD
-	private _ax: number;
-	private _ay: number;
+	// property
+	private _coord: Coordinate;
 
 	/**
 	 * コンストラクタ
-	 * @param {number} ax x座標
-	 * @param {number} ay y座標
+	 * @param {Coordinate} coord 座標
 	 */
-	constructor(ax: number, ay: number) {
-		const x = FieldCellShape.CELLSIZE * ax;
-		const y = FieldCellShape.CELLSIZE * (Field.Y_SIZE - 1 - ay);
-		super(x, y, FieldCellShape.CELLSIZE, FieldCellShape.BG_COLOR);
-		this._ax = ax;
-		this._ay = ay;
-		this.alpha = this._ay == Field.Y_SIZE - 1 ? 0.01 : 1.0;
+	constructor(coord: Coordinate) {
+		const canvasCoord = FieldCanvas.getCanvasCoordinate(coord);
+		super(canvasCoord.x, canvasCoord.y, FieldCellShape.CELLSIZE, FieldCellShape.BG_COLOR);
+		this._coord = coord;
+		this.alpha = coord.y == Field.Y_SIZE - 1 ? 0.01 : 1.0;
 	}
 
 	/**
@@ -38,15 +36,11 @@ export class FieldCellShape extends BaseCellShape {
 	 */
 	public mouseout(): void {
 		this.changeBgColor(FieldCellShape.BG_COLOR);
-		this.alpha = this._ay == Field.Y_SIZE - 1 ? 0.01 : 1.0;
+		this.alpha = this._coord.y == Field.Y_SIZE - 1 ? 0.01 : 1.0;
 	}
 
-	// ACCESSOR
-	get ax(): number {
-		return this._ax;
-	}
-
-	get ay(): number {
-		return this._ay;
+	// accessor
+	get coord(): Coordinate {
+		return this._coord;
 	}
 }

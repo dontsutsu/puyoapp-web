@@ -24,12 +24,32 @@ export class Coordinate {
 	
 	/**
 	 * 座標を定数倍する
-	 * @param n 定数倍の値
+	 * @param {number} n 定数倍の値
 	 * @returns {Coordinate} 計算後の座標
 	 */
 	public times(n: number): Coordinate {
 		this._x = this._x * n;
 		this._y = this._y * n;
+		return this;
+	}
+
+	/**
+	 * x座標に足す
+	 * @param {number} n 足す値
+	 * @returns {Coordinate} 計算後の座標
+	 */
+	public addX(n: number): Coordinate {
+		this._x += n;
+		return this;
+	}
+
+	/**
+	 * y座標に足す
+	 * @param {number} n 足す値
+	 * @returns {Coordinate} 計算後の座標
+	 */
+	public addY(n: number): Coordinate {
+		this._y += n;
 		return this;
 	}
 
