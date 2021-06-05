@@ -13,8 +13,7 @@ export class Field {
 	// constant
 	public static readonly X_SIZE = 6;
 	public static readonly Y_SIZE = 13;
-	public static readonly DEAD_X = 2;
-	public static readonly DEAD_Y = 11;
+	public static readonly DEAD_COORD = new Coordinate(2, 11);
 	private static readonly CHAIN_BONUS = [0, 8, 16, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 480, 512];
 	private static readonly CONNECT_BONUS = [0, 2, 3, 4, 5, 6, 7, 10];
 	private static readonly COLOR_BONUS = [0, 3, 6, 12, 24];
@@ -52,14 +51,18 @@ export class Field {
 	 * @returns {TimelineList} 
 	 */
 	public dropTsumoToField(tsumo: Tsumo): TimelineList {
-		const {axisToY, childToY} = this.getDropTsumoToY(tsumo);
-		if (axisToY < Field.Y_SIZE) this._fieldArray[axisToY][tsumo.axisX].color = tsumo.axisColor;
-		if (childToY < Field.Y_SIZE) this._fieldArray[childToY][tsumo.childX].color = tsumo.childColor;
+		const coords = this.getDropTsumoCoordinate(tsumo);
+
+		const axisToCoord = coords[1];
+		const childToCoord = coords[0];
+
+		if (axisToCoord.y < Field.Y_SIZE) this.setPuyo(axisToCoord, new FieldPuyo(tsumo.axisColor));
+		if (childToCoord.y < Field.Y_SIZE) this.setPuyo(childToCoord, new FieldPuyo(tsumo.childColor));
 
 		// アニメーション
 		const timelineList = new TimelineList();
 		const timeline = new Timeline({paused: true});
-		const tweenList = this._fieldCanvas.getTsumoDropTween(tsumo, axisToY, childToY);
+		const tweenList = this._fieldCanvas.getTsumoDropTween(tsumo, axisToCoord.y, childToCoord.y);
 		timeline.addTween(...tweenList);
 		timelineList.push(timeline);
 		return timelineList;
@@ -94,7 +97,7 @@ export class Field {
 
 			// ３．消去
 			const eraseTimeline = this.erase();
-			if (score > 0)  {
+			if (score > 0)  { // scoreが0でない＝消したぷよがある
 				const eraseScoreTween = this._fieldCanvas.getEraseScoreTween(erase, bonus);
 				eraseTimeline.addTween(...eraseScoreTween);
 			}
@@ -106,12 +109,11 @@ export class Field {
 
 	/**
 	 * フィールドの指定座標のぷよを変更します。
-	 * @param {number} x 
-	 * @param {number} y 
-	 * @param {string} color 
+	 * @param {Coordinate} coord 座標
+	 * @param {string} color 色
 	 */
 	public changeFieldPuyo(coord: Coordinate, color: string): void {
-		this._fieldArray[coord.y][coord.x].color = color;
+		this.setPuyo(coord, new FieldPuyo(color));
 		
 		// canvas
 		this._fieldCanvas.changeFieldPuyo(coord, color);
@@ -123,7 +125,8 @@ export class Field {
 	public reset(): void {
 		for (let y = 0; y < Field.Y_SIZE; y++) {
 			for (let x = 0; x < Field.X_SIZE; x++) {
-				this.changeFieldPuyo(new Coordinate(x, y), BasePuyo.NONE);
+				const coord = new Coordinate(x, y);
+				this.changeFieldPuyo(coord, BasePuyo.NONE);
 			}
 		}
 		this.setScore(0);
@@ -137,7 +140,8 @@ export class Field {
 		let str = "";
 		for (let y = 0; y < Field.Y_SIZE; y++) {
 			for (let x = 0; x < Field.X_SIZE; x++) {
-				str += this._fieldArray[y][x].color;
+				const coord = new Coordinate(x, y);
+				str += this.getPuyo(coord).color;
 			}
 		}
 		return str;
@@ -152,7 +156,8 @@ export class Field {
 			const color = fieldStr.charAt(i);
 			const x = i % Field.X_SIZE;
 			const y = i / Field.X_SIZE | 0;
-			this.changeFieldPuyo(new Coordinate(x, y), color);
+			const coord = new Coordinate(x, y);
+			this.changeFieldPuyo(coord, color);
 		}
 	}
 
@@ -161,9 +166,9 @@ export class Field {
 	 * @returns {number[]} 高さ（0～13）の配列
 	 */
 	public getHeights(): number[] {
-		const heights = [];
+		const heights: number[] = [];
 		for (let x = 0; x < Field.X_SIZE; x++) {
-			const y = this.getDropPuyoToY(x);
+			const y = this.getDropCoordinate(x).y;
 			heights.push(y);
 		}
 		return heights;
@@ -174,7 +179,7 @@ export class Field {
 	 * @returns {boolean} true：死んでいる / false：死んでいない
 	 */
 	public isDead(): boolean {
-		return this._fieldArray[Field.DEAD_Y][Field.DEAD_X].color != BasePuyo.NONE;
+		return this.getPuyo(Field.DEAD_COORD).color != BasePuyo.NONE;
 	}
 
 	/**
@@ -206,8 +211,10 @@ export class Field {
 	 * @param {Tsumo} tsumo 
 	 */
 	public setGuide(tsumo: Tsumo): void {
-		const {axisToY, childToY} = this.getDropTsumoToY(tsumo);
-		this._fieldCanvas.setGuide(tsumo, axisToY, childToY);
+		const coords = this.getDropTsumoCoordinate(tsumo);
+		const axisToCoord = coords[1];
+		const childToCoord = coords[0];
+		this._fieldCanvas.setGuide(tsumo, axisToCoord, childToCoord);
 	}
 
 	/**
@@ -219,19 +226,19 @@ export class Field {
 
 		for (let y = 0; y < Field.Y_SIZE - 1; y++) {
 			for (let x = 0; x < Field.X_SIZE; x++) {
+				const toCoord = new Coordinate(x, y);
 				// 対象のぷよが "なし" 以外なら処理しない
-				if (this._fieldArray[y][x].color != BasePuyo.NONE) {
+				if (this.getPuyo(toCoord).color != BasePuyo.NONE) {
 					continue;
 				}
 
-				const toY = y;	// 落ちる前のy座標
-				let fromY = y;		// 落ちた先のy座標
+				const fromCoord = toCoord.clone();		// 落ちた先のy座標
 				// 対象のぷよが "なし" の場合、上部の "なし" 以外のぷよを探す
 				let dropPuyo: FieldPuyo;
 				do {
-					fromY++;
-					dropPuyo = this._fieldArray[fromY][x];
-				} while (fromY < Field.Y_SIZE - 1 && dropPuyo.color == BasePuyo.NONE);
+					fromCoord.addY(1);
+					dropPuyo = this.getPuyo(fromCoord);
+				} while (fromCoord.y < Field.Y_SIZE - 1 && dropPuyo.color == BasePuyo.NONE);
 
 				// 落下するぷよがなかった場合、処理しない
 				if (dropPuyo.color == BasePuyo.NONE) {
@@ -239,13 +246,13 @@ export class Field {
 				}
 
 				// 落ちる先の配列にぷよを格納
-				this._fieldArray[toY][x] = dropPuyo;
+				this.setPuyo(toCoord, dropPuyo);
 				
 				// 落ちたあとの配列に空白を格納
-				this._fieldArray[fromY][x] = new FieldPuyo();
+				this.setPuyo(fromCoord, new FieldPuyo());
 
 				// アニメーション
-				const tween = this._fieldCanvas.getDropTween(x, fromY, toY);
+				const tween = this._fieldCanvas.getDropTween(x, fromCoord.y, toCoord.y);
 				timeline.addTween(tween);
 			}
 		}
@@ -259,14 +266,17 @@ export class Field {
 		// 連結数をリセット
 		for (let x = 0; x < Field.X_SIZE; x++) {
 			for (let y = 0; y < Field.Y_SIZE - 1; y++) {
-				this._fieldArray[y][x].connect = null;
+				const coord = new Coordinate(x, y);
+				this.getPuyo(coord).connect = null;
 			}
 		}
 
 		// 連結数チェック
 		for (let x = 0; x < Field.X_SIZE; x++) {
 			for (let y = 0; y < Field.Y_SIZE - 1; y++) {
-				this.check(x, y, -1, -1);
+				const coord = new Coordinate(x, y);
+				const preCoord = new Coordinate(-1, -1);
+				this.check(coord, preCoord);
 			}
 		}
 	}
@@ -284,7 +294,8 @@ export class Field {
 
 		for (let x = 0; x < Field.X_SIZE; x++) {
 			for (let y = 0; y < Field.Y_SIZE - 1; y++) {
-				const puyo = this._fieldArray[y][x];
+				const coord = new Coordinate(x, y);
+				const puyo = this.getPuyo(coord);
 				if (puyo.connect != null && puyo.connect.isErasable()) {
 					// 得点計算の処理
 					if (!connectArray.includes(puyo.connect)) connectArray.push(puyo.connect);
@@ -328,7 +339,8 @@ export class Field {
 		
 		for (let x = 0; x < Field.X_SIZE; x++) {
 			for (let y = 0; y < Field.Y_SIZE - 1; y++) {
-				const puyo = this._fieldArray[y][x];
+				const coord = new Coordinate(x, y);
+				const puyo = this.getPuyo(coord);
 				if (puyo.connect != null && puyo.connect.isErasable()) {
 					// 自分消去
 					const eraseColor = puyo.color;
@@ -340,39 +352,39 @@ export class Field {
 
 					// おじゃま消去
 					// up（13段目y=12のおじゃまぷよは消去しない）
-					if ((y + 1 < Field.Y_SIZE - 1) && this._fieldArray[y + 1][x].color == BasePuyo.OJAMA) {
-						const ojamaPuyoShape = this._fieldArray[y + 1][x];
-						ojamaPuyoShape.color = BasePuyo.NONE;
+					const uCoord = coord.clone().addY(1);
+					if ((uCoord.y < Field.Y_SIZE - 1) && this.getPuyo(uCoord).color == BasePuyo.OJAMA) {
+						this.setPuyo(uCoord, new FieldPuyo(BasePuyo.NONE));
 
 						// アニメーション
-						const tween = this._fieldCanvas.getErasetween(new Coordinate(x, y + 1), BasePuyo.OJAMA);
+						const tween = this._fieldCanvas.getErasetween(uCoord, BasePuyo.OJAMA);
 						timeline.addTween(tween);
 					}
 
 					// down
-					if ((y - 1 >= 0) && this._fieldArray[y - 1][x].color == BasePuyo.OJAMA) {
-						const ojamaPuyoShape = this._fieldArray[y - 1][x];
-						ojamaPuyoShape.color = BasePuyo.NONE;
+					const dCoord = coord.clone().addY(-1);
+					if ((dCoord.y >= 0) && this.getPuyo(dCoord).color == BasePuyo.OJAMA) {
+						this.setPuyo(dCoord, new FieldPuyo(BasePuyo.NONE));
 
 						// アニメーション
-						const tween = this._fieldCanvas.getErasetween(new Coordinate(x, y - 1), BasePuyo.OJAMA);
+						const tween = this._fieldCanvas.getErasetween(dCoord, BasePuyo.OJAMA);
 						timeline.addTween(tween);
 					}
 
 					// right
-					if ((x + 1 < Field.X_SIZE) && this._fieldArray[y][x + 1].color == BasePuyo.OJAMA) {
-						const ojamaPuyoShape = this._fieldArray[y][x + 1];
-						ojamaPuyoShape.color = BasePuyo.NONE;
+					const rCoord = coord.clone().addX(1);
+					if ((rCoord.x < Field.X_SIZE) && this.getPuyo(rCoord).color == BasePuyo.OJAMA) {
+						this.setPuyo(rCoord, new FieldPuyo(BasePuyo.NONE));
 
 						// アニメーション
-						const tween = this._fieldCanvas.getErasetween(new Coordinate(x + 1, y), BasePuyo.OJAMA);
+						const tween = this._fieldCanvas.getErasetween(rCoord, BasePuyo.OJAMA);
 						timeline.addTween(tween);
 					}
 
 					// left
-					if ((x - 1 >= 0) && this._fieldArray[y][x - 1].color == BasePuyo.OJAMA) {
-						const ojamaPuyoShape = this._fieldArray[y][x - 1];
-						ojamaPuyoShape.color = BasePuyo.NONE;
+					const lCoord = coord.clone().addX(-1);
+					if ((lCoord.x >= 0) && this.getPuyo(lCoord).color == BasePuyo.OJAMA) {
+						this.setPuyo(lCoord, new FieldPuyo(BasePuyo.NONE));
 
 						// アニメーション
 						const tween = this._fieldCanvas.getErasetween(new Coordinate(x - 1, y), BasePuyo.OJAMA);
@@ -387,14 +399,11 @@ export class Field {
 
 	/**
 	 * 連結数をチェックします。
-	 * @param {number} x 
-	 * @param {number} y 
-	 * @param {number} prex 
-	 * @param {number} prey 
+	 * @param {Coordinate} coord チェックする座標
+	 * @param {Coordinate} preCoord 1つ前にチェックした座標
 	 */
-	private check(x: number, y: number, prex: number, prey: number): void {
-
-		const checkPuyo = this._fieldArray[y][x];
+	private check(coord: Coordinate, preCoord: Coordinate): void {
+		const checkPuyo = this.getPuyo(coord);
 		let connect;
 
 		// connectがNULLでないとき、既にチェック済みなのでチェック不要
@@ -407,10 +416,10 @@ export class Field {
 			return;
 		}
 
-		if (prex == -1 && prey == -1) {
+		if (preCoord.x == -1 && preCoord.y == -1) {
 			connect = new PuyoConnect();
 		} else {
-			const prePuyo = this._fieldArray[prey][prex];
+			const prePuyo = this.getPuyo(preCoord);
 
 			// 色が異なる場合、再帰チェックしない
 			if (checkPuyo.color != prePuyo.color) {
@@ -426,64 +435,73 @@ export class Field {
 		// 以下、四方向に再帰チェック
 
 		// up（13段目y=12のぷよは連結数チェックしない）
-		if (y + 1 < Field.Y_SIZE - 1) {
-			this.check(x, y + 1, x, y);
+		const uCoord = coord.clone().addY(1);
+		if (uCoord.y < Field.Y_SIZE - 1) {
+			this.check(uCoord, coord);
 		}
 
 		// down
-		if (y - 1 >= 0) {
-			this.check(x, y - 1, x, y);
+		const dCoord = coord.clone().addY(-1);
+		if (dCoord.y >= 0) {
+			this.check(dCoord, coord);
 		}
 
 		// right
-		if (x + 1 < Field.X_SIZE) {
-			this.check(x + 1, y, x, y);
+		const rCoord = coord.clone().addX(1);
+		if (rCoord.x < Field.X_SIZE) {
+			this.check(rCoord, coord);
 		}
 
 		// left
-		if (x - 1 >= 0) {
-			this.check(x - 1, y, x, y);
+		const lCoord = coord.clone().addX(-1);
+		if (lCoord.x >= 0) {
+			this.check(lCoord, coord);
 		}
 	}
 
 	/**
-	 * 指定のツモを落としたときのy座標を取得します。
+	 * 指定のツモを落としたときの座標を取得します。
 	 * @param {Tsumo} tsumo 
-	 * @returns {axisToY: number, childToY: number} axisToY：軸ぷよの落下先y座標、childToY：子ぷよの落下先y座標
+	 * @returns {Coordinate[]} [0]：子ぷよの座標、[1]：軸ぷよの座標
 	 */
-	private getDropTsumoToY(tsumo: Tsumo): {axisToY: number, childToY: number} {
-		let axisToY: number;
-		let childToY: number;
+	private getDropTsumoCoordinate(tsumo: Tsumo): Coordinate[] {
+		let axisCoord: Coordinate;
+		let childCoord: Coordinate;
 
 		if (tsumo.tsumoChildPosition == EnumTsumoChildPosition.BOTTOM) {
-			childToY = this.getDropPuyoToY(tsumo.childX);
-			axisToY = childToY + 1;
+			childCoord = this.getDropCoordinate(tsumo.childX);
+			axisCoord = childCoord.clone().addY(1);
 		} else if (tsumo.tsumoChildPosition == EnumTsumoChildPosition.TOP) {
-			axisToY = this.getDropPuyoToY(tsumo.axisX);
-			childToY = axisToY + 1;
+			axisCoord = this.getDropCoordinate(tsumo.axisX);
+			childCoord = axisCoord.clone().addY(1);
 		} else {
-			axisToY = this.getDropPuyoToY(tsumo.axisX);
-			childToY = this.getDropPuyoToY(tsumo.childX);
+			axisCoord = this.getDropCoordinate(tsumo.axisX);
+			childCoord = this.getDropCoordinate(tsumo.childX);
 		}
 
-		return {axisToY, childToY};
+		return [childCoord, axisCoord];
 	}
 
 	/**
 	 * 指定のx座標に落とせるy座標を取得します。
 	 * @param {number} x x座標
-	 * @returns {number} y座標
+	 * @returns {Coordinate} 座標
 	 */
-	private getDropPuyoToY(x: number): number {
-		let y2 = Field.Y_SIZE;
-		for (let y = y2; y >= 0; y--) {
-			if (y == 0) {
-				y2 = y;
-			} else if (this._fieldArray[y - 1][x].color != BasePuyo.NONE) {
-				y2 = y;
-				break;
-			}
+	private getDropCoordinate(x: number): Coordinate {
+		const coord = new Coordinate(x, Field.Y_SIZE);
+		for (; coord.y > 0; coord.addY(-1)) {
+			const dCoord = coord.clone().addY(-1);
+			if (this.getPuyo(dCoord).color != BasePuyo.NONE) break;
 		}
-		return y2;
+
+		return coord;
+	}
+
+	private getPuyo(coord: Coordinate): FieldPuyo {
+		return this._fieldArray[coord.y][coord.x];
+	}
+
+	private setPuyo(coord: Coordinate, fieldPuyo: FieldPuyo): void {
+		this._fieldArray[coord.y][coord.x] = fieldPuyo;
 	}
 }

@@ -126,6 +126,8 @@ export abstract class BaseTokopuyo extends BaseMode {
 
 		if (undo == undefined) return;
 
+		this._timelineList.skipToEnd();
+
 		this._puyopuyo.setField(undo.field);
 		this._puyopuyo.setScore(undo.score);
 		this._puyopuyo.backTsumo(false);

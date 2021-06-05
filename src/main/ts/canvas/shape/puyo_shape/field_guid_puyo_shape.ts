@@ -1,47 +1,39 @@
 import { Field } from "../../../game/field";
 import { BasePuyo } from "../../../game/puyo/base_puyo";
+import { Coordinate } from "../../../util/coordinate";
 import { FieldCanvas } from "../../field_canvas";
 import { FieldCellShape } from "../cell_shape/field_cell_shape";
 import { BasePuyoShape } from "./base_puyo_shape";
 
 export class FieldGuidePuyoShape extends BasePuyoShape {
-	// CONSTANT
-	private static readonly SIZE_RATIO = 0.5;
+	// constant
+	public static readonly SIZE_RATIO = 0.5;
+	private static readonly RADIUS = FieldCellShape.CELLSIZE / 2 * FieldGuidePuyoShape.SIZE_RATIO;
 	
 	/**
-	 * コンストラクタ
+	 * constructor
 	 */
 	constructor() {
-		const {x, y} = FieldGuidePuyoShape.convert(0, 0);
-		const radius = FieldCellShape.CELLSIZE / 2 * FieldGuidePuyoShape.SIZE_RATIO;
-		super(x, y, BasePuyo.NONE, radius);
+		const canvasCoord = FieldCanvas.getCanvasCoordinate(new Coordinate(0, 0));
+		canvasCoord.add(FieldCellShape.CELLSIZE * (1 - FieldGuidePuyoShape.SIZE_RATIO) / 2);	// 足す
+		super(canvasCoord.x, canvasCoord.y, BasePuyo.NONE, FieldGuidePuyoShape.RADIUS);
 		this.alpha = this.alpha * 0.5;
 	}
 
+	// method
 	/**
-	 * 
-	 * @param {number} ax 
-	 * @param {number} ay 
-	 * @param {string} color 
+	 * 色と座標を更新
+	 * @param {Coordinate} coord 座標
+	 * @param {string} color 色
 	 */
-	public update(ax: number, ay: number, color: string): void {
-		const {x, y} = FieldGuidePuyoShape.convert(ax, ay);
-		this.x = x;
-		this.y = y;
+	public update(coord: Coordinate, color: string): void {
+		const canvasCoord = FieldCanvas.getCanvasCoordinate(coord);
+		canvasCoord.add(FieldCellShape.CELLSIZE * (1 - FieldGuidePuyoShape.SIZE_RATIO) / 2);	// 足す
+		this.x = canvasCoord.x;
+		this.y = canvasCoord.y;
 		this.setGraphics(color);
 		this.alpha = this.alpha * 0.5;
-		this.visible = (ay < Field.Y_SIZE);
+		this.visible = (coord.y < Field.Y_SIZE);
 	}
 
-	/**
-	 * 
-	 * @param {number} ax 
-	 * @param {number} ay 
-	 * @returns {x: number, y: number}
-	 */
-	private static convert(ax: number, ay: number): {x: number, y: number} {
-		const x = FieldCellShape.CELLSIZE * ax + FieldCellShape.CELLSIZE * (1 - this.SIZE_RATIO) / 2;
-		const y = FieldCellShape.CELLSIZE * FieldCanvas.convertY(ay) + FieldCellShape.CELLSIZE * (1 - this.SIZE_RATIO) / 2;
-		return {x, y};
-	}
 }

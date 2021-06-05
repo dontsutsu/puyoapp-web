@@ -1,10 +1,12 @@
-import { Field } from "../game/field";
-
 /**
  * 定数管理クラス
  */
 export class Constant {
 	// MESSAGE
-	static readonly AJAX_CONNECTING_MSG = "通信中です...";
-	static readonly AJAX_ERROR_MSG = "サーバーとの通信に失敗しました。";
+	public static readonly AJAX_CONNECTING_MSG = "通信中です...";
+	public static readonly AJAX_ERROR_MSG = "サーバーとの通信に失敗しました。";
+
+	// COLOR
+	public static readonly ONE_PLAYER_FRAME_COLOR = "#40B0FF";
+	public static readonly TWO_PLAYER_FRAME_COLOR = "#F57777";
 }

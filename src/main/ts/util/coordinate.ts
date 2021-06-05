@@ -54,6 +54,15 @@ export class Coordinate {
 	}
 
 	/**
+	 * x座標、y座標に足す
+	 * @param {number} n 足す値
+	 * @returns {Coordinate} 計算後の座標
+	 */
+	public add(n: number): Coordinate {
+		return this.addX(n).addY(n);
+	}
+
+	/**
 	 * x座標を任意の関数で計算する
 	 * @param {(x: number) => number} calculateX xを計算する関数 
 	 * @returns {Coordinate} 計算後の座標

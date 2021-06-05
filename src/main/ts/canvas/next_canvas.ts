@@ -2,6 +2,7 @@ import { BaseCanvas } from "./base_canvas";
 import { NextPuyoShape } from "./shape/puyo_shape/next_puyo_shape";
 import { Tsumo } from "../game/tsumo";
 import { Util } from "../util/util";
+import { Constant } from "../util/constant";
 import { Coordinate } from "../util/coordinate";
 
 import { Container, Shape } from "@createjs/easeljs";
@@ -152,7 +153,7 @@ export class NextCanvas extends BaseCanvas {
 	 */
 	private createFrameContainer(): Container {
 		const oFrameColor = "#E0E0E0";
-		const iFrameColor = this._isModel ? "#F57777" : "#40B0FF";
+		const iFrameColor = this._isModel ? Constant.TWO_PLAYER_FRAME_COLOR : Constant.ONE_PLAYER_FRAME_COLOR;
 
 		const sin = Util.sin(NextCanvas.F_SKEW_DEG);
 		const cos = Util.cos(NextCanvas.F_SKEW_DEG);
