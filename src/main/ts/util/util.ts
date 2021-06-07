@@ -1,5 +1,8 @@
 import $ from "jquery";
 
+/**
+ * Utilityクラス
+ */
 export class Util {
 	/**
 	 * 角度（度数法）から正弦を取得します。
@@ -33,9 +36,9 @@ export class Util {
 	}
 
 	/**
-	 * 
-	 * @param size 
-	 * @returns 
+	 * 0 ～ size-1 の範囲の乱数を取得
+	 * @param {number} size 
+	 * @returns {number}
 	 */
 	public static getRandomNumber(size: number): number {
 		return Math.random() * size | 0;

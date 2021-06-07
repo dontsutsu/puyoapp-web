@@ -116,6 +116,7 @@ export class FieldCanvas extends BaseCanvas {
 		}
 	}
 
+	// method
 	/**
 	 * 
 	 * @param {EditableMode} eMode 
@@ -124,6 +125,10 @@ export class FieldCanvas extends BaseCanvas {
 		for (const yarray of this._cellShapeArray) {
 			for (const cellShape of yarray) {
 				cellShape.addEventListener("mousedown", () => {
+					// TODO 右クリックの場合はぷよを消すように変更したい
+					// e.nativeEvent.whichに情報持っている
+					// which=1の場合左、which=3の場合右
+					// nativeEventの取得の仕方が分からないので一旦保留
 					if (!this._isEditable) return;
 					eMode.changeFieldPuyo(cellShape.coord);
 				});
@@ -150,17 +155,12 @@ export class FieldCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
-	 * @param {number} x 
-	 * @param {number} fromY 
-	 * @param {number} toY 
-	 * @returns {Tween}
+	 * 落下のTweenを取得
+	 * @param {Coordinate} fromCoord 落ちる前の座標 
+	 * @param {Coordinate} toCoord 落ちた先の座標
+	 * @returns {Tween} 
 	 */
-	public getDropTween(x: number, fromY: number, toY: number): Tween {
-		// TODO fromCoord,toCoordを引数に
-		const fromCoord = new Coordinate(x, fromY);
-		const toCoord = new Coordinate(x, toY);
-
+	public getDropTween(fromCoord: Coordinate, toCoord: Coordinate): Tween {
 		const val = Util.getAnimateMode();
 
 		const dropPuyo = this.getPuyo(fromCoord);
@@ -207,17 +207,13 @@ export class FieldCanvas extends BaseCanvas {
 	}
 
 	/**
-	 * 
-	 * @param {Tsumo} tsumo 
-	 * @param {number} axisToY 
-	 * @param {number} childToY 
+	 * ツモ落下のTweenを取得
+	 * @param {Tsumo} tsumo ツモ
+	 * @param {Coordinate} axisToCoord 落下前の軸ぷよの座標
+	 * @param {Coordinate} childToCoord 落下前の子ぷよの座標
 	 * @returns {Tween[]}
 	 */
-	public getTsumoDropTween(tsumo: Tsumo, axisToY: number, childToY: number): Tween[] {
-		// TODO axisToCoord,childToCoorを引数に
-		const axisToCoord = new Coordinate(tsumo.axisX, axisToY);
-		const childToCoord = new Coordinate(tsumo.childX, childToY);
-
+	public getTsumoDropTween(tsumo: Tsumo, axisToCoord: Coordinate, childToCoord: Coordinate): Tween[] {
 		const val = Util.getAnimateMode();
 
 		// ツモの座標位置 15,16,17 になるように
@@ -227,7 +223,7 @@ export class FieldCanvas extends BaseCanvas {
 		const tweens: Tween[] = [];
 
 		// axis
-		if (axisToY < Field.Y_SIZE) {
+		if (axisToCoord.y < Field.Y_SIZE) {
 			const axisRemovePuyo = this.getPuyo(axisToCoord);
 			const axisNewPuyo = new FieldPuyoShape(axisFromCoord, tsumo.axisColor);
 			this._container.addChild(axisNewPuyo);
@@ -246,7 +242,7 @@ export class FieldCanvas extends BaseCanvas {
 		}
 
 		// child
-		if (childToY < Field.Y_SIZE) {
+		if (childToCoord.y < Field.Y_SIZE) {
 			const childRemovePuyo = this.getPuyo(childToCoord);
 			const childNewPuyo = new FieldPuyoShape(childFromCoord, tsumo.childColor);
 			this._container.addChild(childNewPuyo);

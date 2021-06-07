@@ -1,16 +1,16 @@
 import { Shape } from "@createjs/easeljs";
 
 export class BaseCellShape extends Shape {
-	// CONSTANT
+	// constant
 	public static readonly BORDER_COLOR = "#F0F0F0";
 
-	// CLASS FIELD
+	// property
 	private _cellsize: number;
 	private _bgColor: string;
 	private _borderColor: string;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param {number} x createjs.Shape.x に設定する値
 	 * @param {number} y createjs.Shape.y に設定する値
 	 * @param {number} cellsize セルのサイズ
@@ -29,6 +29,7 @@ export class BaseCellShape extends Shape {
 		this.setGraphics();
 	}
 
+	// method
 	/**
 	 * 背景色を変更します。
 	 * @param {string} bgColor

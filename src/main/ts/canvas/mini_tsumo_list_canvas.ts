@@ -43,6 +43,7 @@ export class MiniTsumoListCanvas extends BaseCanvas {
 		this._stage.update();
 	}
 
+	// method
 	/**
 	 * 
 	 * @param tsumoListStr

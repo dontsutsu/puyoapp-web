@@ -9,12 +9,13 @@ import { Puyopuyo } from "../game/puyopuyo";
 import { TimelineList } from "../canvas/timeline/timeline_list";
 import { Constant } from "../util/constant";
 
+// entry point
 $(() => {
 	new Early();
 });
 
 export class Early extends BaseTokopuyo {
-	// CLASS FIELD
+	// property
 	private _modelFieldCanvas: FieldCanvas;
 	private _modelTsumoCanvas: TsumoCanvas;
 	private _modelNextCanvas: NextCanvas;
@@ -26,7 +27,7 @@ export class Early extends BaseTokopuyo {
 	private _limit: number;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 */
 	constructor() {
 		super();
@@ -47,6 +48,7 @@ export class Early extends BaseTokopuyo {
 		});
 	}
 
+	// method
 	/**
 	 * @inheritdoc
 	 */

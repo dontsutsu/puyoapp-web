@@ -2,13 +2,14 @@ import { EditableMode } from "./editable_mode";
 import $ from "jquery";
 import { Field } from "../game/field";
 
+// entry point
 $(() => {
 	new Editor();
 });
 
 export class Editor extends EditableMode {
 	/**
-	 * コンストラクタ
+	 * constructor
 	 */
 	constructor() {
 		super();
@@ -36,6 +37,7 @@ export class Editor extends EditableMode {
 		}
 	}
 	
+	// method
 	/**
 	 * @inheritdoc
 	 */

@@ -11,18 +11,19 @@ import { Constant } from "../util/constant";
 import { FieldCanvas } from "../canvas/field_canvas";
 import { MiniTsumoListCanvas } from "../canvas/mini_tsumo_list_canvas";
 
+// entry point
 $(() => {
 	new Nazotoki();
 });
 
 export class Nazotoki extends EditableMode {
-	// CLASS FIELD
+	// property
 	private _tsumoListCanvas: TsumoListCanvas;
 	private _miniTsumoListCanvas: MiniTsumoListCanvas;
 	private _answerList: Tsumo[][];
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 */
 	constructor() {
 		super();
@@ -59,6 +60,7 @@ export class Nazotoki extends EditableMode {
 		});
 	}
 
+	// method
 	/**
 	 * ツモリストの指定のindex、typeのぷよを変更します。
 	 * @param index index（0～9）
@@ -379,6 +381,9 @@ export class Nazotoki extends EditableMode {
 	}
 }
 
+/**
+ * Ajax（findNazopuyoAnswer）の取得データInterface
+ */
 interface FindNazopuyoAnswerInterface {
 	axisColor: string;
 	childColor: string;

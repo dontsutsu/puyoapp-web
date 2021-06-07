@@ -7,7 +7,7 @@ import { Puyopuyo } from "../game/puyopuyo";
 import $ from "jquery";
 
 export abstract class BaseMode {
-	// CLASS FIELD
+	// property
 	protected _fieldCanvas: FieldCanvas;
 	protected _tsumoCanvas: TsumoCanvas;
 	protected _nextCanvas: NextCanvas;
@@ -15,7 +15,7 @@ export abstract class BaseMode {
 	protected _timelineList: TimelineList;
 	
 	/**
-	 * コンストラクタ
+	 * constructor
 	 */
 	constructor() {
 		// createjsで使用するアニメーションのフレームレートを設定しておく

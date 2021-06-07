@@ -13,7 +13,7 @@ export class FieldCellShape extends BaseCellShape {
 	private _coord: Coordinate;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param {Coordinate} coord 座標
 	 */
 	constructor(coord: Coordinate) {
@@ -23,6 +23,7 @@ export class FieldCellShape extends BaseCellShape {
 		this.alpha = coord.y == Field.Y_SIZE - 1 ? 0.01 : 1.0;
 	}
 
+	// method
 	/**
 	 * マウスオーバー
 	 */

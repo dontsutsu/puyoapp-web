@@ -119,11 +119,6 @@ export class BoxCanvas extends BaseCanvas {
 		this._selectColor = BoxCanvas.KEY_ORDER[i];
 	}
 
-	// accessor
-	get selectColor(): string {
-		return this._selectColor;
-	}
-
 	// static method
 	/**
 	 * boxの座標からcanvas上の座標を取得
@@ -141,5 +136,10 @@ export class BoxCanvas extends BaseCanvas {
 	 */
 	public static getIndex(coord: Coordinate): number {
 		return coord.x + BoxCanvas.X_SIZE * coord.y;
+	}
+	
+	// accessor
+	get selectColor(): string {
+		return this._selectColor;
 	}
 }

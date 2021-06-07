@@ -51,6 +51,7 @@ export class TsumoCanvas extends BaseCanvas {
 		}
 	}
 
+	// method
 	/**
 	 * 初期化します。
 	 * @param {Tsumo} tsumo 

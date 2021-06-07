@@ -3,18 +3,18 @@ import { TsumoPuyo } from "./puyo/tsumo_puyo";
 import { EnumTsumoChildPosition } from "./enum_tsumo_child_position";
 
 export class Tsumo {
-	// CONSTANT
+	// constant
 	public static readonly INI_AXIS_X = 2;
 	private static readonly INI_CHILD_POSITION = EnumTsumoChildPosition.TOP;
 
-	// CLASS FIELD
+	// property
 	private _axisPuyo: TsumoPuyo;	// 軸ぷよ
 	private _childPuyo: TsumoPuyo;	// 子ぷよ
 	private _childPosition: EnumTsumoChildPosition;
 	private _axisX: number;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param {string} axisColor 軸ぷよの色
 	 * @param {string} childColor 子ぷよの色
 	 */
@@ -25,6 +25,7 @@ export class Tsumo {
 		this._axisX = Tsumo.INI_AXIS_X;
 	}
 
+	// method
 	/**
 	 * ツモを動かします。
 	 * @param {number} vec 動かす距離と方向（ex　右に1：+1、左に2：-2）
@@ -81,7 +82,7 @@ export class Tsumo {
 		this._axisX = Tsumo.INI_AXIS_X;
 	}
 
-	// ACCESSOR
+	// accessor
 	get axisPuyo(): TsumoPuyo {
 		return this._axisPuyo;
 	}

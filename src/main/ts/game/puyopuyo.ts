@@ -8,12 +8,12 @@ import { Tsumo } from "./tsumo";
 import { Tsumos } from "./tsumos";
 
 export class Puyopuyo {
-	// CLASS FIELD
+	// property
 	private _field: Field;
 	private _tsumos: Tsumos;	// 0：current、1：next、2：doubleNext
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param {FieldCanvas} fieldCanvas 
 	 * @param {TsumoCanvas} tsumoCanvas 
 	 * @param {NextCanvas} nextCanvas 
@@ -23,6 +23,7 @@ export class Puyopuyo {
 		this._tsumos = new Tsumos(tsumoCanvas, nextCanvas);
 	}
 
+	// method
 	/**
 	 * フィールドのぷよを落とし、連鎖処理を実行します。
 	 * @returns {TimelineList}

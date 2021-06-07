@@ -2,11 +2,11 @@ import { Stage } from "@createjs/easeljs";
 import { Ticker } from "@createjs/tweenjs";
 
 export abstract class BaseCanvas {
-	// CLASS FIELD
+	// property
 	protected _stage: Stage;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param {string} canvasId canvasのID 
 	 * @param {boolean} isTick true：アニメーションあり / false：アニメーションなし
 	 */

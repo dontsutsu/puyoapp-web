@@ -2,7 +2,7 @@ import { Container, Shape } from "@createjs/easeljs";
 import { BaseCanvas } from "./base_canvas";
 
 export class NoticeCanvas extends BaseCanvas {
-	// CONSTANT
+	// constant
 	private static readonly DICT = [
 		  { name: "small", qty:   1, graphic: NoticeCanvas.smallGraphic }
 		, { name: "big"  , qty:   6, graphic: NoticeCanvas.bigGraphic   }
@@ -15,11 +15,11 @@ export class NoticeCanvas extends BaseCanvas {
 	private static readonly SHAPE_SIZE = 35;
 	private static readonly THICKNESS = NoticeCanvas.SHAPE_SIZE / 20;
 	
-	// CLASS FIELD
+	// property
 	private _noticePuyoList: Shape[];
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 */
 	constructor() {
 		super("notice", false);

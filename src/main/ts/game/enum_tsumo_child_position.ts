@@ -1,12 +1,12 @@
 export class EnumTsumoChildPosition {
-	// CONSTANT
+	// constant
 	private static VALUES = new Array<EnumTsumoChildPosition>();
 	public static readonly TOP    = new EnumTsumoChildPosition("TOP"   , "T", 0,  0,  1);
 	public static readonly RIGHT  = new EnumTsumoChildPosition("RIGHT" , "R", 1,  1,  0);
 	public static readonly BOTTOM = new EnumTsumoChildPosition("BOTTOM", "B", 2,  0, -1);
 	public static readonly LEFT   = new EnumTsumoChildPosition("LEFT"  , "L", 3, -1,  0);
 
-	// CLASS FIELD
+	// property
 	private _name: string;
 	private _value: string;
 	private _index: number;
@@ -14,7 +14,7 @@ export class EnumTsumoChildPosition {
 	private _childRelativeY: number;
 
 	/**
-	 * 
+	 * constructor
 	 * @param {string} name 
 	 * @param {number} index 
 	 * @param {number} childRelativeX 
@@ -30,6 +30,7 @@ export class EnumTsumoChildPosition {
 		EnumTsumoChildPosition.VALUES.push(this);
 	}
 
+	// method
 	/**
 	 * 回転後のEnumTsumoPositionを取得します。
 	 * @param {boolean} clockwise true：時計周り / false：反時計周り
@@ -74,7 +75,7 @@ export class EnumTsumoChildPosition {
 		return rtn;
 	}
 
-	// ACCESSOR
+	// accessor
 	get name(): string {
 		return this._name;
 	}

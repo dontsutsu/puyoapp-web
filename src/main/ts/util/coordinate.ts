@@ -1,3 +1,6 @@
+/**
+ * xy座標クラス
+ */
 export class Coordinate {
 	// properties
 	private _x: number;

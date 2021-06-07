@@ -8,7 +8,7 @@ import $ from "jquery";
 import { Coordinate } from "../util/coordinate";
 
 export class TsumoListCanvas extends BaseCanvas {
-	// CONSTANT
+	// constant
 	public static readonly X_SIZE = 5;
 	public static readonly Y_SIZE = 2;
 	public static readonly I_SIZE = TsumoListCanvas.X_SIZE * TsumoListCanvas.Y_SIZE;
@@ -19,14 +19,14 @@ export class TsumoListCanvas extends BaseCanvas {
 	private static readonly TYPE_AXIS = 1;
 	private static readonly TYPES = [TsumoListCanvas.TYPE_CHILD, TsumoListCanvas.TYPE_AXIS];
 
-	// CLASS FIELD
+	// property
 	private _cellShapeArray: TsumoListCellShape[][];
 	private _puyoShapeArray: TsumoListPuyoShape[][];
 	private _colorArray: string[][];
 	private _isEditable: boolean;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 */
 	constructor() {
 		super(TsumoListCanvas.CANVAS_ID, false);
@@ -96,6 +96,7 @@ export class TsumoListCanvas extends BaseCanvas {
 		this._stage.update();
 	}
 
+	// method
 	/**
 	 * マウスイベントを設定します。
 	 * @param {Nazotoki} nazotoki 
@@ -212,11 +213,6 @@ export class TsumoListCanvas extends BaseCanvas {
 		this._stage.update();
 	}
 
-	// accessor
-	set isEditable(isEditable: boolean) {
-		this._isEditable = isEditable;
-	}
-
 	// static method
 	/**
 	 * ツモリストの座標・ツモのタイプからcanvas上の座標を取得
@@ -237,5 +233,10 @@ export class TsumoListCanvas extends BaseCanvas {
 	 */
 	public static getIndex(coord: Coordinate): number {
 		return coord.x + coord.y * TsumoListCanvas.X_SIZE;
+	}
+
+	// accessor
+	set isEditable(isEditable: boolean) {
+		this._isEditable = isEditable;
 	}
 }

@@ -5,7 +5,7 @@ import { BasePuyo } from "../../../game/puyo/base_puyo";
  * ぷよ用 createjs.Shape 基底クラス
  */
 export class BasePuyoShape extends Shape {
-	// CONSTANT
+	// constant
 	private static readonly PUYO_DICT: PuyoShapeDictionary[] = [
 		  { color: BasePuyo.GREEN , bgColor: "#68EE26", alpha: 1, borderColor: "#236F1A" }
 		, { color: BasePuyo.RED   , bgColor: "#F34A49", alpha: 1, borderColor: "#852D20" }
@@ -17,13 +17,13 @@ export class BasePuyoShape extends Shape {
 	];
 	protected static readonly THICKNESS_RATIO = 0.1;
 
-	// CLASS FIELD
+	// property
 	private _color: string;
 	private _radius: number;
 	private _thickness: number;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param {number} x createjs.Shape.x に設定する値
 	 * @param {number} y createjs.Shape.y に設定する値
 	 * @param {string} color 色
@@ -39,6 +39,7 @@ export class BasePuyoShape extends Shape {
 		this.setGraphics(color);
 	}
 
+	// method
 	/**
 	 * 指定の色でぷよを描画します。
 	 * @param {string} color 色
@@ -86,7 +87,7 @@ export class BasePuyoShape extends Shape {
 		return dict;
 	}
 
-	// ACCESSOR
+	// accessor
 	get color(): string {
 		return this._color;
 	}

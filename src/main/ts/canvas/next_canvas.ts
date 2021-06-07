@@ -64,6 +64,7 @@ export class NextCanvas extends BaseCanvas {
 		}
 	}
 
+	// method
 	/**
 	 * 初期化します。
 	 * @param {Tsumo} next ネクスト

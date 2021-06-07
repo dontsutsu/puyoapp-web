@@ -1,5 +1,5 @@
 export class BasePuyo {
-	// CONSTANT
+	// constant
 	public static readonly GREEN  = "1";
 	public static readonly RED    = "2";
 	public static readonly BLUE   = "3";
@@ -8,18 +8,18 @@ export class BasePuyo {
 	public static readonly NONE   = "0";
 	public static readonly OJAMA  = "9";
 
-	// CLASS FIELD
+	// property
 	private _color: string;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param {string} color 色
 	 */
 	constructor(color: string) {
 		this._color = color;
 	}
 
-	// ACCESSOR
+	// accessor
 	get color(): string {
 		return this._color;
 	}

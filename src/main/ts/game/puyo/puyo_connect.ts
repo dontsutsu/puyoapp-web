@@ -1,17 +1,18 @@
 export class PuyoConnect {
-	// CONSTANT
+	// constant
 	private static readonly ERASE_SIZE = 4;
 
-	// CLASS FIELD
+	// property
 	private _size: number;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 */
 	constructor() {
 		this._size = 1;
 	}
 
+	// method
 	/**
 	 * 連結数を1増やします。
 	 */
@@ -27,9 +28,8 @@ export class PuyoConnect {
 		return this._size >= PuyoConnect.ERASE_SIZE;
 	}
 
-	// ACCESSOR
+	// accessor
 	get size(): number {
 		return this._size;
 	}
-
 }

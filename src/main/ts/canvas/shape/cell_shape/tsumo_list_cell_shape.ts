@@ -28,6 +28,7 @@ export class TsumoListCellShape extends BaseCellShape {
 		this._index = TsumoListCanvas.getIndex(coord);
 	}
 
+	// method
 	/**
 	 * マウスオーバーしたときに行う処理
 	 */

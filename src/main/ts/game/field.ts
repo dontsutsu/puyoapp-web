@@ -45,6 +45,7 @@ export class Field {
 		}
 	}
 
+	// method
 	/**
 	 * ツモをフィールドに落とします。
 	 * @param {Tsumo} tsumo ツモ
@@ -62,7 +63,7 @@ export class Field {
 		// アニメーション
 		const timelineList = new TimelineList();
 		const timeline = new Timeline({paused: true});
-		const tweenList = this._fieldCanvas.getTsumoDropTween(tsumo, axisToCoord.y, childToCoord.y);
+		const tweenList = this._fieldCanvas.getTsumoDropTween(tsumo, axisToCoord, childToCoord);
 		timeline.addTween(...tweenList);
 		timelineList.push(timeline);
 		return timelineList;
@@ -252,7 +253,7 @@ export class Field {
 				this.setPuyo(fromCoord, new FieldPuyo());
 
 				// アニメーション
-				const tween = this._fieldCanvas.getDropTween(x, fromCoord.y, toCoord.y);
+				const tween = this._fieldCanvas.getDropTween(fromCoord, toCoord);
 				timeline.addTween(tween);
 			}
 		}

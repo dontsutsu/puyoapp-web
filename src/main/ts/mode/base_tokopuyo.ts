@@ -2,11 +2,11 @@ import { BaseMode } from "./base_mode";
 import $ from "jquery";
 
 export abstract class BaseTokopuyo extends BaseMode {
-	// CLASS FIELD
+	// property
 	protected _undoStack: {field: string, score: number}[];
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 */
 	constructor() {
 		super();
@@ -62,6 +62,7 @@ export abstract class BaseTokopuyo extends BaseMode {
 		});
 	}
 
+	// method
 	/**
 	 * ツモ操作前に、操作可能かどうかをチェックします。
 	 * @returns {boolean} true：操作可能 / false：操作不可

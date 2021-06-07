@@ -8,7 +8,7 @@ export class TsumoPuyoShape extends BasePuyoShape {
 	private static readonly RADIUS = TsumoCellShape.CELLSIZE / 2;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param {Coordinate} coord
 	 * @param {string} color 
 	 */

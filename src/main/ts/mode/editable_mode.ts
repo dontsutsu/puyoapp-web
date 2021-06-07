@@ -4,16 +4,16 @@ import $ from "jquery";
 import { Coordinate } from "../util/coordinate";
 
 export abstract class EditableMode extends BaseMode {
-	// CONSTANT
+	// constant
 	private static readonly UNDO_MAX = 100;
 
-    // CLASS FIELD
+    // property
 	private _boxCanvas: BoxCanvas;
 	private _undoStack: string[];
 	private _redoStack: string[];
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 */
 	constructor() {
 		super();
@@ -40,6 +40,7 @@ export abstract class EditableMode extends BaseMode {
 		});
 	}
 
+	// method
 	/**
 	 * フィールドの指定座標のぷよを変更します。
 	 * @param {Coordinate} coord 座標

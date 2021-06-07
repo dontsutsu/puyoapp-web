@@ -7,13 +7,13 @@ import { BasePuyo } from "./puyo/base_puyo";
 import { Tsumo } from "./tsumo";
 
 export class Tsumos {
-	// CLASS FIELD
+	// property
 	private _list: Tsumo[];
 	private _tsumoCanvas: TsumoCanvas;
 	private _nextCanvas: NextCanvas;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 * @param {TsumoCanvas} tsumoCanvas 
 	 * @param {NextCanvas} nextCanvas 
 	 */
@@ -23,6 +23,7 @@ export class Tsumos {
 		this._nextCanvas = nextCanvas;
 	}
 
+	// method
 	/**
 	 * ツモを動かします。
 	 * @param {number} vec 動かす距離と方向（ex　右に1：+1、左に2：-2）
@@ -182,7 +183,7 @@ export class Tsumos {
 			&& list[2] != list[3];
 	}
 
-	// ACCESSOR
+	// accessor
 	get current(): Tsumo {
 		return this._list[0];
 	}
