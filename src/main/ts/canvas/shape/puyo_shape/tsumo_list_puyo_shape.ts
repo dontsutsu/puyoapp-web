@@ -12,10 +12,10 @@ export class TsumoListPuyoShape extends BasePuyoShape {
 	 * constructor
 	 * @param {Coordinate} coord ツモリストの座標 
 	 * @param {number} type 0：子ぷよ、1：軸ぷよ
-	 * @param {string} color 色
+	 * @param {string} [color] 色
 	 */
 	constructor(coord: Coordinate, type: number, color: string = BasePuyo.NONE) {
 		const canvasCoord = TsumoListCanvas.getCanvasCoordinate(coord, type);
-		super(canvasCoord.x, canvasCoord.y, color, TsumoListPuyoShape.RADIUS);
+		super(canvasCoord, color, TsumoListPuyoShape.RADIUS);
 	}
 }

@@ -1,4 +1,5 @@
 import { Shape } from "@createjs/easeljs";
+import { Coordinate } from "../../../util/coordinate";
 
 export class BaseCellShape extends Shape {
 	// constant
@@ -11,17 +12,16 @@ export class BaseCellShape extends Shape {
 
 	/**
 	 * constructor
-	 * @param {number} x createjs.Shape.x に設定する値
-	 * @param {number} y createjs.Shape.y に設定する値
+	 * @param {Coordinate} canvasCoord canvas上の座標
 	 * @param {number} cellsize セルのサイズ
 	 * @param {string} bgColor 背景色
 	 * @param {string} [borderColor] 枠の色
 	 */
-	constructor(x: number, y: number, cellsize: number, bgColor: string, borderColor: string = BaseCellShape.BORDER_COLOR) {
+	constructor(canvasCoord: Coordinate, cellsize: number, bgColor: string, borderColor: string = BaseCellShape.BORDER_COLOR) {
 		super();
 
-		this.x = x;
-		this.y = y;
+		this.x = canvasCoord.x;
+		this.y = canvasCoord.y;
 		this._cellsize = cellsize;
 		this._bgColor = bgColor;
 		this._borderColor = borderColor;

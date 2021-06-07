@@ -18,7 +18,7 @@ export class FieldCellShape extends BaseCellShape {
 	 */
 	constructor(coord: Coordinate) {
 		const canvasCoord = FieldCanvas.getCanvasCoordinate(coord);
-		super(canvasCoord.x, canvasCoord.y, FieldCellShape.CELLSIZE, FieldCellShape.BG_COLOR);
+		super(canvasCoord, FieldCellShape.CELLSIZE, FieldCellShape.BG_COLOR);
 		this._coord = coord;
 		this.alpha = coord.y == Field.Y_SIZE - 1 ? 0.01 : 1.0;
 	}

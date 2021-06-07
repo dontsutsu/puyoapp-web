@@ -1,31 +1,32 @@
 import { Timeline } from "@createjs/tweenjs";
 
 export class TimelineList {
-	// CLASS FIELD
+	// property
 	private _timelineList: Timeline[];
 	private _isAnimation: boolean;
 
 	/**
-	 * コンストラクタ
+	 * constructor
 	 */
 	constructor() {
 		this._timelineList = [];
 		this._isAnimation = false;
 	}
 
+	// method
 	/**
-	 * 
-	 * @param {Timeline} timeline 
-	 * @returns {number}
+	 * Timelineを追加
+	 * @param {Timeline} timeline Timeline
+	 * @returns {number} 要素数
 	 */
 	public push(timeline: Timeline): number {
 		return this._timelineList.push(timeline);
 	}
 
 	/**
-	 * 
-	 * @param {TimelineList[]} timelineListArray 
-	 * @returns {TimelineList}
+	 * TimelineListを足し合わせる
+	 * @param {TimelineList[]} timelineListArray TimelineListの配列
+	 * @returns {TimelineList} 足し合わせた後のTimelineList
 	 */
 	public add(...timelineListArray: TimelineList[]): TimelineList {
 		for (let i = 0; i < timelineListArray.length; i++) {
@@ -39,9 +40,9 @@ export class TimelineList {
 	}
 
 	/**
-	 * 
-	 * @param before 
-	 * @param after 
+	 * TimelineListを再生
+	 * @param {() => void} [before] 再生前の処理（コールバック関数）
+	 * @param {() => void} [after] 再生後の処理（コールバック関数）
 	 */
 	public play(before?: () => void, after?: () => void): void {
 		if (this._timelineList.length == 0) return;
@@ -93,7 +94,7 @@ export class TimelineList {
 		}
 	}
 
-	// ACCESSOR
+	// accessor
 	get isAnimation(): boolean {
 		return this._isAnimation;
 	}

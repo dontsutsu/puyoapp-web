@@ -7,7 +7,7 @@ export class FieldPuyo extends BasePuyo {
 
     /**
      * constructor
-     * @param {string} color 色
+     * @param {string} [color] 色
      */
     constructor(color: string = BasePuyo.NONE) {
         super(color);

@@ -86,7 +86,7 @@ export abstract class EditableMode extends BaseMode {
 
 	/**
 	 * 指定の関数を実行時に履歴登録の処理を行います。
-	 * @param doing callback関数
+	 * @param {() => void} doing callback関数
 	 */
 	public doWithRecordHistory(doing: () => void) {
 		const before = this.getState();

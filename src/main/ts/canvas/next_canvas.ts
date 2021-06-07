@@ -36,7 +36,7 @@ export class NextCanvas extends BaseCanvas {
 	/**
 	 * constructor
 	 * @param {string} canvasId canvasのID 
-	 * @param {boolean} isModel
+	 * @param {boolean} [isModel] model（2p）かどうか
 	 */
 	constructor(canvasId: string, isModel: boolean = false) {
 		super(canvasId, true);

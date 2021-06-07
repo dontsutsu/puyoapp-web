@@ -14,6 +14,6 @@ export class TsumoCellShape extends BaseCellShape {
 	 */
 	constructor(coord: Coordinate) {
 		const canvasCoord = TsumoCanvas.getCanvasCoordinate(coord); 
-		super(canvasCoord.x, canvasCoord.y, TsumoCellShape.CELLSIZE, TsumoCellShape.BG_COLOR);
+		super(canvasCoord, TsumoCellShape.CELLSIZE, TsumoCellShape.BG_COLOR);
 	}
 }

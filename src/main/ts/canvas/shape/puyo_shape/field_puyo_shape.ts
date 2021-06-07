@@ -14,10 +14,10 @@ export class FieldPuyoShape extends BasePuyoShape {
 	/**
 	 * constructor
 	 * @param {Coordinate} coord 座標
-	 * @param {string} color 色
+	 * @param {string} [color] 色
 	 */
 	constructor(coord: Coordinate, color: string = BasePuyo.NONE) {
 		const canvasCoord = FieldCanvas.getCanvasCoordinate(coord);
-		super(canvasCoord.x, canvasCoord.y, color, FieldPuyoShape.RADIUS);
+		super(canvasCoord, color, FieldPuyoShape.RADIUS);
 	}
 }

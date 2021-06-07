@@ -14,6 +14,6 @@ export class NextPuyoShape extends BasePuyoShape {
 	 */
 	constructor(next: number, type: number, color: string) {
 		const canvasCoord = NextCanvas.getCanvasCoordinate(next, type);
-		super(canvasCoord.x, canvasCoord.y, color, NextPuyoShape.RADIUS);
+		super(canvasCoord, color, NextPuyoShape.RADIUS);
 	}
 }

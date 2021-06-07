@@ -14,6 +14,6 @@ export class MiniTsumoListPuyoShape extends BasePuyoShape {
 	 */
 	constructor(index: number, type: number) {
 		const canvasCoord = MiniTsumoListCanvas.getCanvasCoordinate(index, type);
-		super(canvasCoord.x, canvasCoord.y, BasePuyo.NONE, MiniTsumoListPuyoShape.RADIUS);
+		super(canvasCoord, BasePuyo.NONE, MiniTsumoListPuyoShape.RADIUS);
 	}
 }

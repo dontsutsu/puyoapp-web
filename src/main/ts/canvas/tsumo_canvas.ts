@@ -196,7 +196,7 @@ export class TsumoCanvas extends BaseCanvas {
 	 * @param {Coordinate} coord ツモの座標
 	 * @returns {Coordinate} canvas上の座標
 	 */
-	public static getCanvasCoordinate(coord: Coordinate) {
+	public static getCanvasCoordinate(coord: Coordinate): Coordinate {
 		const canvasCoord = coord.clone()
 			.calculateY(TsumoCanvas.convertY)
 			.times(TsumoCellShape.CELLSIZE);

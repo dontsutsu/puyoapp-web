@@ -498,10 +498,20 @@ export class Field {
 		return coord;
 	}
 
+	/**
+	 * 座標からFieldPuyoを取得
+	 * @param {Coordinate} coord 座標
+	 * @returns {FieldPuyo} ぷよ
+	 */
 	private getPuyo(coord: Coordinate): FieldPuyo {
 		return this._fieldArray[coord.y][coord.x];
 	}
 
+	/**
+	 * 座標にFieldPuyoをセット
+	 * @param {Coordinate} coord 座標 
+	 * @param {FieldPuyo} fieldPuyo ぷよ
+	 */
 	private setPuyo(coord: Coordinate, fieldPuyo: FieldPuyo): void {
 		this._fieldArray[coord.y][coord.x] = fieldPuyo;
 	}

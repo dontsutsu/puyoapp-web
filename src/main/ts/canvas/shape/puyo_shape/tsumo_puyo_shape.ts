@@ -14,6 +14,6 @@ export class TsumoPuyoShape extends BasePuyoShape {
 	 */
 	constructor(coord: Coordinate, color: string) {
 		const canvasCoord = TsumoCanvas.getCanvasCoordinate(coord);
-		super(canvasCoord.x, canvasCoord.y, color, TsumoPuyoShape.RADIUS);
+		super(canvasCoord, color, TsumoPuyoShape.RADIUS);
 	}
 }

@@ -41,7 +41,7 @@ export class FieldCanvas extends BaseCanvas {
 	/**
 	 * constructor
 	 * @param {string} canvasId canvasのID 
-	 * @param {boolean} isModel
+	 * @param {boolean} [isModel] model（2p）のフィールドかどうか
 	 */
 	constructor(canvasId: string, isModel: boolean = false) {
 		super(canvasId, true);

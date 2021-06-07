@@ -20,7 +20,7 @@ export class BoxCellShape extends BaseCellShape {
 		const index = BoxCanvas.getIndex(coord);
 		const bgColor = index < BoxCanvas.KEY_ORDER.length ? BoxCellShape.ENABLED_COLOR : BoxCellShape.DISABLED_COLOR;
 		const canvasCoord = BoxCanvas.getCanvasCoordinate(coord);
-		super(canvasCoord.x, canvasCoord.y, BoxCellShape.CELLSIZE, bgColor, BoxCellShape.BOX_BORDER_COLOR);
+		super(canvasCoord, BoxCellShape.CELLSIZE, bgColor, BoxCellShape.BOX_BORDER_COLOR);
 		
 		this._coord = coord;
 	}

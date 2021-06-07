@@ -16,7 +16,7 @@ export class FieldGuidePuyoShape extends BasePuyoShape {
 	constructor() {
 		const canvasCoord = FieldCanvas.getCanvasCoordinate(new Coordinate(0, 0));
 		canvasCoord.add(FieldCellShape.CELLSIZE * (1 - FieldGuidePuyoShape.SIZE_RATIO) / 2);	// 足す
-		super(canvasCoord.x, canvasCoord.y, BasePuyo.NONE, FieldGuidePuyoShape.RADIUS);
+		super(canvasCoord, BasePuyo.NONE, FieldGuidePuyoShape.RADIUS);
 		this.alpha = this.alpha * 0.5;
 	}
 

@@ -72,6 +72,7 @@ export class Puyopuyo {
 
 	/**
 	 * とこぷよ開始時の初期化処理を行います。
+	 * @param {Tsumo[]} [tsumoList] 
 	 */
 	public initTokopuyo(tsumoList?: Tsumo[]): void {
 		// フィールドを初期化
@@ -165,14 +166,14 @@ export class Puyopuyo {
 	}
 
 	/**
-	 * 
+	 * ガイドを非表示にする。
 	 */
 	public hideGuide(): void {
 		this._field.hideGuide();
 	}
 
 	/**
-	 * 
+	 * ガイドをセットする。
 	 */
 	public setGuide(): void {
 		this._field.setGuide(this._tsumos.current);

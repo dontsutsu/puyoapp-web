@@ -17,6 +17,6 @@ export class BoxPuyoShape extends BasePuyoShape {
 	 */
 	constructor(coord: Coordinate, color: string) {
 		const canvasCoord = BoxCanvas.getCanvasCoordinate(coord);
-		super(canvasCoord.x, canvasCoord.y, color, BoxPuyoShape.RADIUS);
+		super(canvasCoord, color, BoxPuyoShape.RADIUS);
 	}
 }
