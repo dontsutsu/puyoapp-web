@@ -3,13 +3,13 @@ import { Tween, Ease } from "@createjs/tweenjs";
 import { EnumTsumoChildPosition } from "../game/enum_tsumo_child_position";
 import { Field } from "../game/field";
 import { Tsumo } from "../game/tsumo";
-import { Util } from "../util/util";
 import { BaseCanvas } from "./base_canvas";
 import { FieldCanvas } from "./field_canvas";
 import { TsumoCellShape } from "./shape/cell_shape/tsumo_cell_shape";
 import { TsumoPuyoShape } from "./shape/puyo_shape/tsumo_puyo_shape";
 import $ from "jquery";
 import { Coordinate } from "../util/coordinate";
+import { BaseMode } from "../mode/base_mode";
 
 export class TsumoCanvas extends BaseCanvas {
 	// constant
@@ -73,7 +73,7 @@ export class TsumoCanvas extends BaseCanvas {
 	 * @returns {Tween[]}
 	 */
 	public getMoveTween(fromAX: number, toAX: number, position: EnumTsumoChildPosition): Tween[] {
-		const val = Util.getAnimateMode();
+		const val = BaseMode.getAnimateMode();
 		const diffAX = toAX - fromAX;
 
 		// axis
@@ -102,7 +102,7 @@ export class TsumoCanvas extends BaseCanvas {
 	 * @returns {Tween[]}
 	 */
 	public getRotateTween(fromAxisAX: number, toAxisAX: number, beforePosition: EnumTsumoChildPosition, afterPosition: EnumTsumoChildPosition): Tween[] {
-		const val = Util.getAnimateMode();
+		const val = BaseMode.getAnimateMode();
 		
 		// axis
 		const fromAxisX = TsumoCellShape.CELLSIZE * fromAxisAX;
@@ -136,7 +136,7 @@ export class TsumoCanvas extends BaseCanvas {
 	 * @returns {Tween[]}
 	 */
 	public getDropTween(beforePosition: EnumTsumoChildPosition): Tween[] {
-		const val = Util.getAnimateMode();
+		const val = BaseMode.getAnimateMode();
 
 		// axis
 		const fromAxisY = TsumoCellShape.CELLSIZE * TsumoCanvas.convertY(1);
@@ -161,7 +161,7 @@ export class TsumoCanvas extends BaseCanvas {
 	 * @returns {Tween[]} 
 	 */
 	public advance(tsumo: Tsumo): Tween[] {
-		const val = Util.getAnimateMode();
+		const val = BaseMode.getAnimateMode();
 		const diffY = 3;
 
 		const oldAxisPuyo = this._axisPuyoShape;

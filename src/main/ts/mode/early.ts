@@ -1,13 +1,13 @@
 import { BaseTokopuyo } from "./base_tokopuyo";
 import $ from "jquery";
 import { FieldCanvas } from "../canvas/field_canvas";
-import { Util } from "../util/util";
 import { Tsumo } from "../game/tsumo";
 import { TsumoCanvas } from "../canvas/tsumo_canvas";
 import { NextCanvas } from "../canvas/next_canvas";
 import { Puyopuyo } from "../game/puyopuyo";
 import { TimelineList } from "../canvas/timeline/timeline_list";
 import { Constant } from "../util/constant";
+import { BaseMode } from "./base_mode";
 
 // entry point
 $(() => {
@@ -105,7 +105,7 @@ export class Early extends BaseTokopuyo {
 		}
 
 		// ロード画面
-		Util.dispLoading(Constant.AJAX_CONNECTING_MSG);
+		BaseMode.displayLoading(Constant.AJAX_CONNECTING_MSG);
 
 		$.ajax({
 			type: "POST",
@@ -157,10 +157,10 @@ export class Early extends BaseTokopuyo {
 			}
 		})
 		.fail(() => {
-			Util.dispMsg(Constant.AJAX_ERROR_MSG, "2");
+			BaseMode.displayDialog(Constant.AJAX_ERROR_MSG, "2");
 		})
 		.always(() => {
-			Util.removeLoading();
+			BaseMode.removeLoading();
 		});
 	}
 
@@ -172,7 +172,7 @@ export class Early extends BaseTokopuyo {
 	 */
 	private findEarlyDataTsumo(playerId: string, date: string, seq: string): void {
 		// ロード画面
-		Util.dispLoading(Constant.AJAX_CONNECTING_MSG);
+		BaseMode.displayLoading(Constant.AJAX_CONNECTING_MSG);
 
 		$.ajax({
 			type: "POST",
@@ -196,10 +196,10 @@ export class Early extends BaseTokopuyo {
 			this._undoStack.length = 0;
 			this._modelUndoStack.length = 0;
 		}).fail(() => {
-			Util.dispMsg(Constant.AJAX_ERROR_MSG, "2");
+			BaseMode.displayDialog(Constant.AJAX_ERROR_MSG, "2");
 		})
 		.always(() => {
-			Util.removeLoading();
+			BaseMode.removeLoading();
 		});
 	}
 

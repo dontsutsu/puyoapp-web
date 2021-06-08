@@ -10,6 +10,7 @@ import { TimelineList } from "./timeline/timeline_list";
 import { Util } from "../util/util";
 import { Constant } from "../util/constant";
 import { Coordinate } from "../util/coordinate";
+import { BaseMode } from "../mode/base_mode";
 
 import { Container, Shadow, Shape, Text } from "@createjs/easeljs";
 import { Tween, Timeline } from "@createjs/tweenjs";
@@ -161,7 +162,7 @@ export class FieldCanvas extends BaseCanvas {
 	 * @returns {Tween} 
 	 */
 	public getDropTween(fromCoord: Coordinate, toCoord: Coordinate): Tween {
-		const val = Util.getAnimateMode();
+		const val = BaseMode.getAnimateMode();
 
 		const dropPuyo = this.getPuyo(fromCoord);
 		const removePuyo = this.getPuyo(toCoord);
@@ -189,7 +190,7 @@ export class FieldCanvas extends BaseCanvas {
 	 * @returns {Tween}
 	 */
 	public getErasetween(coord: Coordinate, eraseColor: string): Tween {
-		const val = Util.getAnimateMode();
+		const val = BaseMode.getAnimateMode();
 
 		const erasePuyo = this.getPuyo(coord);
 
@@ -214,7 +215,7 @@ export class FieldCanvas extends BaseCanvas {
 	 * @returns {Tween[]}
 	 */
 	public getTsumoDropTween(tsumo: Tsumo, axisToCoord: Coordinate, childToCoord: Coordinate): Tween[] {
-		const val = Util.getAnimateMode();
+		const val = BaseMode.getAnimateMode();
 
 		// ツモの座標位置 15,16,17 になるように
 		const axisFromCoord = new Coordinate(tsumo.axisX, Field.Y_SIZE + 2 + tsumo.axisY);

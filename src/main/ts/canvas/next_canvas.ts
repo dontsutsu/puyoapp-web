@@ -4,6 +4,7 @@ import { Tsumo } from "../game/tsumo";
 import { Util } from "../util/util";
 import { Constant } from "../util/constant";
 import { Coordinate } from "../util/coordinate";
+import { BaseMode } from "../mode/base_mode";
 
 import { Container, Shape } from "@createjs/easeljs";
 import { Tween } from "@createjs/tweenjs";
@@ -89,7 +90,7 @@ export class NextCanvas extends BaseCanvas {
 	 * @returns {Tween[]} 
 	 */
 	public advance(tsumo: Tsumo): Tween[] {
-		const val = Util.getAnimateMode();
+		const val = BaseMode.getAnimateMode();
 		const naCoord = NextCanvas.getCanvasCoordinate(NextCanvas.NEXT, NextCanvas.TYPE_AXIS);
 		const ncCoord = NextCanvas.getCanvasCoordinate(NextCanvas.NEXT, NextCanvas.TYPE_CHILD);
 		const dnaCoord = NextCanvas.getCanvasCoordinate(NextCanvas.DOUBLE_NEXT, NextCanvas.TYPE_AXIS);

@@ -1,15 +1,16 @@
 import { EditableMode } from "./editable_mode";
-import $ from "jquery";
-import { TsumoListCanvas } from "../canvas/tsumo_list_canvas";
-import { Util } from "../util/util";
+import { Field } from "../game/field";
 import { Tsumo } from "../game/tsumo";
-import { TimelineList } from "../canvas/timeline/timeline_list";
 import { BasePuyo } from "../game/puyo/base_puyo";
 import { EnumTsumoChildPosition } from "../game/enum_tsumo_child_position";
-import { Field } from "../game/field";
-import { Constant } from "../util/constant";
+import { TsumoListCanvas } from "../canvas/tsumo_list_canvas";
 import { FieldCanvas } from "../canvas/field_canvas";
 import { MiniTsumoListCanvas } from "../canvas/mini_tsumo_list_canvas";
+import { TimelineList } from "../canvas/timeline/timeline_list";
+import { Constant } from "../util/constant";
+import { BaseMode } from "./base_mode";
+
+import $ from "jquery";
 
 // entry point
 $(() => {
@@ -158,7 +159,7 @@ export class Nazotoki extends EditableMode {
 			return;
 		}
 
-		Util.dispLoading(Constant.AJAX_CONNECTING_MSG);
+		BaseMode.displayLoading(Constant.AJAX_CONNECTING_MSG);
 
 		this.findNazopuyoAnswerAjax()
 			.done((data: FindNazopuyoAnswerInterface[][]) => {
@@ -180,24 +181,24 @@ export class Nazotoki extends EditableMode {
 				if (len <= 0) {
 					// こたえなし
 					this.changeEditMode();
-					Util.dispMsg("解答が見つかりませんでした。", "1");
+					BaseMode.displayDialog("解答が見つかりませんでした。", "1");
 				} else {
 					// こたえあり
 					this.changePlayMode();
 					if (len < 10) {
-						Util.dispMsg(len + "件の解答が見つかりました。", "0");
+						BaseMode.displayDialog(len + "件の解答が見つかりました。", "0");
 					} else {
-						Util.dispMsg("10件以上の解答が見つかりました。10件のみ表示します。", "0");
+						BaseMode.displayDialog("10件以上の解答が見つかりました。10件のみ表示します。", "0");
 					}
 				}
 			})
 			.fail(() => {
 				// 通信エラー
 				this.changeEditMode();
-				Util.dispMsg(Constant.AJAX_ERROR_MSG, "2");
+				BaseMode.displayDialog(Constant.AJAX_ERROR_MSG, "2");
 			})
 			.always(() => {
-				Util.removeLoading();
+				BaseMode.removeLoading();
 			});
 	}
 
@@ -315,7 +316,7 @@ export class Nazotoki extends EditableMode {
 			timelineList.add(dropTlList, advanceTsumoTlList);
 
 			// 4. STEPの場合止める
-			if (Util.getAnimateMode() == 0) {
+			if (BaseMode.getAnimateMode() == 0) {
 				const stopTlList = FieldCanvas.createStopTlList();
 				timelineList.add(stopTlList);
 			}
